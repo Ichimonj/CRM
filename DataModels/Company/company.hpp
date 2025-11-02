@@ -1,0 +1,160 @@
+#pragma once
+#include <memory>
+#include <optional>
+#include <vector>
+
+#include "address.hpp"
+#include "big_uint.hpp"
+#include "date.hpp"
+#include "external_employee.hpp"
+#include "money.hpp"
+#include "note.hpp"
+#include "phone_number.hpp"
+using PhoneNumberPtr      = std::shared_ptr<PhoneNumber>;
+using AddressPtr          = std::shared_ptr<Address>;
+using StringPair          = std::pair<std::string, std::string>;
+using ExternalEmployeePtr = std::shared_ptr<ExternalEmployee>;
+struct TaxInfo {
+    std::string tax_type;
+    double      rate;
+    std::string code;
+    bool        is_default;
+
+    //
+    bool operator==(const TaxInfo& other) const
+    {
+        if (this->tax_type != other.tax_type) return false;
+        if (this->rate != other.rate) return false;
+        if (this->code != other.code) return false;
+        if (this->is_default != other.is_default) return false;
+        return true;
+    }
+};
+class Company {
+public:
+    enum class CompanyStatus : uint8_t { Active, Inactive, Archived };
+    Company(const BigUint& id);
+    Company(
+        const BigUint&                      id,
+        const std::string&                  company_name,
+        const OptionalStr&                  legal_name,
+        const OptionalStr&                  website_url,
+        const OptionalStr&                  industry,
+        const PhoneNumberPtr&               phone_number,
+        const OptionalStr&                  email,
+        const OptionalStr&                  country_code,
+        const AddressPtr&                   registered_address,
+        const DatePtr&                      founded_date,
+        const OptionalStr&                  tax_id,
+        const std::optional<CompanyStatus>& status,
+        const std::optional<uint32_t>&      employee_count,
+        const MoneyPtr&                     annual_revenue,
+        const MoneyPtr&                     budget,
+        std::vector<Note>                   notes,
+        std::vector<TaxInfo>                tax_rates,
+        std::vector<DealPtr>                deals,
+        std::vector<TaskPtr>                tasks,
+        std::vector<PhoneNumber>            more_phone_numbers,
+        std::vector<std::string>            more_emails
+    );
+
+    virtual ~Company() noexcept = default;
+
+    /// @name Getters
+    /// @{
+    auto getId() const -> const BigUint&;
+    auto getCompanyName() const -> const std::string&;
+    auto getLegalName() const -> const OptionalStr&;
+    auto getWebsiteUrl() const -> const OptionalStr&;
+    auto getIndustry() const -> const OptionalStr&;
+    auto getPhoneNumber() const -> const PhoneNumberPtr&;
+    auto getEmail() const -> const OptionalStr&;
+    auto getNotes() const -> const std::vector<Note>&;
+    auto getCountryCode() const -> const OptionalStr&;
+    auto getRegisteredAddress() const -> const AddressPtr&;
+    auto getCreatedAt() const -> const Date&;
+    auto getFoundedDate() const -> const DatePtr&;
+    auto getTaxRates() const -> const std::vector<TaxInfo>&;
+    auto getTaxId() const -> const OptionalStr&;
+    auto getStatus() const -> const std::optional<CompanyStatus>&;
+    auto getDeals() const -> const std::vector<DealPtr>&;
+    auto getTasks() const -> const std::vector<TaskPtr>&;
+    auto getMorePhoneNumbers() const -> const std::vector<PhoneNumber>&;
+    auto getMoreEmails() const -> const std::vector<std::string>&;
+    auto getEmployeeCount() const -> const std::optional<uint32_t>&;
+    auto getAnnualRevenue() const -> const MoneyPtr&;
+    auto getBudget() const -> const MoneyPtr&;
+    auto getChangeLogs() const -> const std::vector<ChangeLogPtr>&;
+    /// @}
+
+    /// @name Change functions
+    /// @{
+    void setCompanyName(const std::string& company_name, const InternalEmployeePtr& changer);
+    void setLegalName(const OptionalStr& legal_name, const InternalEmployeePtr& changer);
+    void setWebsiteUrl(const OptionalStr& website_url, const InternalEmployeePtr& changer);
+    void setIndustry(const OptionalStr& industry, const InternalEmployeePtr& changer);
+    void setPhoneNumber(const PhoneNumberPtr& phone_number, const InternalEmployeePtr& changer);
+    void setEmail(const OptionalStr& email, const InternalEmployeePtr& changer);
+    void setCountryCode(const OptionalStr& country_code, const InternalEmployeePtr& changer);
+    void setRegisteredAddress(
+        const AddressPtr& registered_address, const InternalEmployeePtr& changer
+    );
+    void setFoundedDate(const DatePtr& founded_date, const InternalEmployeePtr& changer);
+    void setTaxId(const OptionalStr& tax_id, const InternalEmployeePtr& changer);
+    void setStatus(const std::optional<CompanyStatus>& status, const InternalEmployeePtr& changer);
+    void setEmployeeCount(
+        const std::optional<uint32_t>& employee_count, const InternalEmployeePtr& changer
+    );
+    void setAnnualRevenue(const MoneyPtr& annual_revenue, const InternalEmployeePtr& changer);
+    void setBudget(const MoneyPtr& budget, const InternalEmployeePtr& changer);
+
+    void addTaxRate(const TaxInfo& tax_rate, const InternalEmployeePtr& changer);
+    void delTaxRate(size_t index, const InternalEmployeePtr& changer);
+
+    void addNote(const Note& note, const InternalEmployeePtr& changer);
+    void delNote(size_t index, const InternalEmployeePtr& changer);
+
+    void addMorePhoneNumber(const PhoneNumber& phone_number, const InternalEmployeePtr& changer);
+    void delMorePhoneNumber(size_t index, const InternalEmployeePtr& changer);
+
+    void addMoreEmail(const std::string& email, const InternalEmployeePtr& changer);
+    void delMoreEmail(size_t index, const InternalEmployeePtr& changer);
+
+    void addDeal(const DealPtr& deal, const InternalEmployeePtr& changer);
+    void delDeal(size_t index, const InternalEmployeePtr& changer);
+
+    void addTask(const TaskPtr& task, const InternalEmployeePtr& changer);
+    void delTask(size_t index, const InternalEmployeePtr& changer);
+    /// @}
+
+private:
+    BigUint        id;
+    std::string    company_name;
+    OptionalStr    legal_name;
+    OptionalStr    website_url;
+    OptionalStr    industry;
+    OptionalStr    tax_id;
+    PhoneNumberPtr phone_number;
+
+    OptionalStr    email;
+
+    OptionalStr    country_code;
+    AddressPtr     registered_address;
+    Date           created_at;
+    DatePtr        founded_date;
+
+    MoneyPtr       annual_revenue;
+    MoneyPtr       budget;
+    //
+    std::vector<Note>            notes;
+    std::vector<TaxInfo>         tax_rates;
+    std::optional<CompanyStatus> status;
+    std::vector<DealPtr>         deals;
+    std::vector<TaskPtr>         tasks;
+    std::vector<PhoneNumber>     more_phone_numbers;
+    std::vector<std::string>     more_emails;
+    std::optional<uint32_t>      employee_count;
+
+protected:
+    std::vector<ChangeLogPtr> change_logs;
+};

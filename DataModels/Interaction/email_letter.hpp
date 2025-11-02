@@ -1,0 +1,133 @@
+#pragma once
+#include "base_interaction.hpp"
+
+struct EmailLetter;
+using EmailLetterPtr = std::shared_ptr<EmailLetter>;
+
+struct EmailLetter : public BaseInteraction {
+    enum class EmailStatus : uint8_t {
+        Sent,
+        Delivered,
+        Failed,
+        Draft,
+        Scheduled,
+        Replied,
+        Forwarded
+    };
+    enum class EmailLetterType : uint8_t { incoming, outgoing };
+    
+    EmailLetter(const BigUint& id);
+    
+    EmailLetter(
+        const BigUint&                     id,
+        const std::string&                 title,
+        const OptionalStr&                 external_id,
+        const OptionalStr&                 description,
+        const OptionalStr&                 subject,
+        const std::optional<TimeDuration>& interaction_duration,
+        const Priority&                    priority,
+        const InternalEmployeePtr&         manager,
+        const DatePtr&                     start_date,
+        const DatePtr&                     end_date,
+        const InternalEmployeePtr&         checker,
+        std::vector<std::string>           tags,
+        std::vector<InteractionResult>     results,
+        std::vector<Note>                  notes,
+        std::vector<StringPair>            more_data,
+        std::vector<InteractionPtr>        related_interactions,
+        std::vector<FilePtr>               attachment_files,
+        std::vector<PersonPtr>             participants,
+        const std::string&                 from_email_address,
+        const std::string&                 to_email_address,
+        const EmailLetterType&             letter_type,
+        const EmailStatus&                 email_status,
+        std::vector<std::string>           cc_email_addresses,
+        std::vector<std::string>           bcc_email_addresses,
+        const PersonPtr&                   sender,
+        const PersonPtr&                   recipient,
+        const std::string&                 body,
+        const DatePtr&                     send_date,
+        const DatePtr&                     received_date,
+        const DatePtr&                     read_time,
+        const std::string&                 email_provider,
+        const EmailLetterPtr&              previous_letter,
+        const EmailLetterPtr&              next_letter,
+        bool                               is_read,
+        bool                               is_flagged
+    );
+
+public:
+    /// @name Getters
+    /// @{
+    auto getFromEmailAddress() const -> const std::string&;
+    auto getToEmailAddress() const -> const std::string&;
+    auto getLetterType() const -> EmailLetterType;
+    auto getEmailStatus() const -> EmailStatus;
+    auto getCcEmailAddresses() const -> const std::vector<std::string>&;
+    auto getBccEmailAddresses() const -> const std::vector<std::string>&;
+    auto getSender() const -> const PersonPtr;
+    auto getRecipient() const -> const PersonPtr;
+    auto getBody() const -> const std::string&;
+    auto getSendDate() const -> const DatePtr;
+    auto getReceivedDate() const -> const DatePtr;
+    auto getReadTime() const -> const DatePtr;
+    auto getEmailProvider() const -> const std::string&;
+    auto getPreviousLetter() const -> const EmailLetterPtr;
+    auto getNextLetter() const -> const EmailLetterPtr;
+    auto getIsRead() const -> bool;
+    auto getIsFlagged() const -> bool;
+    /// @}
+
+    /// @name Change functions
+    /// @{
+    void setFromEmailAddress(const std::string& email, const InternalEmployeePtr& changer);
+    void setToEmailAddress(const std::string& email, const InternalEmployeePtr& changer);
+    void setLetterType(EmailLetterType type, const InternalEmployeePtr& changer);
+    void setEmailStatus(EmailStatus status, const InternalEmployeePtr& changer);
+
+    void addCcEmailAddress(const std::string& address, const InternalEmployeePtr& changer);
+    void delCcEmailAddress(size_t id, const InternalEmployeePtr& changer);
+
+    void addBccEmailAddress(const std::string& address, const InternalEmployeePtr& changer);
+    void delBccEmailAddress(size_t id, const InternalEmployeePtr& changer);
+
+    void setSender(const PersonPtr& sender, const InternalEmployeePtr& changer);
+    void setRecipient(const PersonPtr& recipient, const InternalEmployeePtr& changer);
+    void setBody(const std::string& body, const InternalEmployeePtr& changer);
+    void setSendDate(const DatePtr& date, const InternalEmployeePtr& changer);
+    void setReceivedDate(const DatePtr& date, const InternalEmployeePtr& changer);
+    void setReadTime(const DatePtr& time, const InternalEmployeePtr& changer);
+    void setEmailProvider(const std::string& provider, const InternalEmployeePtr& changer);
+    void setPreviousLetter(const EmailLetterPtr& letter, const InternalEmployeePtr& changer);
+    void setNextLetter(const EmailLetterPtr& letter, const InternalEmployeePtr& changer);
+    void setIsRead(bool is_read, const InternalEmployeePtr& changer);
+    void setIsFlagged(bool is_flagged, const InternalEmployeePtr& changer);
+    /// @}
+
+private:
+    std::string              from_email_address;
+    std::string              to_email_address;
+
+    EmailLetterType          letter_type;
+    EmailStatus              email_status;
+
+    std::vector<std::string> cc_email_addresses;
+    std::vector<std::string> bcc_email_addresses;
+
+    PersonPtr                sender;
+    PersonPtr                recipient;
+
+    std::string              body;
+
+    DatePtr                  send_date;
+    DatePtr                  received_date;
+    DatePtr                  read_time;
+
+    std::string              email_provider;
+
+    EmailLetterPtr           previous_letter;
+    EmailLetterPtr           next_letter;
+
+    bool                     is_read;
+    bool                     is_flagged;
+};
