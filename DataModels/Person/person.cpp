@@ -2,6 +2,7 @@
 
 #include "change_log.hpp"
 #include "company.hpp"
+#include "campaign.hpp"
 
 Person::Person(const std::string& name, const std::string& surname, const OptionalStr& patronymic)
     : name(name), surname(surname), patronymic(patronymic), gender(Gender::unknown)
@@ -105,6 +106,7 @@ void Person::setName(const std::string& name, const InternalEmployeePtr& changer
         this->name = name;
     }
 }
+
 void Person::setSurname(const std::string& surname, const InternalEmployeePtr& changer)
 {
     if (this->surname != surname) {

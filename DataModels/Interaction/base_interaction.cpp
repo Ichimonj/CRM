@@ -202,20 +202,21 @@ void BaseInteraction::addTag(const std::string& tag, const InternalEmployeePtr& 
     }
 }
 
-void BaseInteraction::delTag(const size_t id, const InternalEmployeePtr& changer)
+void BaseInteraction::delTag(const size_t index, const InternalEmployeePtr& changer)
 {
-    if (this->tags.size() > id) {
+    if (this->tags.size() > index) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
-            std::make_optional<ChangeLog::ValueVariant>(std::make_shared<std::string>(this->tags[id]
-            )),
+            std::make_optional<ChangeLog::ValueVariant>(
+                std::make_shared<std::string>(this->tags[index])
+            ),
             std::nullopt,
             BaseInteractionFields::Tags,
             ChangeLog::FieldType::String,
             ChangeLog::FieldType::null,
             ChangeLog::Action::Remove
         ));
-        this->tags.erase(this->tags.begin() + id);
+        this->tags.erase(this->tags.begin() + index);
     }
 }
 
@@ -233,13 +234,13 @@ void BaseInteraction::addResult(const InteractionResult& result, const InternalE
     this->results.push_back(result);
 }
 
-void BaseInteraction::delResult(const size_t id, const InternalEmployeePtr& changer)
+void BaseInteraction::delResult(const size_t index, const InternalEmployeePtr& changer)
 {
-    if (this->results.size() > id) {
+    if (this->results.size() > index) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
             std::make_optional<ChangeLog::ValueVariant>(
-                std::make_shared<InteractionResult>(this->results[id])
+                std::make_shared<InteractionResult>(this->results[index])
             ),
             std::nullopt,
             BaseInteractionFields::Results,
@@ -247,7 +248,7 @@ void BaseInteraction::delResult(const size_t id, const InternalEmployeePtr& chan
             ChangeLog::FieldType::null,
             ChangeLog::Action::Remove
         ));
-        this->results.erase(this->results.begin() + id);
+        this->results.erase(this->results.begin() + index);
     }
 }
 
@@ -283,19 +284,19 @@ void BaseInteraction::addNote(const Note& note, const InternalEmployeePtr& chang
     this->notes.push_back(note);
 }
 
-void BaseInteraction::delNote(const size_t id, const InternalEmployeePtr& changer)
+void BaseInteraction::delNote(const size_t index, const InternalEmployeePtr& changer)
 {
-    if (this->notes.size() > id) {
+    if (this->notes.size() > index) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
-            std::make_optional<ChangeLog::ValueVariant>(std::make_shared<Note>(this->notes[id])),
+            std::make_optional<ChangeLog::ValueVariant>(std::make_shared<Note>(this->notes[index])),
             std::nullopt,
             BaseInteractionFields::Notes,
             ChangeLog::FieldType::Note,
             ChangeLog::FieldType::null,
             ChangeLog::Action::Remove
         ));
-        this->notes.erase(this->notes.begin() + id);
+        this->notes.erase(this->notes.begin() + index);
     }
 }
 
@@ -320,14 +321,14 @@ void BaseInteraction::addMoreData(
     }
 }
 
-void BaseInteraction::delMoreData(const size_t id, const InternalEmployeePtr& changer)
+void BaseInteraction::delMoreData(const size_t index, const InternalEmployeePtr& changer)
 {
-    if (this->more_data.size() > id) {
+    if (this->more_data.size() > index) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
             std::make_optional<ChangeLog::ValueVariant>(
                 std::make_shared<std::pair<const std::string, const std::string>>(
-                    this->more_data[id]
+                    this->more_data[index]
                 )
             ),
             std::nullopt,
@@ -336,7 +337,7 @@ void BaseInteraction::delMoreData(const size_t id, const InternalEmployeePtr& ch
             ChangeLog::FieldType::null,
             ChangeLog::Action::Remove
         ));
-        this->more_data.erase(this->more_data.begin() + id);
+        this->more_data.erase(this->more_data.begin() + index);
     }
 }
 
@@ -360,19 +361,19 @@ void BaseInteraction::addRelatedInteractions(
     }
 }
 
-void BaseInteraction::delRelatedInteractions(const size_t id, const InternalEmployeePtr& changer)
+void BaseInteraction::delRelatedInteractions(const size_t index, const InternalEmployeePtr& changer)
 {
-    if (this->related_interactions.size() > id) {
+    if (this->related_interactions.size() > index) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
-            std::make_optional<ChangeLog::ValueVariant>(this->related_interactions[id]),
+            std::make_optional<ChangeLog::ValueVariant>(this->related_interactions[index]),
             std::nullopt,
             BaseInteractionFields::RelatedInteractions,
             ChangeLog::FieldType::BaseInteraction,
             ChangeLog::FieldType::null,
             ChangeLog::Action::Remove
         ));
-        this->related_interactions.erase(this->related_interactions.begin() + id);
+        this->related_interactions.erase(this->related_interactions.begin() + index);
     }
 }
 
@@ -393,19 +394,19 @@ void BaseInteraction::addAttachmentFiles(const FilePtr& file, const InternalEmpl
     }
 }
 
-void BaseInteraction::delAttachmentFiles(const size_t id, const InternalEmployeePtr& changer)
+void BaseInteraction::delAttachmentFiles(const size_t index, const InternalEmployeePtr& changer)
 {
-    if (this->attachment_files.size() > id) {
+    if (this->attachment_files.size() > index) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
-            std::make_optional<ChangeLog::ValueVariant>(this->attachment_files[id]),
+            std::make_optional<ChangeLog::ValueVariant>(this->attachment_files[index]),
             std::nullopt,
             BaseInteractionFields::AttachmentFiles,
             ChangeLog::FieldType::FileMetadata,
             ChangeLog::FieldType::null,
             ChangeLog::Action::Remove
         ));
-        this->attachment_files.erase(this->attachment_files.begin() + id);
+        this->attachment_files.erase(this->attachment_files.begin() + index);
     }
 }
 
@@ -505,19 +506,59 @@ void BaseInteraction::addParticipants(
     }
 }
 
-void BaseInteraction::delParticipants(const size_t id, const InternalEmployeePtr& changer)
+void BaseInteraction::delParticipants(const size_t index, const InternalEmployeePtr& changer)
 {
-    if (this->participants.size() > id) {
+    if (this->participants.size() > index) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
-            std::make_optional<ChangeLog::ValueVariant>(this->participants[id]),
+            std::make_optional<ChangeLog::ValueVariant>(this->participants[index]),
             std::nullopt,
             BaseInteractionFields::Participants,
             ChangeLog::FieldType::Person,
             ChangeLog::FieldType::null,
             ChangeLog::Action::Remove
         ));
-        this->participants.erase(this->participants.begin() + id);
+        this->participants.erase(this->participants.begin() + index);
+    }
+}
+
+void BaseInteraction::addCampaign(const CampaignWPTR& campaign, const InternalEmployeePtr& changer)
+{
+    auto campaign_ptr = campaign.lock();
+    auto is_unique    = std::find_if(
+                         this->campaigns.begin(),
+                         this->campaigns.end(),
+                         [campaign_ptr](const CampaignWPTR& _campaign) {
+                             return campaign_ptr == _campaign.lock();
+                         }
+                     ) == this->campaigns.end();
+
+    if (is_unique) {
+        this->change_logs.emplace_back(std::make_shared<ChangeLog>(
+            changer,
+            std::nullopt,
+            std::make_optional<ChangeLog::ValueVariant>(campaign.lock()),
+            BaseInteractionFields::Campaigns,
+            ChangeLog::FieldType::null,
+            ChangeLog::FieldType::Campaign,
+            ChangeLog::Action::Add
+        ));
+        this->campaigns.push_back(campaign);
+    }
+}
+
+void BaseInteraction::delCampaign(size_t index, const InternalEmployeePtr& changer)
+{
+    if (this->campaigns.size() > index) {
+        this->change_logs.emplace_back(std::make_shared<ChangeLog>(
+            changer,
+            std::make_optional<ChangeLog::ValueVariant>(this->campaigns[index].lock()),
+            std::nullopt,
+            BaseInteractionFields::Campaigns,
+            ChangeLog::FieldType::Campaign,
+            ChangeLog::FieldType::null,
+            ChangeLog::Action::Remove
+        ));
     }
 }
 

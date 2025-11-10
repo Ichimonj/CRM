@@ -15,7 +15,9 @@ public:
         const std::string&         title,
         const std::string&         text
     );
-    bool operator==(const Note& other)const;
+
+    bool operator==(const Note& other) const;
+    bool operator!=(const Note& other) const;
 
     auto getCreatedDate() const -> const Date&;
     auto getCreator() const -> const InternalEmployeePtr&;

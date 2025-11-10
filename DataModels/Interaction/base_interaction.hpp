@@ -14,6 +14,7 @@ class Person;
 struct Date;
 struct InteractionResult;
 class ChangeLog;
+class Campaign;
 
 using DatePtr             = std::shared_ptr<Date>;
 using InternalEmployeePtr = std::shared_ptr<InternalEmployee>;
@@ -23,6 +24,7 @@ using FilePtr             = std::shared_ptr<FileMetadata>;
 using ChangeLogPtr        = std::shared_ptr<ChangeLog>;
 using StringPair          = std::pair<std::string, std::string>;
 using OptionalStr         = std::optional<std::string>;
+using CampaignWPTR        = std::weak_ptr<Campaign>;
 struct BaseInteraction {
     enum class InteractionType : uint8_t {
         phoneCall,
@@ -98,28 +100,28 @@ public:
     void setPriority(const Priority& priority, const InternalEmployeePtr& changer);
 
     void addTag(const std::string& tag, const InternalEmployeePtr& changer);
-    void delTag(const size_t id, const InternalEmployeePtr& changer);
+    void delTag(const size_t index, const InternalEmployeePtr& changer);
 
     void addResult(const InteractionResult& result, const InternalEmployeePtr& changer);
-    void delResult(const size_t id, const InternalEmployeePtr& changer);
+    void delResult(const size_t index, const InternalEmployeePtr& changer);
 
     void setManager(const InternalEmployeePtr& manager, const InternalEmployeePtr& changer);
 
     void addNote(const Note& note, const InternalEmployeePtr& changer);
-    void delNote(const size_t id, const InternalEmployeePtr& changer);
+    void delNote(const size_t index, const InternalEmployeePtr& changer);
 
     void addMoreData(
         const std::string& title, const std::string& data, const InternalEmployeePtr& changer
     );
-    void delMoreData(const size_t id, const InternalEmployeePtr& changer);
+    void delMoreData(const size_t index, const InternalEmployeePtr& changer);
 
     void addRelatedInteractions(
         const InteractionPtr& interaction, const InternalEmployeePtr& changer
     );
-    void delRelatedInteractions(const size_t id, const InternalEmployeePtr& changer);
+    void delRelatedInteractions(const size_t index, const InternalEmployeePtr& changer);
 
     void addAttachmentFiles(const FilePtr& file, const InternalEmployeePtr& changer);
-    void delAttachmentFiles(const size_t id, const InternalEmployeePtr& changer);
+    void delAttachmentFiles(const size_t index, const InternalEmployeePtr& changer);
 
     void setSubject(const OptionalStr& subject, const InternalEmployeePtr& changer);
     void setStartDate(const DatePtr& date, const InternalEmployeePtr& changer);
@@ -127,7 +129,10 @@ public:
     void setChecker(const InternalEmployeePtr& checker, const InternalEmployeePtr& changer);
 
     void addParticipants(const PersonPtr& participant, const InternalEmployeePtr& changer);
-    void delParticipants(const size_t id, const InternalEmployeePtr& changer);
+    void delParticipants(const size_t index, const InternalEmployeePtr& changer);
+
+    void addCampaign(const CampaignWPTR& campaign, const InternalEmployeePtr& changer);
+    void delCampaign(size_t index, const InternalEmployeePtr& changer);
 
     void setType(const InteractionType& type, const InternalEmployeePtr& changer);
     /// @}
@@ -163,6 +168,8 @@ private:
 
     std::vector<InteractionPtr>    related_interactions;
     std::vector<FilePtr>           attachment_files;
+
+    std::vector<CampaignWPTR>      campaigns;
 
 protected:
     std::vector<ChangeLogPtr> change_logs;
