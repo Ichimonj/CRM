@@ -139,9 +139,6 @@ public:
 
     void addChangeLog(const ChangeLogPtr& changeLog);
 
-    /// Transformation of the list of InteractionPe into a string
-    static const std::string interactionTypeStr(const InteractionType type);
-
 private:
     BigUint                        id;
     std::string                    title;

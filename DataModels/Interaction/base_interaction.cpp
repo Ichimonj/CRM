@@ -585,30 +585,3 @@ void BaseInteraction::addChangeLog(const ChangeLogPtr& changeLog)
         this->change_logs.push_back(changeLog);
     }
 }
-
-const std::string BaseInteraction::interactionTypeStr(const InteractionType type)
-{
-    switch (type) {
-        case InteractionType::phoneCall:
-            return interaction_type_str::phoneCall;
-        case InteractionType::emailLetter:
-            return interaction_type_str::emailLetter;
-        case InteractionType::emailThread:
-            return interaction_type_str::emailThread;
-        case InteractionType::meeting:
-            return interaction_type_str::meeting;
-        case InteractionType::meetingThread:
-            return interaction_type_str::meetingThread;
-        case InteractionType::message:
-            return interaction_type_str::message;
-        case InteractionType::correspondence:
-            return interaction_type_str::correspondence;
-        case InteractionType::commentarySocialNetworks:
-            return interaction_type_str::commentarySocialNetworks;
-        case InteractionType::commentarySocialNetworksThread:
-            return interaction_type_str::commentarySocialNetworksThread;
-        case InteractionType::unknown:
-            return interaction_type_str::unknown;
-    }
-    return std::string();
-}
