@@ -5,11 +5,13 @@ struct BigUint {
     BigUint() = default;
     BigUint(const std::string& num);
     BigUint(const BigUint& other);
+
     BigUint&    operator=(const BigUint& other);
     BigUint&    operator++();
 
-    friend bool operator<(const BigUint& uuidL, const BigUint& uuidR);
-    friend bool operator==(const BigUint& uuidL, const BigUint& uuidR);
+    bool operator<(const BigUint& other);
+    bool operator==(const BigUint& other);
+    bool operator!=(const BigUint& other);
 
     std::string num;
 };

@@ -1,6 +1,7 @@
 #include "money.hpp"
 
 #include <stdexcept>
+#include "location.hpp"
 
 Money::Money(const std::string& num)
 {

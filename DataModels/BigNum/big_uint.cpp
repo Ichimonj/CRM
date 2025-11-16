@@ -38,19 +38,21 @@ BigUint& BigUint::operator++()
     }
 }
 
-bool operator<(const BigUint& uuidL, const BigUint& uuidR)
+bool BigUint::operator<(const BigUint& other)
 {
-    if (uuidL.num.size() < uuidR.num.size())
+    if (this->num.size() < other.num.size())
         return true;
-    else if (uuidL.num.size() > uuidR.num.size())
+    else if (this->num.size() > other.num.size())
         return false;
 
-    for (size_t i = uuidL.num.size(); i >= 0; i--) {
-        if (uuidL.num[i] != uuidR.num[i]) {
-            return (int)uuidL.num[i] - '0' < (int)uuidR.num[i] - '0';
+    for (size_t i = this->num.size(); i >= 0; i--) {
+        if (this->num[i] != other.num[i]) {
+            return (int)this->num[i] - '0' < (int)other.num[i] - '0';
         }
     }
     return false;
 }
 
-bool operator==(const BigUint& uuidL, const BigUint& uuidR) { return uuidL.num == uuidR.num; }
+bool BigUint::operator==(const BigUint& other) { return this->num == other.num; }
+
+bool BigUint::operator!=(const BigUint& other) { return this->num != other.num; }

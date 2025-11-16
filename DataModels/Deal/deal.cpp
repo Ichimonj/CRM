@@ -27,12 +27,12 @@ Deal::Deal(
     const Date&                            creation_date,
     const InternalEmployeePtr              manager,
     std::vector<InternalEmployeePtr>       assigned_employees,
-    std::vector<OfferPtr>                  offers,
+    std::vector<OfferDealPtr>              offers,
     std::vector<DocumentPtr>               documents,
     std::vector<TaskPtr>                   tasks,
     const std::weak_ptr<Person>&           owner,
     const std::weak_ptr<InternalEmployee>& deal_manager,
-    std::vector<OfferPtr>                  offerings
+    std::vector<OfferDealPtr>              offerings
 )
     : id(id)
     , contract_number(contract_number)
@@ -86,12 +86,12 @@ auto Deal::getAssignedEmployees() const -> const std::vector<InternalEmployeePtr
 {
     return assigned_employees;
 }
-auto Deal::getOffers() const -> const std::vector<OfferPtr>& { return offers; }
+auto Deal::getOffers() const -> const std::vector<OfferDealPtr>& { return offers; }
 auto Deal::getDocuments() const -> const std::vector<DocumentPtr>& { return documents; }
 auto Deal::getTasks() const -> const std::vector<TaskPtr>& { return tasks; }
 auto Deal::getOwner() const -> const std::weak_ptr<Person>& { return owner; }
 auto Deal::getDealManager() const -> const std::weak_ptr<InternalEmployee>& { return deal_manager; }
-auto Deal::getOfferings() const -> const std::vector<OfferPtr>& { return offerings; }
+auto Deal::getOfferings() const -> const std::vector<OfferDealPtr>& { return offerings; }
 auto Deal::getChangeLogs() const -> const std::vector<ChangeLogPtr>& { return change_logs; }
 
 void Deal::changeContractNumber(const std::string& number, const InternalEmployeePtr& changer)
@@ -510,7 +510,7 @@ void Deal::delAssignedEmployee(size_t id, const InternalEmployeePtr& changer)
     }
 }
 
-void Deal::addOffer(const OfferPtr& offer, const InternalEmployeePtr& changer)
+void Deal::addOffer(const OfferDealPtr& offer, const InternalEmployeePtr& changer)
 {
     if (std::find(this->offers.begin(), this->offers.end(), offer) == this->offers.end()) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -519,7 +519,7 @@ void Deal::addOffer(const OfferPtr& offer, const InternalEmployeePtr& changer)
             std::make_optional(offer),
             DealFields::Offers,
             ChangeLog::FieldType::null,
-            ChangeLog::FieldType::Offer,
+            ChangeLog::FieldType::OfferDeal,
             ChangeLog::Action::Add
         ));
         this->offers.push_back(offer);
@@ -534,7 +534,7 @@ void Deal::delOffer(size_t index, const InternalEmployeePtr& changer)
             std::make_optional(this->offers[index]),
             std::nullopt,
             DealFields::Offers,
-            ChangeLog::FieldType::Offer,
+            ChangeLog::FieldType::OfferDeal,
             ChangeLog::FieldType::null,
             ChangeLog::Action::Remove
         ));
@@ -642,7 +642,7 @@ void Deal::setDealManager(
     }
 }
 
-void Deal::addOffering(const OfferPtr& offering, const InternalEmployeePtr& changer)
+void Deal::addOffering(const OfferDealPtr& offering, const InternalEmployeePtr& changer)
 {
     if (std::find(this->offerings.begin(), this->offerings.end(), offering) ==
         this->offerings.end()) {
@@ -652,7 +652,7 @@ void Deal::addOffering(const OfferPtr& offering, const InternalEmployeePtr& chan
             std::make_optional(offering),
             DealFields::Offerings,
             ChangeLog::FieldType::null,
-            ChangeLog::FieldType::Offer,
+            ChangeLog::FieldType::OfferDeal,
             ChangeLog::Action::Add
         ));
         this->offerings.push_back(offering);
@@ -667,7 +667,7 @@ void Deal::delOffering(size_t index, const InternalEmployeePtr& changer)
             std::make_optional(this->offerings[index]),
             std::nullopt,
             DealFields::Offerings,
-            ChangeLog::FieldType::Offer,
+            ChangeLog::FieldType::OfferDeal,
             ChangeLog::FieldType::null,
             ChangeLog::Action::Remove
         ));

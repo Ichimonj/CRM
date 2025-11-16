@@ -9,7 +9,7 @@
 #include "date.hpp"
 #include "document.hpp"
 #include "money.hpp"
-#include "offering.hpp"
+#include "offer_deal.hpp"
 #include "payment.hpp"
 #include "priority.hpp"
 
@@ -23,7 +23,7 @@ using BuyerShare          = std::pair<std::shared_ptr<Person>, Money>;
 using PaymentArr          = std::vector<std::shared_ptr<Payment>>;
 using DatePtr             = std::shared_ptr<Date>;
 using InternalEmployeePtr = std::shared_ptr<InternalEmployee>;
-using OfferPtr            = std::shared_ptr<Offer>;
+using OfferDealPtr        = std::shared_ptr<OfferDeal>;
 using DocumentPtr         = std::shared_ptr<Document>;
 using ChangeLogPtr        = std::shared_ptr<ChangeLog>;
 using TaskPtr             = std::shared_ptr<Task>;
@@ -71,12 +71,12 @@ struct Deal {
         const Date&                            creation_date,
         const InternalEmployeePtr              manager,
         std::vector<InternalEmployeePtr>       assigned_employees,
-        std::vector<OfferPtr>                  offers,
+        std::vector<OfferDealPtr>              offers,
         std::vector<DocumentPtr>               documents,
         std::vector<TaskPtr>                   tasks,
         const std::weak_ptr<Person>&           owner,
         const std::weak_ptr<InternalEmployee>& deal_manager,
-        std::vector<OfferPtr>                  offerings
+        std::vector<OfferDealPtr>              offerings
     );
 
     /// @name Getters
@@ -101,12 +101,12 @@ struct Deal {
     auto getCreationDate() const -> const Date&;
     auto getManager() const -> const InternalEmployeePtr&;
     auto getAssignedEmployees() const -> const std::vector<InternalEmployeePtr>&;
-    auto getOffers() const -> const std::vector<OfferPtr>&;
+    auto getOffers() const -> const std::vector<OfferDealPtr>&;
     auto getDocuments() const -> const std::vector<DocumentPtr>&;
     auto getTasks() const -> const std::vector<TaskPtr>&;
     auto getOwner() const -> const std::weak_ptr<Person>&;
     auto getDealManager() const -> const std::weak_ptr<InternalEmployee>&;
-    auto getOfferings() const -> const std::vector<OfferPtr>&;
+    auto getOfferings() const -> const std::vector<OfferDealPtr>&;
     auto getChangeLogs() const -> const std::vector<ChangeLogPtr>&;
     /// @}
 
@@ -145,7 +145,7 @@ struct Deal {
     );
     void delAssignedEmployee(size_t index, const InternalEmployeePtr& changer);
 
-    void addOffer(const OfferPtr& offer, const InternalEmployeePtr& changer);
+    void addOffer(const OfferDealPtr& offer, const InternalEmployeePtr& changer);
     void delOffer(size_t index, const InternalEmployeePtr& changer);
 
     void addDocument(const DocumentPtr& document, const InternalEmployeePtr& changer);
@@ -159,7 +159,7 @@ struct Deal {
         const std::weak_ptr<InternalEmployee>& manager, const InternalEmployeePtr& changer
     );
 
-    void addOffering(const OfferPtr& offering, const InternalEmployeePtr& changer);
+    void addOffering(const OfferDealPtr& offering, const InternalEmployeePtr& changer);
     void delOffering(size_t index, const InternalEmployeePtr& changer);
     /// @}
 
@@ -184,13 +184,13 @@ private:
     Date                             creation_date = Date();
     InternalEmployeePtr              manager;
     std::vector<InternalEmployeePtr> assigned_employees;
-    std::vector<OfferPtr>            offers;  // Merged (purchased + considered)
+    std::vector<OfferDealPtr>        offers;  // Merged (purchased + considered)
     std::vector<DocumentPtr>         documents;
     std::vector<TaskPtr>             tasks;
 
     std::weak_ptr<Person> owner;  // Person (Client/Employee) or CompanyPtr if company-level
     std::weak_ptr<InternalEmployee> deal_manager;  // Manager for accountability
-    std::vector<OfferPtr>           offerings;     // Internal offers in this deal
+    std::vector<OfferDealPtr>       offerings;     // Internal offers in this deal
 
     std::vector<ChangeLogPtr>       change_logs = {};
 };
