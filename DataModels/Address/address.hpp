@@ -43,5 +43,5 @@ private:
     std::string street     = "";
     std::string house      = "";
     std::string apartment  = "";
-    std::string postalCode = "";
+    std::string postal_code = "";
 };
