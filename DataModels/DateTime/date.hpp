@@ -1,8 +1,7 @@
 #pragma once
 #include <string>
 
-#include "stdint.h"
-
+#include "time_duration.hpp"
 struct Date {
     Date();
     Date(
@@ -14,11 +13,13 @@ struct Date {
     );
     Date(const Date& ex);
 
-    Date& operator=(const Date& other);
-    bool  operator!=(const Date& other) const;
-    bool  operator==(const Date& other) const;
+    TimeDuration operator-(const Date& other) const;
+    Date&        operator=(const Date& other);
+    bool         operator!=(const Date& other) const;
+    bool         operator==(const Date& other) const;
 
 public:
+    auto julian_day() const -> const uint64_t;
     auto getDateStr() const -> const std::string;
     auto getYear() const -> const uint16_t;
     auto getMonth() const -> const uint8_t;
