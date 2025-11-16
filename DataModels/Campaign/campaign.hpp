@@ -5,16 +5,18 @@
 
 #include "big_uint.hpp"
 #include "note.hpp"
+
 class Money;
 class Client;
 struct Date;
 class InternalEmployee;
 class ChangeLog;
+class CampaignLead;
 
 using OptionalStr         = std::optional<std::string>;
 using MoneyPtr            = std::shared_ptr<Money>;
 using DatePtr             = std::shared_ptr<Date>;
-using ClientPtr           = std::shared_ptr<Client>;
+using CampaignLeadPtr     = std::shared_ptr<CampaignLead>;
 using InternalEmployeePtr = std::shared_ptr<InternalEmployee>;
 using ChangeLogPtr        = std::shared_ptr<ChangeLog>;
 
@@ -38,7 +40,7 @@ public:
         const InternalEmployeePtr&   creator,
         const std::optional<double>& conversion_rate,
         std::vector<Note>            notes,
-        std::vector<ClientPtr>       target_leads,
+        std::vector<CampaignLeadPtr> target_leads,
         std::vector<ChangeLogPtr>    change_logs
     );
 
@@ -57,7 +59,7 @@ public:
     auto getCreator() const -> const InternalEmployeePtr&;
     auto getConversionRate() const -> const std::optional<double>&;
     auto getNotes() const -> const std::vector<Note>&;
-    auto getTargetLeads() const -> const std::vector<ClientPtr>&;
+    auto getTargetLeads() const -> const std::vector<CampaignLeadPtr>&;
     auto getChangeLogs() const -> const std::vector<ChangeLogPtr>&;
     /// @}
 
@@ -80,7 +82,7 @@ public:
     void addNote(const Note& note, const InternalEmployeePtr& changer);
     void delNote(size_t index, const InternalEmployeePtr& changer);
 
-    void addTargetLeads(const ClientPtr& target_lead, const InternalEmployeePtr& changer);
+    void addTargetLeads(const CampaignLeadPtr& target_lead, const InternalEmployeePtr& changer);
     void delTargetLeads(size_t index, const InternalEmployeePtr& changer);
     /// @}
 
@@ -97,8 +99,8 @@ private:
     uint32_t            total_converted = 0;
     InternalEmployeePtr creator;
     //
-    std::optional<double>     conversion_rate;
-    std::vector<Note>         notes;
-    std::vector<ClientPtr>    target_leads;
-    std::vector<ChangeLogPtr> change_logs;
+    std::optional<double>        conversion_rate;
+    std::vector<Note>            notes;
+    std::vector<CampaignLeadPtr> target_leads;
+    std::vector<ChangeLogPtr>    change_logs;
 };

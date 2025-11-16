@@ -18,7 +18,7 @@ Campaign::Campaign(
     const InternalEmployeePtr&   creator,
     const std::optional<double>& conversion_rate,
     std::vector<Note>            notes,
-    std::vector<ClientPtr>       target_leads,
+    std::vector<CampaignLeadPtr> target_leads,
     std::vector<ChangeLogPtr>    change_logs
 )
     : id(id)
@@ -51,7 +51,10 @@ auto Campaign::getTotalConverted() const -> const uint32_t& { return total_conve
 auto Campaign::getCreator() const -> const InternalEmployeePtr& { return creator; }
 auto Campaign::getConversionRate() const -> const std::optional<double>& { return conversion_rate; }
 auto Campaign::getNotes() const -> const std::vector<Note>& { return notes; }
-auto Campaign::getTargetLeads() const -> const std::vector<ClientPtr>& { return target_leads; }
+auto Campaign::getTargetLeads() const -> const std::vector<CampaignLeadPtr>&
+{
+    return target_leads;
+}
 auto Campaign::getChangeLogs() const -> const std::vector<ChangeLogPtr>& { return change_logs; }
 
 void Campaign::setName(const std::string& name, const InternalEmployeePtr& changer)
@@ -290,7 +293,9 @@ void Campaign::delNote(size_t index, const InternalEmployeePtr& changer)
     }
 }
 
-void Campaign::addTargetLeads(const ClientPtr& target_lead, const InternalEmployeePtr& changer)
+void Campaign::addTargetLeads(
+    const CampaignLeadPtr& target_lead, const InternalEmployeePtr& changer
+)
 {
     if (std::find(this->target_leads.begin(), this->target_leads.end(), target_lead) ==
         this->target_leads.end()) {
@@ -300,7 +305,7 @@ void Campaign::addTargetLeads(const ClientPtr& target_lead, const InternalEmploy
             std::make_optional(target_lead),
             CampaignFields::TargetLeads,
             ChangeLog::FieldType::null,
-            ChangeLog::FieldType::Client,
+            ChangeLog::FieldType::CampaignLead,
             ChangeLog::Action::Add
         ));
         this->target_leads.push_back(target_lead);
@@ -315,7 +320,7 @@ void Campaign::delTargetLeads(size_t index, const InternalEmployeePtr& changer)
             std::make_optional(this->target_leads[index]),
             std::nullopt,
             CampaignFields::TargetLeads,
-            ChangeLog::FieldType::Client,
+            ChangeLog::FieldType::CampaignLead,
             ChangeLog::FieldType::null,
             ChangeLog::Action::Remove
         ));
