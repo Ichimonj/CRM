@@ -3,7 +3,11 @@
 #include "location.hpp"
 
 TimeDuration::TimeDuration(
-    const uint16_t week, const uint8_t day, const uint8_t hour, const uint8_t min, const uint8_t sec
+    const uint16_t week,
+    const uint16_t day,
+    const uint8_t  hour,
+    const uint8_t  min,
+    const uint8_t  sec
 )
     : week(week), day(day), hour(hour), min(min), sec(sec)
 {
@@ -44,7 +48,7 @@ bool TimeDuration::operator!=(const TimeDuration& other) const
     return this->week != other.week;
 }
 
-bool TimeDuration::operator<=(const TimeDuration& other) const 
+bool TimeDuration::operator<=(const TimeDuration& other) const
 {
     if (this->week < other.week) return true;
     if (this->week > other.week) return false;
@@ -57,7 +61,7 @@ bool TimeDuration::operator<=(const TimeDuration& other) const
     return this->sec <= other.sec;
 }
 
-bool TimeDuration::operator==(const TimeDuration& other) const 
+bool TimeDuration::operator==(const TimeDuration& other) const
 {
     if (this->week != other.week) return false;
     if (this->day != other.day) return false;
@@ -67,7 +71,7 @@ bool TimeDuration::operator==(const TimeDuration& other) const
     return true;
 }
 
-TimeDuration& TimeDuration::operator+=(const TimeDuration& other) 
+TimeDuration& TimeDuration::operator+=(const TimeDuration& other)
 {
     this->sec += other.sec;
     if (sec >= 60) {
@@ -97,7 +101,7 @@ TimeDuration& TimeDuration::operator+=(const TimeDuration& other)
     return *this;
 }
 
-TimeDuration& TimeDuration::operator-=(const TimeDuration& other) 
+TimeDuration& TimeDuration::operator-=(const TimeDuration& other)
 {
     if (*this <= other) {
         this->week = this->day = this->hour = this->min = this->sec = 0;

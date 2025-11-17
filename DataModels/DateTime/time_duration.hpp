@@ -7,7 +7,7 @@ public:
     TimeDuration() = default;
     TimeDuration(
         const uint16_t week,
-        const uint8_t  day,
+        const uint16_t day,
         const uint8_t  hour,
         const uint8_t  min,
         const uint8_t  sec
@@ -30,7 +30,7 @@ public:
 
 private:
     uint16_t    week = 0;
-    uint8_t     day  = 0;
+    uint16_t    day  = 0;
     uint8_t     hour = 0;
     uint8_t     min  = 0;
     uint8_t     sec  = 0;
