@@ -1,6 +1,7 @@
 #include "money.hpp"
 
 #include <stdexcept>
+
 #include "location.hpp"
 
 Money::Money(const std::string& num)
@@ -15,17 +16,18 @@ Money::Money(const std::string& num)
             }
         }
     }
-    this->num = num;
+    this->num        = num;
     size_t point_pos = num.find_first_of('.');
     if (point_pos != std::string::npos) {
         size_t frac_size = num.size() - (point_pos + 1);
         if (frac_size == 1) {
-            this->num.insert(num.size() - 1, "0"); 
+            this->num.insert(num.size() - 1, "0");
         }
         if (frac_size > 2) {
             throw std::runtime_error(errors::invalid_currency_format);
         }
     }
+    if (point_pos == std::string::npos) this->num += ".00";
 }
 
 bool Money::operator<(const Money& other) const
@@ -45,109 +47,179 @@ bool   Money::operator!=(const Money& other) const { return this->num != other.n
 
 Money& Money::operator+=(const std::string& other)
 {
-    uint8_t leftPenny  = stoi(this->num.substr(this->num.find_first_of('.') + 1));
-    uint8_t rigthPenny = stoi(other.substr(other.find_first_of('.') + 1));
+    size_t      leftDot = this->num.find_first_of('.');
+    std::string leftInteger;
+    std::string leftPennyStr = "00";
+    if (leftDot != std::string::npos) {
+        leftInteger  = this->num.substr(0, leftDot);
+        leftPennyStr = this->num.substr(leftDot + 1);
+    } else {
+        leftInteger = this->num;
+    }
+    if (leftPennyStr.size() < 2) {
+        leftPennyStr += std::string(2 - leftPennyStr.size(), '0');
+    } else if (leftPennyStr.size() > 2) {
+        leftPennyStr = leftPennyStr.substr(0, 2);
+    }
+    uint8_t     leftPenny = static_cast<uint8_t>(std::stoi(leftPennyStr));
 
-    uint8_t pennySum = leftPenny + rigthPenny;
+    size_t      rightDot = other.find_first_of('.');
+    std::string rightInteger;
+    std::string rightPennyStr = "00";
+    if (rightDot != std::string::npos) {
+        rightInteger  = other.substr(0, rightDot);
+        rightPennyStr = other.substr(rightDot + 1);
+    } else {
+        rightInteger = other;
+    }
+    if (rightPennyStr.size() < 2) {
+        rightPennyStr += std::string(2 - rightPennyStr.size(), '0');
+    } else if (rightPennyStr.size() > 2) {
+        rightPennyStr = rightPennyStr.substr(0, 2);
+    }
+    uint8_t rightPenny = static_cast<uint8_t>(std::stoi(rightPennyStr));
 
-    int     carry            = pennySum > 100 ? 1 : 0;
-    pennySum                 = pennySum % 100;
-    std::string leftInteger  = this->num.substr(0, this->num.find_first_of('.'));
-    std::string rightInteger = other.substr(0, other.find_first_of('.'));
+    int     pennySum = leftPenny + rightPenny;
+    int     carry    = (pennySum >= 100) ? 1 : 0;
+    pennySum %= 100;
+    std::string finalPennyStr = std::to_string(pennySum);
+    if (finalPennyStr.size() < 2) {
+        finalPennyStr = "0" + finalPennyStr;
+    }
 
-    int         i = leftInteger.length() - 1;
-    int         j = rightInteger.length() - 1;
+    int         i = static_cast<int>(leftInteger.length()) - 1;
+    int         j = static_cast<int>(rightInteger.length()) - 1;
     std::string result;
-
-    while (i >= 0 || j >= 0 || carry != 0) {
+    int         intCarry = carry;
+    while (i >= 0 || j >= 0 || intCarry != 0) {
         int digit1 = 0;
         if (i >= 0) {
             digit1 = leftInteger[i] - '0';
             i--;
         }
-
         int digit2 = 0;
         if (j >= 0) {
             digit2 = rightInteger[j] - '0';
             j--;
         }
-
-        int sum = digit1 + digit2 + carry;
+        int sum = digit1 + digit2 + intCarry;
         result.push_back((sum % 10) + '0');
-        carry = sum / 10;
+        intCarry = sum / 10;
     }
     std::reverse(result.begin(), result.end());
-    num = result + '.' + (pennySum < 10 ? "0" : "") + std::to_string(pennySum);
+
+    if (result.empty()) {
+        result = "0";
+    }
+
+    num = result + '.' + finalPennyStr;
     return *this;
 }
 
 Money& Money::operator-=(const std::string& other)
 {
-    if (*this < other) {
-        this->num = "0.00";
+    size_t      leftDot = this->num.find_first_of('.');
+    std::string leftInteger;
+    std::string leftPennyStr = "00";
+    if (leftDot != std::string::npos) {
+        leftInteger  = this->num.substr(0, leftDot);
+        leftPennyStr = this->num.substr(leftDot + 1);
+    } else {
+        leftInteger = this->num;
+    }
+    if (leftPennyStr.size() < 2) {
+        leftPennyStr += std::string(2 - leftPennyStr.size(), '0');
+    } else if (leftPennyStr.size() > 2) {
+        leftPennyStr = leftPennyStr.substr(0, 2);
+    }
+    int         leftPenny = std::stoi(leftPennyStr);
+
+    size_t      rightDot = other.find_first_of('.');
+    std::string rightInteger;
+    std::string rightPennyStr = "00";
+    if (rightDot != std::string::npos) {
+        rightInteger  = other.substr(0, rightDot);
+        rightPennyStr = other.substr(rightDot + 1);
+    } else {
+        rightInteger = other;
+    }
+    if (rightPennyStr.size() < 2) {
+        rightPennyStr += std::string(2 - rightPennyStr.size(), '0');
+    } else if (rightPennyStr.size() > 2) {
+        rightPennyStr = rightPennyStr.substr(0, 2);
+    }
+    int  rightPenny = std::stoi(rightPennyStr);
+
+    bool is_negative = false;
+    if (leftInteger.length() < rightInteger.length()) {
+        is_negative = true;
+    } else if (leftInteger.length() == rightInteger.length()) {
+        if (leftInteger < rightInteger) {
+            is_negative = true;
+        } else if (leftInteger == rightInteger) {
+            if (leftPenny < rightPenny) {
+                is_negative = true;
+            }
+        }
+    }
+
+    if (is_negative) {
+        num = "0.00";
         return *this;
     }
-    uint8_t leftPenny  = std::stoi(this->num.substr(this->num.find_first_of('.') + 1));
-    uint8_t rightPenny = std::stoi(other.substr(other.find_first_of('.') + 1));
 
-    int     borrow = 0;
-    int     pennyResult;
-
+    int pennyResult;
+    int borrow = 0;
     if (leftPenny < rightPenny) {
-        pennyResult = (leftPenny + 100) - rightPenny;
+        pennyResult = leftPenny + 100 - rightPenny;
         borrow      = 1;
     } else {
         pennyResult = leftPenny - rightPenny;
         borrow      = 0;
     }
+    std::string finalPennyStr = std::to_string(pennyResult);
+    if (finalPennyStr.size() < 2) {
+        finalPennyStr = "0" + finalPennyStr;
+    }
 
-    std::string leftInteger  = this->num.substr(0, this->num.find_first_of('.'));
-    std::string rightInteger = other.substr(0, other.find_first_of('.'));
-
-    int         i = leftInteger.length() - 1;
-    int         j = rightInteger.length() - 1;
+    int         i = static_cast<int>(leftInteger.length()) - 1;
+    int         j = static_cast<int>(rightInteger.length()) - 1;
     std::string integerResultReversed;
-
-    while (i >= 0 || j >= 0 || borrow != 0) {
+    int         intBorrow = borrow;
+    while (i >= 0 || j >= 0 || intBorrow != 0) {
         int digit1 = 0;
         if (i >= 0) {
             digit1 = leftInteger[i] - '0';
             i--;
         }
-
         int digit2 = 0;
         if (j >= 0) {
             digit2 = rightInteger[j] - '0';
             j--;
         }
-
-        int currentDiff = digit1 - digit2 - borrow;
-
+        int currentDiff = digit1 - digit2 - intBorrow;
         if (currentDiff < 0) {
             currentDiff += 10;
-            borrow = 1;
+            intBorrow = 1;
         } else {
-            borrow = 0;
+            intBorrow = 0;
         }
-
-        integerResultReversed.push_back((currentDiff % 10) + '0');
+        integerResultReversed.push_back(currentDiff + '0');
     }
-
     std::reverse(integerResultReversed.begin(), integerResultReversed.end());
 
-    std::string finalIntegerResult = integerResultReversed;
-    size_t      firstDigit         = finalIntegerResult.find_first_not_of('0');
-    if (std::string::npos == firstDigit) {
+    std::string finalIntegerResult;
+    if (integerResultReversed.empty()) {
         finalIntegerResult = "0";
     } else {
-        finalIntegerResult = finalIntegerResult.substr(firstDigit);
+        size_t firstDigit = integerResultReversed.find_first_not_of('0');
+        if (firstDigit == std::string::npos) {
+            finalIntegerResult = "0";
+        } else {
+            finalIntegerResult = integerResultReversed.substr(firstDigit);
+        }
     }
 
-    std::string formattedPennyResult = std::to_string(pennyResult);
-    if (formattedPennyResult.length() < 2) {
-        formattedPennyResult = "0" + formattedPennyResult;
-    }
-
-    this->num = finalIntegerResult + '.' + formattedPennyResult;
+    num = finalIntegerResult + '.' + finalPennyStr;
     return *this;
 }
