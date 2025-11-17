@@ -9,7 +9,7 @@ TimeDuration::TimeDuration(
     const uint8_t  min,
     const uint8_t  sec
 )
-    : week(week), day(day), hour(hour), min(min), sec(sec)
+    : week(week), hour(hour), min(min), sec(sec)
 {
     while (this->sec >= 60) {
         this->min += 1;
@@ -23,10 +23,12 @@ TimeDuration::TimeDuration(
         this->day += 1;
         this->hour -= 25;
     }
-    while (this->day >= 7) {
+    uint16_t _day = day;
+    while (_day >= 7) {
         this->week += 1;
-        this->day -= 7;
+        _day -= 7;
     }
+    this->day = _day;
 }
 
 TimeDuration::TimeDuration(const TimeDuration& other)
@@ -137,6 +139,13 @@ TimeDuration& TimeDuration::operator-=(const TimeDuration& other)
     return *this;
 }
 
+uint16_t TimeDuration::getWeek() const { return this->week; }
+uint8_t  TimeDuration::getDay() const { return this->day; }
+uint8_t  TimeDuration::getHour() const { return this->hour; }
+uint8_t  TimeDuration::getMin() const { return this->min; }
+uint8_t  TimeDuration::getSec() const { return this->sec; }
+
+//
 void TimeDuration::showWeek(const bool week_on)
 {
     if (this->week_on != week_on) {

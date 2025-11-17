@@ -20,6 +20,12 @@ public:
     TimeDuration& operator+=(const TimeDuration& other);
     TimeDuration& operator-=(const TimeDuration& other);
 
+    uint16_t      getWeek() const;
+    uint8_t       getDay() const;
+    uint8_t       getHour() const;
+    uint8_t       getMin() const;
+    uint8_t       getSec() const;
+
     void          showWeek(const bool week_on);
     void          showDay(const bool day_on);
     void          showHour(const bool hour_on);
@@ -30,7 +36,7 @@ public:
 
 private:
     uint16_t    week = 0;
-    uint16_t    day  = 0;
+    uint8_t     day  = 0;
     uint8_t     hour = 0;
     uint8_t     min  = 0;
     uint8_t     sec  = 0;
