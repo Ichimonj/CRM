@@ -28,7 +28,7 @@ TimeDuration::TimeDuration(
         this->week += 1;
         _day -= 7;
     }
-    this->day = _day;
+    this->day += _day;
 }
 
 TimeDuration::TimeDuration(const TimeDuration& other)
