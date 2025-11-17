@@ -63,8 +63,6 @@ Date::Date(const Date& ex)
 {
 }
 
-#include <iostream>
-using namespace std;
 TimeDuration Date::operator-(const Date& other) const
 {
     int min, hour, day, month, year;
@@ -84,7 +82,6 @@ TimeDuration Date::operator-(const Date& other) const
 
     day += this->d_day - other.d_day;
     day += this->julian_day() - other.julian_day();
-    cout << day << endl;
     return TimeDuration(0,day,hour,min,0);
 }
 
