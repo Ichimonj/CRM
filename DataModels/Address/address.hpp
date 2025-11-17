@@ -38,10 +38,10 @@ public:
     /// @}
 
 private:
-    std::string country    = "";
-    std::string city       = "";
-    std::string street     = "";
-    std::string house      = "";
-    std::string apartment  = "";
+    std::string country     = "";
+    std::string city        = "";
+    std::string street      = "";
+    std::string house       = "";
+    std::string apartment   = "";
     std::string postal_code = "";
 };
