@@ -9,9 +9,12 @@ struct BigUint {
     BigUint&    operator=(const BigUint& other);
     BigUint&    operator++();
 
-    bool operator<(const BigUint& other);
-    bool operator==(const BigUint& other);
-    bool operator!=(const BigUint& other);
+    bool        operator<(const BigUint& other) const;
+
+    bool        operator==(const BigUint& other) const;
+    bool        operator==(const char* rhs) const;
+    bool        operator!=(const BigUint& other) const;
+    bool        operator!=(const char* rhs) const;
 
     std::string num;
 };

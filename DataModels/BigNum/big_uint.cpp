@@ -38,7 +38,7 @@ BigUint& BigUint::operator++()
     }
 }
 
-bool BigUint::operator<(const BigUint& other)
+bool BigUint::operator<(const BigUint& other) const
 {
     if (this->num.size() < other.num.size())
         return true;
@@ -53,6 +53,7 @@ bool BigUint::operator<(const BigUint& other)
     return false;
 }
 
-bool BigUint::operator==(const BigUint& other) { return this->num == other.num; }
-
-bool BigUint::operator!=(const BigUint& other) { return this->num != other.num; }
+bool BigUint::operator==(const BigUint& other) const { return this->num == other.num; }
+bool BigUint::operator==(const char* rhs) const { return *this == std::string(rhs); }
+bool BigUint::operator!=(const BigUint& other) const { return this->num != other.num; }
+bool BigUint::operator!=(const char* rhs) const { return *this != std::string(rhs); }
