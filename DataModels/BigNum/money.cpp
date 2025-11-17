@@ -16,11 +16,15 @@ Money::Money(const std::string& num)
         }
     }
     this->num = num;
-    if (num.substr(num.find_first_of('.') + 1).size() == 1) {
-        this->num.insert(num.size() - 1, "0");
-    }
-    if (num.substr(num.find_first_of('.') + 1).size() > 2) {
-        throw std::runtime_error(errors::invalid_currency_format);
+    size_t point_pos = num.find_first_of('.');
+    if (point_pos != std::string::npos) {
+        size_t frac_size = num.size() - (point_pos + 1);
+        if (frac_size == 1) {
+            this->num.insert(num.size() - 1, "0"); 
+        }
+        if (frac_size > 2) {
+            throw std::runtime_error(errors::invalid_currency_format);
+        }
     }
 }
 
