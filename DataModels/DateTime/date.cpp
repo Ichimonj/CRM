@@ -35,9 +35,9 @@ Date::Date(
 {
     if (year > 3000) throw std::runtime_error(errors::year_incorrect);
 
-    if (month > 11) throw std::runtime_error(errors::month_incorrect);
+    if (month < 1 || month > 12) throw std::runtime_error(errors::month_incorrect);
 
-    if (month == 1) {         // February
+    if (month == 2) {         // February
         if (year % 4 == 0) {  // Intercalary year
             if (day > 29) throw std::runtime_error(errors::day_incorrect);
         } else {
@@ -82,7 +82,7 @@ TimeDuration Date::operator-(const Date& other) const
 
     day += this->d_day - other.d_day;
     day += this->julian_day() - other.julian_day();
-    return TimeDuration(0,day,hour,min,0);
+    return TimeDuration(0, day, hour, min, 0);
 }
 
 Date& Date::operator=(const Date& other)
@@ -117,9 +117,13 @@ bool Date::operator==(const Date& other) const
     return true;
 }
 
-auto Date::julian_day() const -> const uint64_t{
-    int y = d_year, m = d_month + 1, d = d_day;
-    if (m <= 2) { y--; m += 12; }  // Jan/Feb as 13/14 of prev year
+auto Date::julian_day() const -> const uint64_t
+{
+    int y = d_year, m = d_month, d = d_day;
+    if (m <= 2) {
+        y--;
+        m += 12;
+    }  // Jan/Feb as 13/14 of prev year
     int a = y / 100;
     int b = 2 - a + a / 4;
     return int(365.25 * (y + 4716)) + int(30.6001 * (m + 1)) + d + b - 1524;
@@ -152,56 +156,63 @@ const std::string Date::toJsonFormat() const
 const uint8_t Date::numberDaysInMonth(const uint8_t month) const
 {
     switch (month) {
-        case 0:
-        case 2:
-        case 4:
-        case 6:
-        case 7:
-        case 9:
-        case 11:
+        case 1:   // January
+        case 3:   // March
+        case 5:   // May
+        case 7:   // July
+        case 8:   // August
+        case 10:  // October
+        case 12:  // December
             return 31;
-        default:
+        case 4:   // April
+        case 6:   // June
+        case 9:   // September
+        case 11:  // November
             return 30;
+        case 2:         // February
+            return 28;  // Actual validation happens in constructor
+        default:
+            return 0;  // Invalid month
     }
 }
 
 const std::string Date::monthToStr() const
 {
     switch (this->d_month) {
-        case 0:
+        case 1:
             return month_str::january;
             break;
-        case 1:
+        case 2:
             return month_str::february;
             break;
-        case 2:
+        case 3:
             return month_str::march;
             break;
-        case 3:
+        case 4:
             return month_str::april;
             break;
-        case 4:
+        case 5:
             return month_str::may;
             break;
-        case 5:
+        case 6:
             return month_str::june;
             break;
-        case 6:
+        case 7:
             return month_str::july;
             break;
-        case 7:
+        case 8:
             return month_str::august;
             break;
-        case 8:
+        case 9:
             return month_str::september;
             break;
-        case 9:
+        case 10:
             return month_str::october;
             break;
-        case 10:
+        case 11:
             return month_str::november;
             break;
-        case 11:
+        case 12:
             return month_str::december;
             break;
         default:
