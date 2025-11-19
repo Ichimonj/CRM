@@ -1,6 +1,22 @@
+
 #include "big_uint.hpp"
 
-BigUint::BigUint(const std::string& num) : num(num) {}
+#include <string>
+
+#include "location.hpp"
+#include "stdexcept"
+BigUint::BigUint(const std::string& num)
+{
+    if (num.size() == 0) {
+        throw std::invalid_argument(errors::uint_constructor_error);
+    }
+    for (size_t i = 0; i < num.size(); i++) {
+        if (!std::isdigit(num[i])) {
+            throw std::invalid_argument(errors::uint_constructor_error);
+        }
+    }
+    this->num = num.substr(num.find_first_not_of('0'), num.back());
+}
 
 BigUint::BigUint(const BigUint& other) : num(other.num) {}
 
@@ -20,22 +36,21 @@ BigUint& BigUint::operator++()
         this->num = newNum;
         return (*this);
     }
-    if (num[num.size() - 1] != '9') {
-        int a = (int)num[num.size() - 1] - '0';
-        a++;
-        num[num.size() - 1] = (char)a + '0';
-        return (*this);
-        for (int i = static_cast<int>(num.size() - 2); i >= 0; i--) {
-            num[i + 1] = '0';
-            if (num[i] != '9') {
-                int a = (int)num[i] - '0';
-                a++;
-                num[i] = (char)a + '0';
-                break;
-            }
+    int i = static_cast<int>(num.size() - 1);
+    while (i >= 0) {
+        if (num[i] != '9') {
+            // Can increment this digit without carry
+            int digit = (num[i] - '0') + 1;
+            num[i] = static_cast<char>(digit + '0');
+            return *this;
         }
-        return (*this);
+        else {
+            // Set to '0' and carry over
+            num[i] = '0';
+            --i;
+        }
     }
+    return (*this);
 }
 
 bool BigUint::operator<(const BigUint& other) const

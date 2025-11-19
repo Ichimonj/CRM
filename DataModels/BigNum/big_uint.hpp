@@ -16,7 +16,7 @@ struct BigUint {
     bool        operator!=(const BigUint& other) const;
     bool        operator!=(const char* rhs) const;
 
-    std::string num;
+    std::string num = "0";
 };
 namespace std {
     template <>
