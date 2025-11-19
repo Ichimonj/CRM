@@ -33,23 +33,23 @@ Date::Date(
     const uint8_t  min
 )
 {
-    if (year > 3000) throw std::runtime_error(errors::year_incorrect);
+    if (year > 3000) throw std::invalid_argument(errors::year_incorrect);
 
-    if (month < 1 || month > 12) throw std::runtime_error(errors::month_incorrect);
+    if (month < 1 || month > 12) throw std::invalid_argument(errors::month_incorrect);
 
     if (month == 2) {         // February
         if (year % 4 == 0) {  // Intercalary year
-            if (day > 29) throw std::runtime_error(errors::day_incorrect);
+            if (day > 29) throw std::invalid_argument(errors::day_incorrect);
         } else {
-            if (day > 28) throw std::runtime_error(errors::day_incorrect);
+            if (day > 28) throw std::invalid_argument(errors::day_incorrect);
         }
     } else {
-        if (day > numberDaysInMonth(month)) throw std::runtime_error(errors::day_incorrect);
+        if (day > numberDaysInMonth(month)) throw std::invalid_argument(errors::day_incorrect);
     }
 
-    if (hour > 23) throw std::runtime_error(errors::hour_incorrect);
+    if (hour > 23) throw std::invalid_argument(errors::hour_incorrect);
 
-    if (min > 59) throw std::runtime_error(errors::min_incorrect);
+    if (min > 59) throw std::invalid_argument(errors::min_incorrect);
 
     this->d_year  = year;
     this->d_month = month;
