@@ -6,6 +6,7 @@
 #include <stdexcept>
 
 #include "location.hpp"
+#include "stdexcept"
 
 Date::Date()
 {
@@ -65,6 +66,7 @@ Date::Date(const Date& ex)
 
 TimeDuration Date::operator-(const Date& other) const
 {
+    if (*this < other) throw std::runtime_error(errors::negative_date_range);
     int min, hour, day, month, year;
     min = hour = day = month = year = 0;
 
@@ -80,7 +82,6 @@ TimeDuration Date::operator-(const Date& other) const
         day -= 1;
     }
 
-    day += this->d_day - other.d_day;
     day += this->julian_day() - other.julian_day();
     return TimeDuration(0, day, hour, min, 0);
 }
@@ -95,6 +96,15 @@ Date& Date::operator=(const Date& other)
     this->d_hour  = other.d_hour;
     this->d_min   = other.d_min;
     return *this;
+}
+
+bool Date::operator<(const Date& other) const
+{
+    if (this->d_year != other.d_year) return this->d_year < other.d_year;
+    if (this->d_month != other.d_month) return this->d_month < other.d_month;
+    if (this->d_day != other.d_day) return this->d_day < other.d_day;
+    if (this->d_hour != other.d_hour) return this->d_hour < other.d_hour;
+    return this->d_min < other.d_min;
 }
 
 bool Date::operator!=(const Date& other) const
