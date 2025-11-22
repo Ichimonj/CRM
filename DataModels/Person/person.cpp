@@ -208,10 +208,10 @@ void Person::setPhoneNumber(const PhoneNumberPtr& number, const InternalEmployee
     this->change_logs.emplace_back(std::make_shared<ChangeLog>(
         changer,
         PTR_TO_OPTIONAL(this->phone_number),
-        PTR_TO_OPTIONAL(phone_number),
+        PTR_TO_OPTIONAL(number),
         PersonFields::PhoneNumber,
         this->phone_number ? ChangeLog::FieldType::PhoneNumber : ChangeLog::FieldType::null,
-        phone_number ? ChangeLog::FieldType::PhoneNumber : ChangeLog::FieldType::null,
+        number ? ChangeLog::FieldType::PhoneNumber : ChangeLog::FieldType::null,
         ChangeLog::Action::Change,
         update
     ));
