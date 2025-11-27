@@ -78,7 +78,7 @@ auto Person::getMoreAddresses() const -> const std::vector<Address>&
 {
     return this->more_addresses;
 }
-auto Person::getMoreEmail() const -> const std::vector<std::string>& { return this->more_emails; }
+auto Person::getMoreEmails() const -> const std::vector<std::string>& { return this->more_emails; }
 
 auto Person::getOtherDocuments() const -> const std::vector<DocumentPtr>&
 {

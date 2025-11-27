@@ -69,7 +69,7 @@ public:
     auto getSocialNetworks() const -> const std::vector<SocialNetwork>&;
     auto getMorePhoneNumbers() const -> const std::vector<PhoneNumber>&;
     auto getMoreAddresses() const -> const std::vector<Address>&;
-    auto getMoreEmail() const -> const std::vector<std::string>&;
+    auto getMoreEmails() const -> const std::vector<std::string>&;
 
     auto getOtherDocuments() const -> const std::vector<DocumentPtr>&;
     auto getOtherFiles() const -> const std::vector<FileMetadataPtr>&;
