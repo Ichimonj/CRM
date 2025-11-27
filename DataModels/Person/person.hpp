@@ -131,8 +131,8 @@ private:
     OptionalStr    preferred_language;
 
     DatePtr        birthday;
-    Date           created_at;  //-
-    Date           update_at;   //-
+    Date           created_at;
+    Date           update_at;
     PhoneNumberPtr phone_number;
 
     AddressPtr     address;
