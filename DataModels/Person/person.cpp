@@ -1,8 +1,8 @@
 #include "person.hpp"
 
+#include "campaign.hpp"
 #include "change_log.hpp"
 #include "company.hpp"
-#include "campaign.hpp"
 
 Person::Person(const std::string& name, const std::string& surname, const OptionalStr& patronymic)
     : name(name), surname(surname), patronymic(patronymic), gender(Gender::unknown)
@@ -55,11 +55,20 @@ auto Person::getName() const -> const std::string& { return this->name; }
 auto Person::getSurname() const -> const std::string& { return this->surname; }
 auto Person::getPatronymic() const -> const OptionalStr& { return this->patronymic; }
 auto Person::getPreferredLanguage() const -> const OptionalStr& { return this->preferred_language; }
-auto Person::getBirthday() const -> const DatePtr { return this->birthday; }
+auto Person::getBirthday() const -> const DatePtr& { return this->birthday; }
+auto Person::getCreatedAt() const -> const Date& { return this->created_at; }
+auto Person::getUpdateAt() const -> const Date& { return this->update_at; }
 auto Person::getPhoneNumber() const -> const PhoneNumberPtr { return this->phone_number; }
 auto Person::getAddress() const -> const AddressPtr { return this->address; }
 auto Person::getEmail() const -> const OptionalStr& { return this->email; }
 auto Person::getGender() const -> const Gender { return this->gender; }
+
+auto Person::getRelatedDeals() const -> const std::vector<DealPtr>& { return this->related_deals; }
+
+auto Person::getSocialNetworks() const -> const std::vector<SocialNetwork>&
+{
+    return this->social_networks;
+}
 
 auto Person::getMorePhoneNumbers() const -> const std::vector<PhoneNumber>&
 {
@@ -85,6 +94,7 @@ auto Person::getInteractionHistory() const -> const std::vector<InteractionPtr>&
 {
     return this->interaction_history;
 }
+auto Person::getTags() const -> const std::vector<std::string>& { return this->tags; }
 auto Person::getNotes() const -> const std::vector<Note>& { return this->notes; }
 auto Person::getChangeLogs() const -> const std::vector<ChangeLogPtr>& { return this->change_logs; }
 

@@ -57,12 +57,16 @@ public:
     auto getSurname() const -> const std::string&;
     auto getPatronymic() const -> const OptionalStr&;
     auto getPreferredLanguage() const -> const OptionalStr&;
-    auto getBirthday() const -> const DatePtr;
+    auto getBirthday() const -> const DatePtr&;
+    auto getCreatedAt() const -> const Date&;
+    auto getUpdateAt() const -> const Date&;
     auto getPhoneNumber() const -> const PhoneNumberPtr;
     auto getAddress() const -> const AddressPtr;
     auto getEmail() const -> const OptionalStr&;
     auto getGender() const -> const Gender;
 
+    auto getRelatedDeals() const -> const std::vector<DealPtr>&;
+    auto getSocialNetworks() const -> const std::vector<SocialNetwork>&;
     auto getMorePhoneNumbers() const -> const std::vector<PhoneNumber>&;
     auto getMoreAddresses() const -> const std::vector<Address>&;
     auto getMoreEmail() const -> const std::vector<std::string>&;
@@ -70,6 +74,7 @@ public:
     auto getOtherDocuments() const -> const std::vector<DocumentPtr>&;
     auto getOtherFiles() const -> const std::vector<FileMetadataPtr>&;
     auto getInteractionHistory() const -> const std::vector<InteractionPtr>&;
+    auto getTags() const -> const std::vector<std::string>&;
     auto getNotes() const -> const std::vector<Note>&;
     auto getChangeLogs() const -> const std::vector<ChangeLogPtr>&;
     /// @}
@@ -88,8 +93,10 @@ public:
     void addRelatedDeals(
         const DealPtr& deal, const InternalEmployeePtr& changer, const Date& change_date = Date()
     );
-    void delRelatedDeals(const DealPtr& deal, const InternalEmployeePtr& changer, const Date& change_date = Date());
-    
+    void delRelatedDeals(
+        const DealPtr& deal, const InternalEmployeePtr& changer, const Date& change_date = Date()
+    );
+
     void addMorePhoneNumber(const PhoneNumber& number, const InternalEmployeePtr& changer);
     void delMorePhoneNumber(size_t index, const InternalEmployeePtr& changer);
 
@@ -124,8 +131,8 @@ private:
     OptionalStr    preferred_language;
 
     DatePtr        birthday;
-    Date           created_at;
-    Date           update_at;
+    Date           created_at;  //-
+    Date           update_at;   //-
     PhoneNumberPtr phone_number;
 
     AddressPtr     address;
