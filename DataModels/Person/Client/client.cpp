@@ -263,8 +263,9 @@ void Client::setCommunicationChannel(const OptionalStr& channel, const InternalE
             OPTIONAL_STR_TO_VALUE(this->preferred_communication_channel),
             OPTIONAL_STR_TO_VALUE(channel),
             ClientFields::CommunicationChannel,
-            ChangeLog::FieldType::String,
-            ChangeLog::FieldType::String,
+            this->preferred_communication_channel ? ChangeLog::FieldType::String
+                                                  : ChangeLog::FieldType::null,
+            channel ? ChangeLog::FieldType::String : ChangeLog::FieldType::null,
             ChangeLog::Action::Change,
             update
         ));
@@ -356,8 +357,8 @@ void Client::setLeadScore(
 )
 {
     if (this->lead_score != lead_score) {
-        Date          update    = Date();
-       
+        Date update = Date();
+
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
             this->lead_score,
@@ -394,7 +395,7 @@ void Client::setAnnualRevenue(
             std::move(new_value),
             ClientFields::AnnualRevenue,
             old_value ? ChangeLog::FieldType::Money : ChangeLog::FieldType::null,
-            new_value  ? ChangeLog::FieldType::Money : ChangeLog::FieldType::null,
+            new_value ? ChangeLog::FieldType::Money : ChangeLog::FieldType::null,
             ChangeLog::Action::Change,
             update
         ));
@@ -436,7 +437,8 @@ void Client::setLifetimeValue(
 
 void Client::addOwnedDeal(const DealPtr& deal, const InternalEmployeePtr& changer)
 {
-    if (std::find(this->owned_deals.begin(), this->owned_deals.end(), deal) == this->owned_deals.end()) {
+    if (std::find(this->owned_deals.begin(), this->owned_deals.end(), deal) ==
+        this->owned_deals.end()) {
         Date update = Date();
 
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
