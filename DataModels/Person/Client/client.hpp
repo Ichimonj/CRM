@@ -89,6 +89,7 @@ public:
     auto getLeadScore() const -> const std::optional<double>&;
     auto getAnnualRevenue() const -> const std::optional<Money>&;
     auto getLifetimeValue() const -> const std::optional<Money>&;
+    auto getOwnedDeals() const -> const std::vector<DealPtr>&;
     auto getInterestedOffers() const -> const std::vector<OfferPtr>&;
     /// @}
 

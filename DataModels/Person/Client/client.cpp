@@ -111,6 +111,8 @@ auto Client::getLifetimeValue() const -> const std::optional<Money>&
     return this->lifetime_value;
 }
 
+auto Client::getOwnedDeals() const -> const std::vector<DealPtr>& { return this->owned_deals; }
+
 void Client::setOwner(const InternalEmployeePtr& owner, const InternalEmployeePtr& changer)
 {
     if (this->owner != owner) {
@@ -434,7 +436,6 @@ void Client::setLifetimeValue(
         this->lifetime_value = lifetime_value;
     }
 }
-
 void Client::addOwnedDeal(const DealPtr& deal, const InternalEmployeePtr& changer)
 {
     if (std::find(this->owned_deals.begin(), this->owned_deals.end(), deal) ==
@@ -451,6 +452,7 @@ void Client::addOwnedDeal(const DealPtr& deal, const InternalEmployeePtr& change
             ChangeLog::Action::Add,
             update
         ));
+
         this->updateAt(update);
         this->addRelatedDeals(deal, changer, update);
         this->owned_deals.push_back(deal);
