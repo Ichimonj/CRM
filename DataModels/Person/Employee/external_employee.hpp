@@ -73,6 +73,7 @@ public:
     auto getJobTitle() const -> const OptionalStr&;
     auto getDepartment() const -> const OptionalStr&;
     auto getStatus() const -> const EmployeeStatus;
+    auto getOtherStatus() const -> const OptionalStr&;
     auto getAccessLevel() const -> AccessLevel;
     auto getOtherRole() const -> const OptionalStr&;
     auto getCurrentInteraction() const -> const InteractionPtr&;

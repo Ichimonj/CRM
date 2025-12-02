@@ -4,7 +4,10 @@
 ExternalEmployee::ExternalEmployee(
     const std::string& name, const std::string& surname, const OptionalStr& patronymic
 )
-    : Person(name, surname, patronymic), access_role(AccessLevel::ReadOnly), status(EmployeeStatus::other), time_zone(0)
+    : Person(name, surname, patronymic)
+    , access_role(AccessLevel::ReadOnly)
+    , status(EmployeeStatus::other)
+    , time_zone(0)
 {
 }
 
@@ -95,6 +98,7 @@ auto ExternalEmployee::getCompany() const -> const ExternalCompanyPtr& { return 
 auto ExternalEmployee::getJobTitle() const -> const OptionalStr& { return this->job_title; }
 auto ExternalEmployee::getDepartment() const -> const OptionalStr& { return this->department; }
 auto ExternalEmployee::getStatus() const -> const EmployeeStatus { return this->status; }
+auto ExternalEmployee::getOtherStatus() const -> const OptionalStr& { return this->other_status; }
 auto ExternalEmployee::getAccessLevel() const -> AccessLevel { return this->access_role; }
 auto ExternalEmployee::getOtherRole() const -> const OptionalStr& { return this->other_role; }
 auto ExternalEmployee::getCurrentInteraction() const -> const InteractionPtr&
