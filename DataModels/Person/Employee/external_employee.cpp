@@ -4,7 +4,7 @@
 ExternalEmployee::ExternalEmployee(
     const std::string& name, const std::string& surname, const OptionalStr& patronymic
 )
-    : Person(name, surname, patronymic), access_role(AccessLevel::ReadOnly), time_zone(0)
+    : Person(name, surname, patronymic), access_role(AccessLevel::ReadOnly), status(EmployeeStatus::other), time_zone(0)
 {
 }
 
