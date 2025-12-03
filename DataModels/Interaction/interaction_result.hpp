@@ -29,7 +29,8 @@ struct InteractionResult {
         Postponed,
         IssueIdentified,
         NoOutcome,
-        other
+        other,
+        COUNT
     };
 
     InteractionResult() = default;

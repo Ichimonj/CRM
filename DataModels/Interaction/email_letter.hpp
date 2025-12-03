@@ -12,12 +12,13 @@ struct EmailLetter : public BaseInteraction {
         Draft,
         Scheduled,
         Replied,
-        Forwarded
+        Forwarded,
+        COUNT
     };
-    enum class EmailLetterType : uint8_t { incoming, outgoing };
-    
+    enum class EmailLetterType : uint8_t { incoming, outgoing, COUNT };
+
     EmailLetter(const BigUint& id);
-    
+
     EmailLetter(
         const BigUint&                     id,
         const std::string&                 title,

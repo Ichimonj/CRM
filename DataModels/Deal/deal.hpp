@@ -45,7 +45,8 @@ struct Deal {
         ObligationsAreProcess,
         ObligationsAreFulfilled,
         ObligationsAreNotFulfilled,
-        Other
+        Other,
+        COUNT
     };
 
     Deal(const BigUint& id);

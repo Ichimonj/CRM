@@ -36,7 +36,8 @@ struct BaseInteraction {
         correspondence,
         commentarySocialNetworks,
         commentarySocialNetworksThread,
-        unknown
+        unknown,
+        COUNT
     };
     BaseInteraction(const BigUint& id, InteractionType type);
 

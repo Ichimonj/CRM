@@ -20,7 +20,7 @@ using StringPair = std::pair<std::string, std::string>;
 using MoneyPtr   = std::shared_ptr<Money>;
 class ExternalEmployee : public Person {
 public:
-    enum class InfluenceLevel : uint8_t { Critical, High, Medium, Low, VeryLow };
+    enum class InfluenceLevel : uint8_t { Critical, High, Medium, Low, VeryLow, COUNT };
 
     ExternalEmployee(
         const std::string& name, const std::string& surname, const OptionalStr& patronymic

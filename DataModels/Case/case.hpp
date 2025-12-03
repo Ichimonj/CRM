@@ -20,7 +20,7 @@ using InternalEmployeePtr = std::shared_ptr<InternalEmployee>;
 using ClientPtr           = std::shared_ptr<Client>;
 using BaseInteractionPtr  = std::shared_ptr<BaseInteraction>;
 using ChangeLogPtr        = std::shared_ptr<ChangeLog>;
-enum class CaseStatus : uint8_t { Open, InProgress, Resolved, Closed };
+enum class CaseStatus : uint8_t { Open, InProgress, Resolved, Closed, COUNT };
 
 class Case {
 public:
