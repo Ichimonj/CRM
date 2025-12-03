@@ -17,7 +17,7 @@ using InternalEmployeePtr = std::shared_ptr<InternalEmployee>;
 using FilePtr             = std::shared_ptr<FileMetadata>;
 struct Document {
 public:
-    enum DocumentStatus : uint8_t { Draft, Active, Expired, Archived };
+    enum DocumentStatus : uint8_t { Draft, Active, Expired, Archived, COUNT };
 
     Document(const BigUint& id);
     Document(

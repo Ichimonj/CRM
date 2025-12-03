@@ -23,7 +23,7 @@ using FileMetadataPtr     = std::shared_ptr<FileMetadata>;
 using DocumentPtr         = std::shared_ptr<Document>;
 using InteractionPtr      = std::shared_ptr<BaseInteraction>;
 using OptionalStr         = std::optional<std::string>;
-enum Gender { male, female, unknown };
+enum Gender { male, female, unknown, COUNT };
 class Person {
 public:
     Person(const std::string& name, const std::string& surname, const OptionalStr& patronymic);
