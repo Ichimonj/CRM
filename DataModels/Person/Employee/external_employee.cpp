@@ -394,7 +394,7 @@ void ExternalEmployee::setPreferredContactTime(
             changer,
             OPTIONAL_STR_TO_VALUE(this->preferred_contact_time),
             OPTIONAL_STR_TO_VALUE(preferred_contact_time),
-            ExternalEmployeeFields::JobTitle,
+            ExternalEmployeeFields::PreferredContactTime,
             this->preferred_contact_time ? ChangeLog::FieldType::String
                                          : ChangeLog::FieldType::null,
             preferred_contact_time ? ChangeLog::FieldType::String : ChangeLog::FieldType::null,
