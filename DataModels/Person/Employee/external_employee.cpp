@@ -560,7 +560,7 @@ void ExternalEmployee::addAssignedDeal(
     const DealPtr& assigned_deal, const InternalEmployeePtr& changer
 )
 {
-    if (std::find(this->assigned_deals.begin(), this->assigned_deals.end(), assigned_deal) !=
+    if (std::find(this->assigned_deals.begin(), this->assigned_deals.end(), assigned_deal) ==
         this->assigned_deals.end()) {
         Date update = Date();
 
@@ -596,7 +596,7 @@ void ExternalEmployee::delAssignedDeal(size_t index, const InternalEmployeePtr& 
             update
         ));
         this->updateAt(update);
-        this->addRelatedDeals(this->assigned_deals[index], changer, update);
+        this->delRelatedDeals(this->assigned_deals[index], changer, update);
         this->assigned_deals.erase(this->assigned_deals.begin() + index);
     }
 }
@@ -605,7 +605,7 @@ void ExternalEmployee::addCompletedDeal(
     const DealPtr& completed_deal, const InternalEmployeePtr& changer
 )
 {
-    if (std::find(this->completed_deals.begin(), this->completed_deals.end(), completed_deal) !=
+    if (std::find(this->completed_deals.begin(), this->completed_deals.end(), completed_deal) ==
         this->completed_deals.end()) {
         Date update = Date();
 
@@ -650,7 +650,7 @@ void ExternalEmployee::addAssignedTask(
     const TaskPtr& assigned_task, const InternalEmployeePtr& changer
 )
 {
-    if (std::find(this->assigned_tasks.begin(), this->assigned_tasks.end(), assigned_task) !=
+    if (std::find(this->assigned_tasks.begin(), this->assigned_tasks.end(), assigned_task) ==
         this->assigned_tasks.end()) {
         Date update = Date();
 
@@ -693,7 +693,7 @@ void ExternalEmployee::addCompletedTask(
     const TaskPtr& completed_task, const InternalEmployeePtr& changer
 )
 {
-    if (std::find(this->completed_tasks.begin(), this->completed_tasks.end(), completed_task) !=
+    if (std::find(this->completed_tasks.begin(), this->completed_tasks.end(), completed_task) ==
         this->completed_tasks.end()) {
         Date update = Date();
 
