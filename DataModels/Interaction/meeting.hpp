@@ -11,7 +11,7 @@ using AddressPtr = std::shared_ptr<Address>;
 using ClientPtr  = std::shared_ptr<Client>;
 
 struct Meeting : public BaseInteraction {
-    enum class MeetingType : uint8_t { Negotiation, Presentation, Training, Other };
+    enum class MeetingType : uint8_t { Negotiation, Presentation, Training, Other, COUNT };
     enum class MeetingOutcome : uint8_t {
         ClosedWon,
         ClosedLost,
@@ -24,12 +24,20 @@ struct Meeting : public BaseInteraction {
         Canceled,
         Redirected,
         IssueIdentified,
-        Other
+        Other,
+        COUNT
     };
-    enum class MeetingStatus : uint8_t { Scheduled, InProgress, Completed, Canceled, Postponed };
-   
+    enum class MeetingStatus : uint8_t {
+        Scheduled,
+        InProgress,
+        Completed,
+        Canceled,
+        Postponed,
+        COUNT
+    };
+
     Meeting(const BigUint& id);
-    
+
     Meeting(
         const BigUint&                     id,
         const std::string&                 title,

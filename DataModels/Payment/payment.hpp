@@ -17,7 +17,8 @@ enum class PaymentStatus {
     failed,     // Неуспешный
     refunded,   // Возвращён
     partial,    // Частично оплачен
-    overdue     // Просрочен
+    overdue,    // Просрочен
+    COUNT
 };
 
 using MoneyPtr            = std::shared_ptr<Money>;

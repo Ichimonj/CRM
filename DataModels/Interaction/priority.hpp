@@ -3,7 +3,7 @@
 
 #include "location.hpp"
 
-enum class Priority : uint8_t { Low, Medium, High, Critical, null };
+enum class Priority : uint8_t { Low, Medium, High, Critical, null, COUNT };
 
 inline std::string priorityToStr(const Priority priority)
 {

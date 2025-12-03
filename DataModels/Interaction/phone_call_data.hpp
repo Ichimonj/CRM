@@ -5,7 +5,7 @@ struct PhoneNumber;
 using PhoneNumberPtr = std::shared_ptr<PhoneNumber>;
 
 struct PhoneCallData : public BaseInteraction {
-    enum class CallType : uint8_t { incoming, outgoing, missed };
+    enum class CallType : uint8_t { incoming, outgoing, missed, COUNT };
     
     PhoneCallData(const BigUint& id);
 

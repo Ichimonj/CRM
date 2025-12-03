@@ -13,12 +13,12 @@ using DealPtr   = std::shared_ptr<Deal>;
 
 class ExternalCompany : public Company {
 public:
-    enum class CompanyType : uint8_t { Client, Partner, Vendor, Prospect, Supplier, Other };
-    enum class Rating : uint8_t { Hot, Warm, Cold, Inactive };
-    enum class RiskLevel : uint8_t { Low, Medium, High, Critical };
-    enum class CompanySize : uint8_t { Micro, Small, Medium, Large, Enterprise };
-    enum class ComplianceLevel : uint8_t { Compliant, Warning, NonCompliant };
-    enum class IntegrationStatus : uint8_t { Connected, Pending, Failed };
+    enum class CompanyType : uint8_t { Client, Partner, Vendor, Prospect, Supplier, Other, COUNT };
+    enum class Rating : uint8_t { Hot, Warm, Cold, Inactive, COUNT };
+    enum class RiskLevel : uint8_t { Low, Medium, High, Critical, COUNT };
+    enum class CompanySize : uint8_t { Micro, Small, Medium, Large, Enterprise, COUNT };
+    enum class ComplianceLevel : uint8_t { Compliant, Warning, NonCompliant, COUNT };
+    enum class IntegrationStatus : uint8_t { Connected, Pending, Failed, COUNT };
 
     ExternalCompany(const BigUint& id);
     ExternalCompany(

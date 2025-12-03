@@ -18,9 +18,10 @@ enum class ReportType : uint8_t {
     EmployeeKPI,
     InteractionSummary,
     FinancialForecast,
-    other
+    other,
+    COUNT
 };
-enum class ExportFormat : uint8_t { CSV, PDF, JSON, XLSX };
+enum class ExportFormat : uint8_t { CSV, PDF, JSON, XLSX, COUNT };
 class Report {
 public:
     Report(

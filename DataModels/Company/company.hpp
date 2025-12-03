@@ -32,7 +32,7 @@ struct TaxInfo {
 };
 class Company {
 public:
-    enum class CompanyStatus : uint8_t { Active, Inactive, Archived };
+    enum class CompanyStatus : uint8_t { Active, Inactive, Archived, COUNT };
     Company(const BigUint& id);
     Company(
         const BigUint&                      id,

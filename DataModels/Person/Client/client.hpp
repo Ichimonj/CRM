@@ -20,7 +20,8 @@ public:
         LostCostomer,
         Analytical,
         Emotional,
-        other
+        other,
+        COUNT
     };
     enum class LeadStatus : uint8_t {
         New,
@@ -32,9 +33,10 @@ public:
         Closed,
         Disqualified,
         Nurturing,
-        Lost
+        Lost,
+        COUNT
     };
-    enum class LeadSource { Website, Referral, EmailCampaing, SocialMedia, other };
+    enum class LeadSource { Website, Referral, EmailCampaing, SocialMedia, other, COUNT };
     Client(const std::string& name, const std::string& surname, const OptionalStr& patronymic);
     Client(
         const BigUint&                   id,
@@ -118,7 +120,7 @@ public:
     void setLifetimeValue(
         const std::optional<Money>& lifetime_value, const InternalEmployeePtr& changer
     );
-    
+
     void addOwnedDeal(const DealPtr& deal, const InternalEmployeePtr& changer);
     void delOwnedDeal(size_t index, const InternalEmployeePtr& changer);
 

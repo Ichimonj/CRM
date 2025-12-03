@@ -20,7 +20,7 @@ using CampaignLeadPtr     = std::shared_ptr<CampaignLead>;
 using InternalEmployeePtr = std::shared_ptr<InternalEmployee>;
 using ChangeLogPtr        = std::shared_ptr<ChangeLog>;
 
-enum class CampaignType : uint8_t { Email, SocialAds, Webinar, Event, other };
+enum class CampaignType : uint8_t { Email, SocialAds, Webinar, Event, other, COUNT };
 
 class Campaign {
 public:

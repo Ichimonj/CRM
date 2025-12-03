@@ -25,7 +25,7 @@ using FilePtr             = std::shared_ptr<FileMetadata>;
 
 class Task {
 public:
-    enum class Status : uint8_t { NotStarted, InProgress, Completed, Overdue };
+    enum class Status : uint8_t { NotStarted, InProgress, Completed, Overdue, COUNT };
 
     Task(const BigUint& id);
     Task(

@@ -13,7 +13,8 @@ enum class AccessLevel {
     Influencer,
     User,
     Gatekeeper,
-    other
+    other,
+    COUNT
 };
 enum class EmployeeStatus {
     active,
@@ -25,5 +26,6 @@ enum class EmployeeStatus {
     suspended,
     sick_leave,
     retired,
-    other
+    other,
+    COUNT
 };
