@@ -176,24 +176,22 @@ void InternalEmployee::setManager(
     const InternalEmployeePtr& manager, const InternalEmployeePtr& changer
 )
 {
-    if (this->manager == manager) {
-        return;
+    if (this->manager != manager) {
+        Date update = Date();
+
+        this->change_logs.emplace_back(std::make_shared<ChangeLog>(
+            changer,
+            PTR_TO_OPTIONAL(this->manager),
+            PTR_TO_OPTIONAL(manager),
+            InternalEmployeeFields::Manager,
+            this->manager ? ChangeLog::FieldType::InternalEmployee : ChangeLog::FieldType::null,
+            manager ? ChangeLog::FieldType::InternalEmployee : ChangeLog::FieldType::null,
+            ChangeLog::Action::Change,
+            update
+        ));
+        this->updateAt(update);
+        this->manager = manager;
     }
-
-    Date update = Date();
-
-    this->change_logs.emplace_back(std::make_shared<ChangeLog>(
-        changer,
-        PTR_TO_OPTIONAL(this->manager),
-        PTR_TO_OPTIONAL(manager),
-        InternalEmployeeFields::Manager,
-        this->manager ? ChangeLog::FieldType::InternalEmployee : ChangeLog::FieldType::null,
-        manager ? ChangeLog::FieldType::InternalEmployee : ChangeLog::FieldType::null,
-        ChangeLog::Action::Change,
-        update
-    ));
-    this->updateAt(update);
-    this->manager = manager;
 }
 
 void InternalEmployee::setPosition(const OptionalStr& position, const InternalEmployeePtr& changer)
