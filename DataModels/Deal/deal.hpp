@@ -61,8 +61,6 @@ struct Deal {
         std::vector<BuyerShare>                buyers,
         const Money&                           total_amount,
         const Money&                           paid_amount,
-        const std::optional<Currencies>&       currency,
-        const OptionalStr&                     other_currency,
         const PaymentArr&                      payment_transactions,
         const Status&                          status,
         const OptionalStr&                     other_status,
@@ -91,8 +89,6 @@ struct Deal {
     auto getBuyers() const -> const std::vector<BuyerShare>&;
     auto getTotalAmount() const -> const Money&;
     auto getPaidAmount() const -> const Money&;
-    auto getCurrency() const -> const std::optional<Currencies>&;
-    auto getOtherCurrency() const -> const OptionalStr&;
     auto getPaymentTransactions() const -> const PaymentArr&;
     auto getStatus() const -> const Status&;
     auto getOtherStatus() const -> const OptionalStr&;
@@ -126,10 +122,6 @@ struct Deal {
     void updateBuyerMoney(size_t index, const Money& newMoney, const InternalEmployeePtr& changer);
     void updateTotalAmount(const Money& amount, const InternalEmployeePtr& changer);
     void updatePaidAmount(const Money& amount, const InternalEmployeePtr& changer);
-    void changeCurrency(
-        const std::optional<Currencies>& currency, const InternalEmployeePtr& changer
-    );
-    void changeOtherCurrency(const OptionalStr& currency, const InternalEmployeePtr& changer);
     void addPaymentTransaction(
         const std::shared_ptr<Payment>& payment, const InternalEmployeePtr& changer
     );
@@ -174,8 +166,6 @@ private:
     std::vector<BuyerShare>          buyers;
     Money                            total_amount = Money("");
     Money                            paid_amount  = Money("");
-    std::optional<Currencies>        currency     = std::nullopt;
-    OptionalStr                      other_currency;
     PaymentArr                       payment_transactions;
     Status                           status = Status::Draft;
     OptionalStr                      other_status;

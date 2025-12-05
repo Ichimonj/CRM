@@ -16,8 +16,6 @@ Deal::Deal(
     std::vector<BuyerShare>                buyers,
     const Money&                           total_amount,
     const Money&                           paid_amount,
-    const std::optional<Currencies>&       currency,
-    const OptionalStr&                     other_currency,
     const PaymentArr&                      payment_transactions,
     const Status&                          status,
     const OptionalStr&                     other_status,
@@ -43,8 +41,6 @@ Deal::Deal(
     , buyers(std::move(buyers))
     , total_amount(total_amount)
     , paid_amount(paid_amount)
-    , currency(currency)
-    , other_currency(other_currency)
     , payment_transactions(payment_transactions)
     , status(status)
     , other_status(other_status)
@@ -72,8 +68,6 @@ auto Deal::getTags() const -> const std::vector<std::string>& { return tags; }
 auto Deal::getBuyers() const -> const std::vector<BuyerShare>& { return buyers; }
 auto Deal::getTotalAmount() const -> const Money& { return total_amount; }
 auto Deal::getPaidAmount() const -> const Money& { return paid_amount; }
-auto Deal::getCurrency() const -> const std::optional<Currencies>& { return currency; }
-auto Deal::getOtherCurrency() const -> const OptionalStr& { return other_currency; }
 auto Deal::getPaymentTransactions() const -> const PaymentArr& { return payment_transactions; }
 auto Deal::getStatus() const -> const Status& { return status; }
 auto Deal::getOtherStatus() const -> const OptionalStr& { return other_status; }
@@ -275,54 +269,6 @@ void Deal::updatePaidAmount(const Money& amount, const InternalEmployeePtr& chan
             ChangeLog::Action::Change
         ));
         this->paid_amount = amount;
-    }
-}
-
-void Deal::changeCurrency(
-    const std::optional<Currencies>& currency, const InternalEmployeePtr& changer
-)
-{
-    if (this->currency != currency) {
-        this->change_logs.emplace_back(std::make_shared<ChangeLog>(
-            changer,
-            this->currency,
-            currency,
-            DealFields::Currency,
-            this->currency ? ChangeLog::FieldType::Currencies : ChangeLog::FieldType::null,
-            currency ? ChangeLog::FieldType::Currencies : ChangeLog::FieldType::null,
-            ChangeLog::Action::Change
-        ));
-        this->currency       = currency;
-        this->other_currency = std::nullopt;
-    }
-}
-
-void Deal::changeOtherCurrency(const OptionalStr& currency, const InternalEmployeePtr& changer)
-{
-    if (this->other_currency != currency) {
-        std::optional<ChangeLog::ValueVariant> old_value;
-        ChangeLog::FieldType                   old_field;
-
-        if (this->currency != std::nullopt) {
-            old_value = this->currency;
-            old_field = ChangeLog::FieldType::Currencies;
-        } else if (this->other_currency != std::nullopt) {
-            old_value = std::make_shared<std::string>(other_currency.value());
-            old_field = ChangeLog::FieldType::String;
-        } else
-            old_field = ChangeLog::FieldType::null;
-
-        this->change_logs.emplace_back(std::make_shared<ChangeLog>(
-            changer,
-            std::move(old_value),
-            OPTIONAL_STR_TO_VALUE(currency),
-            DealFields::Currency,
-            old_field,
-            currency ? ChangeLog::FieldType::String : ChangeLog::FieldType::null,
-            ChangeLog::Action::Change
-        ));
-        this->other_currency = currency;
-        this->currency       = std::nullopt;
     }
 }
 
