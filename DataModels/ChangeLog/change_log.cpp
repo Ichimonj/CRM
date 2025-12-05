@@ -286,7 +286,9 @@ StringPtr ChangeLog::valueToStr(FieldType type, ValueVariant value, StringPtr& s
             return str;
         }
         case FieldType::Money: {
-            str = std::make_shared<std::string>(std::get<std::shared_ptr<Money>>(value)->num);
+            auto money = std::get<std::shared_ptr<Money>>(value);
+            str =
+                std::make_shared<std::string>(money->num + ' ' + currencyToString(money->currency));
             return str;
         }
         case FieldType::AccessLevel: {
