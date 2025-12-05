@@ -538,10 +538,8 @@ void InternalEmployee::setPerformanceScore(
             this->performance_score,
             performance_score,
             InternalEmployeeFields::PerformanceScore,
-            this->performance_score == this->performance_score ? ChangeLog::FieldType::null
-                                                               : ChangeLog::FieldType::Double,
-            performance_score == performance_score ? ChangeLog::FieldType::null
-                                                   : ChangeLog::FieldType::Double,
+            this->performance_score ? ChangeLog::FieldType::Double : ChangeLog::FieldType::null,
+            performance_score ? ChangeLog::FieldType::Double : ChangeLog::FieldType::null,
             ChangeLog::Action::Change,
             update
         ));
