@@ -4,7 +4,7 @@
 
 #include "location.hpp"
 
-Money::Money(const std::string& num)
+Money::Money(const std::string & num, const Currencies currency)
 {
     bool point = false;
     for (auto& ex : num) {
@@ -28,6 +28,8 @@ Money::Money(const std::string& num)
         }
     }
     if (point_pos == std::string::npos) this->num += ".00";
+
+    this->currency = currency;
 }
 
 bool Money::operator<(const Money& other) const
