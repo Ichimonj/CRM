@@ -2,9 +2,12 @@
 
 #include "change_log.hpp"
 ExternalEmployee::ExternalEmployee(
-    const std::string& name, const std::string& surname, const OptionalStr& patronymic
+    const BigUint&     id,
+    const std::string& name,
+    const std::string& surname,
+    const OptionalStr& patronymic
 )
-    : Person(name, surname, patronymic)
+    : Person(id, name, surname, patronymic)
     , access_role(AccessLevel::ReadOnly)
     , status(EmployeeStatus::other)
     , time_zone(0)
@@ -12,6 +15,7 @@ ExternalEmployee::ExternalEmployee(
 }
 
 ExternalEmployee::ExternalEmployee(
+    const BigUint&                       id,
     const std::string&                   name,
     const std::string&                   surname,
     const OptionalStr&                   patronymic,
@@ -52,6 +56,7 @@ ExternalEmployee::ExternalEmployee(
     std::vector<TaskPtr>                 completed_tasks
 )
     : Person(
+          id,
           name,
           surname,
           patronymic,

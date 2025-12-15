@@ -7,8 +7,7 @@ InternalEmployee::InternalEmployee(
     const std::string& surname,
     const OptionalStr& patronymic
 )
-    : id(id)
-    , Person(name, surname, patronymic)
+    : Person(id, name, surname, patronymic)
     , role(AccessLevel::other)
     , status(EmployeeStatus::other)
     , time_zone(0)
@@ -61,6 +60,7 @@ InternalEmployee::InternalEmployee(
     std::vector<std::string>         tags
 )
     : Person(
+          id,
           name,
           surname,
           patronymic,
@@ -80,7 +80,6 @@ InternalEmployee::InternalEmployee(
           std::move(tags),
           std::move(notes)
       )
-    , id(id)
     , manager(manager)
     , position(position)
     , department(department)
@@ -108,7 +107,6 @@ InternalEmployee::InternalEmployee(
 {
 }
 
-auto InternalEmployee::getId() const -> const BigUint& { return this->id; }
 auto InternalEmployee::getManager() const -> const InternalEmployeePtr& { return this->manager; }
 auto InternalEmployee::getPosition() const -> const OptionalStr& { return this->position; }
 auto InternalEmployee::getDepartment() const -> const OptionalStr& { return this->department; }

@@ -4,12 +4,18 @@
 #include "change_log.hpp"
 #include "company.hpp"
 
-Person::Person(const std::string& name, const std::string& surname, const OptionalStr& patronymic)
-    : name(name), surname(surname), patronymic(patronymic), gender(Gender::unknown)
+Person::Person(
+    const BigUint&     id,
+    const std::string& name,
+    const std::string& surname,
+    const OptionalStr& patronymic
+)
+    : id(id), name(name), surname(surname), patronymic(patronymic), gender(Gender::unknown)
 {
 }
 
 Person::Person(
+    const BigUint&               id,
     const std::string&           name,
     const std::string&           surname,
     const OptionalStr&           patronymic,
@@ -29,7 +35,8 @@ Person::Person(
     std::vector<std::string>     tags,
     std::vector<Note>            notes
 )
-    : name(name)
+    : id(id)
+    , name(name)
     , surname(surname)
     , patronymic(patronymic)
     , preferred_language(preferred_language)
@@ -51,6 +58,7 @@ Person::Person(
     this->created_at = Date();
     this->update_at  = created_at;
 }
+auto Person::getId() const -> const BigUint& { return this->id; }
 auto Person::getName() const -> const std::string& { return this->name; }
 auto Person::getSurname() const -> const std::string& { return this->surname; }
 auto Person::getPatronymic() const -> const OptionalStr& { return this->patronymic; }

@@ -23,9 +23,13 @@ public:
     enum class InfluenceLevel : uint8_t { Critical, High, Medium, Low, VeryLow, COUNT };
 
     ExternalEmployee(
-        const std::string& name, const std::string& surname, const OptionalStr& patronymic
+        const BigUint&     id,
+        const std::string& name,
+        const std::string& surname,
+        const OptionalStr& patronymic
     );
     ExternalEmployee(
+        const BigUint&                       id,
         const std::string&                   name,
         const std::string&                   surname,
         const OptionalStr&                   patronymic,

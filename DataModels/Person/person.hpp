@@ -26,8 +26,14 @@ using OptionalStr         = std::optional<std::string>;
 enum Gender { male, female, unknown, COUNT };
 class Person {
 public:
-    Person(const std::string& name, const std::string& surname, const OptionalStr& patronymic);
     Person(
+        const BigUint&     id,
+        const std::string& name,
+        const std::string& surname,
+        const OptionalStr& patronymic
+    );
+    Person(
+        const BigUint&               id,
         const std::string&           name,
         const std::string&           surname,
         const OptionalStr&           patronymic,
@@ -53,6 +59,7 @@ public:
 public:
     /// @name Getters
     /// @{
+    auto getId() const -> const BigUint&;
     auto getName() const -> const std::string&;
     auto getSurname() const -> const std::string&;
     auto getPatronymic() const -> const OptionalStr&;
@@ -125,6 +132,7 @@ public:
     /// @}
 
 private:
+    BigUint        id;
     std::string    name;
     std::string    surname;
     OptionalStr    patronymic;

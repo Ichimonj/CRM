@@ -3,8 +3,13 @@
 #include "big_uint.hpp"
 #include "change_log.hpp"
 
-Client::Client(const std::string& name, const std::string& surname, const OptionalStr& patronymic)
-    : Person(name, surname, patronymic), lead_source(LeadSource::other), type(ClientType::other)
+Client::Client(
+    const BigUint&     id,
+    const std::string& name,
+    const std::string& surname,
+    const OptionalStr& patronymic
+)
+    : Person(id, name, surname, patronymic), lead_source(LeadSource::other), type(ClientType::other)
 {
 }
 Client::Client(
@@ -43,6 +48,7 @@ Client::Client(
     std::vector<Note>                notes
 )
     : Person(
+          id,
           name,
           surname,
           patronymic,
@@ -62,7 +68,6 @@ Client::Client(
           std::move(tags),
           std::move(notes)
       )
-    , id(id)
     , owner(owner)
     , type(type)
     , other_type(other_type)
@@ -80,7 +85,6 @@ Client::Client(
 {
 }
 
-auto Client::getId() const -> const BigUint& { return this->id; }
 auto Client::getOwner() const -> const InternalEmployeePtr& { return this->owner; }
 auto Client::getType() const -> const ClientType { return this->type; }
 auto Client::getOtherType() const -> const OptionalStr& { return this->other_type; }

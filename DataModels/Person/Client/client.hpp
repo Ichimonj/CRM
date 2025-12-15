@@ -37,7 +37,7 @@ public:
         COUNT
     };
     enum class LeadSource { Website, Referral, EmailCampaing, SocialMedia, other, COUNT };
-    Client(const std::string& name, const std::string& surname, const OptionalStr& patronymic);
+    Client(const BigUint& id, const std::string& name, const std::string& surname, const OptionalStr& patronymic);
     Client(
         const BigUint&                   id,
         const std::string&               name,
@@ -77,7 +77,6 @@ public:
 
     /// @name Getters
     /// @{
-    auto getId() const -> const BigUint&;
     auto getOwner() const -> const InternalEmployeePtr&;
     auto getType() const -> const ClientType;
     auto getOtherType() const -> const OptionalStr&;
@@ -129,8 +128,6 @@ public:
     /// @}
 
 private:
-    const BigUint       id;
-
     InternalEmployeePtr owner;
     ClientType          type;
     OptionalStr         other_type;

@@ -78,7 +78,6 @@ public:
 
     /// @name Getters
     /// @{
-    auto getId() const -> const BigUint&;
     auto getManager() const -> const InternalEmployeePtr&;
     auto getPosition() const -> const OptionalStr&;
     auto getDepartment() const -> const OptionalStr&;
@@ -160,7 +159,6 @@ public:
     /// @}
 
 private:
-    const BigUint       id;
     InternalEmployeePtr manager;
     OptionalStr         position;
     OptionalStr         department;
