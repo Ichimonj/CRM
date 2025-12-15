@@ -41,10 +41,9 @@ BigUint& BigUint::operator++()
         if (num[i] != '9') {
             // Can increment this digit without carry
             int digit = (num[i] - '0') + 1;
-            num[i] = static_cast<char>(digit + '0');
+            num[i]    = static_cast<char>(digit + '0');
             return *this;
-        }
-        else {
+        } else {
             // Set to '0' and carry over
             num[i] = '0';
             --i;
