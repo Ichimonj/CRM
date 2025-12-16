@@ -88,7 +88,7 @@ auto Deal::getDealManager() const -> const std::weak_ptr<InternalEmployee>& { re
 auto Deal::getOfferings() const -> const std::vector<OfferDealPtr>& { return offerings; }
 auto Deal::getChangeLogs() const -> const std::vector<ChangeLogPtr>& { return change_logs; }
 
-void Deal::changeContractNumber(const std::string& number, const InternalEmployeePtr& changer)
+bool Deal::changeContractNumber(const std::string& number, const InternalEmployeePtr& changer)
 {
     if (this->contract_number != number) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -101,10 +101,12 @@ void Deal::changeContractNumber(const std::string& number, const InternalEmploye
             ChangeLog::Action::Change
         ));
         this->contract_number = number;
+        return true;
     }
+    return false;
 }
 
-void Deal::changeTitle(const std::string& title, const InternalEmployeePtr& changer)
+bool Deal::changeTitle(const std::string& title, const InternalEmployeePtr& changer)
 {
     if (this->title != title) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -117,10 +119,12 @@ void Deal::changeTitle(const std::string& title, const InternalEmployeePtr& chan
             ChangeLog::Action::Change
         ));
         this->title = title;
+        return true;
     }
+    return false;
 }
 
-void Deal::changeDescription(const OptionalStr& description, const InternalEmployeePtr& changer)
+bool Deal::changeDescription(const OptionalStr& description, const InternalEmployeePtr& changer)
 {
     if (this->description != description) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -133,26 +137,30 @@ void Deal::changeDescription(const OptionalStr& description, const InternalEmplo
             ChangeLog::Action::Change
         ));
         this->description = description;
+        return true;
     }
+    return false;
 }
 
-void Deal::changeSource(const OptionalStr& source, const InternalEmployeePtr& changer)
+bool Deal::changeSource(const OptionalStr& source, const InternalEmployeePtr& changer)
 {
     if (this->source != source) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
             OPTIONAL_STR_TO_VALUE(this->source),
             OPTIONAL_STR_TO_VALUE(source),
-            DealFields::Description,
+            DealFields::Source,
             this->source ? ChangeLog::FieldType::String : ChangeLog::FieldType::null,
             source ? ChangeLog::FieldType::String : ChangeLog::FieldType::null,
             ChangeLog::Action::Change
         ));
         this->source = source;
+        return true;
     }
+    return false;
 }
 
-void Deal::addTag(const std::string& tag, const InternalEmployeePtr& changer)
+bool Deal::addTag(const std::string& tag, const InternalEmployeePtr& changer)
 {
     if (std::find(this->tags.begin(), this->tags.end(), tag) == this->tags.end()) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -165,10 +173,12 @@ void Deal::addTag(const std::string& tag, const InternalEmployeePtr& changer)
             ChangeLog::Action::Add
         ));
         this->tags.push_back(tag);
+        return true;
     }
+    return false;
 }
 
-void Deal::delTag(const size_t id, const InternalEmployeePtr& changer)
+bool Deal::delTag(const size_t id, const InternalEmployeePtr& changer)
 {
     if (this->tags.size() > id) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -181,10 +191,12 @@ void Deal::delTag(const size_t id, const InternalEmployeePtr& changer)
             ChangeLog::Action::Remove
         ));
         this->tags.erase(this->tags.begin() + id);
+        return true;
     }
+    return false;
 }
 
-void Deal::addBuyer(
+bool Deal::addBuyer(
     const std::shared_ptr<Person>& buyer, const Money& money, const InternalEmployeePtr& changer
 )
 {
@@ -201,10 +213,12 @@ void Deal::addBuyer(
             ChangeLog::Action::Add
         ));
         this->buyers.push_back(std::make_pair(buyer, money));
+        return true;
     }
+    return false;
 }
 
-void Deal::delBuyer(const size_t id, const InternalEmployeePtr& changer)
+bool Deal::delBuyer(const size_t id, const InternalEmployeePtr& changer)
 {
     if (this->buyers.size() > id) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -217,10 +231,12 @@ void Deal::delBuyer(const size_t id, const InternalEmployeePtr& changer)
             ChangeLog::Action::Remove
         ));
         this->buyers.erase(this->buyers.begin() + id);
+        return true;
     }
+    return false;
 }
 
-void Deal::updateBuyerMoney(size_t id, const Money& newMoney, const InternalEmployeePtr& changer)
+bool Deal::updateBuyerMoney(size_t id, const Money& newMoney, const InternalEmployeePtr& changer)
 {
     if (this->buyers.size() > id) {
         if (this->buyers[id].second != newMoney) {
@@ -236,59 +252,70 @@ void Deal::updateBuyerMoney(size_t id, const Money& newMoney, const InternalEmpl
                 ChangeLog::Action::Change
             ));
             this->buyers[id].second = newMoney;
+            return true;
         }
     }
+    return false;
 }
 
-void Deal::updateTotalAmount(const Money& amount, const InternalEmployeePtr& changer)
+bool Deal::updateTotalAmount(const Money& amount, const InternalEmployeePtr& changer)
 {
     if (this->total_amount != amount) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
-            std::make_optional(std::make_shared<std::string>(this->total_amount.num)),
-            std::make_optional(std::make_shared<std::string>(amount.num)),
+            std::make_optional(std::make_shared<Money>(this->total_amount)),
+            std::make_optional(std::make_shared<Money>(amount)),
             DealFields::TotalAmount,
-            ChangeLog::FieldType::String,
-            ChangeLog::FieldType::String,
+            ChangeLog::FieldType::Money,
+            ChangeLog::FieldType::Money,
             ChangeLog::Action::Change
         ));
         this->total_amount = amount;
+        return true;
     }
+    return false;
 }
 
-void Deal::updatePaidAmount(const Money& amount, const InternalEmployeePtr& changer)
+bool Deal::updatePaidAmount(const Money& amount, const InternalEmployeePtr& changer)
 {
     if (this->paid_amount != amount) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
-            std::make_optional(std::make_shared<std::string>(this->paid_amount.num)),
-            std::make_optional(std::make_shared<std::string>(amount.num)),
+            std::make_optional(std::make_shared<Money>(this->paid_amount)),
+            std::make_optional(std::make_shared<Money>(amount)),
             DealFields::PaidAmount,
-            ChangeLog::FieldType::String,
-            ChangeLog::FieldType::String,
+            ChangeLog::FieldType::Money,
+            ChangeLog::FieldType::Money,
             ChangeLog::Action::Change
         ));
         this->paid_amount = amount;
+        return true;
     }
+    return false;
 }
 
-void Deal::addPaymentTransaction(
+bool Deal::addPaymentTransaction(
     const std::shared_ptr<Payment>& payment, const InternalEmployeePtr& changer
 )
 {
-    this->change_logs.emplace_back(std::make_shared<ChangeLog>(
-        changer,
-        std::nullopt,
-        std::make_optional(payment),
-        DealFields::PaymentTransactions,
-        ChangeLog::FieldType::null,
-        ChangeLog::FieldType::Payment,
-        ChangeLog::Action::Add
-    ));
-    this->payment_transactions.push_back(payment);
+    if (std::find(this->payment_transactions.begin(), this->payment_transactions.end(), payment) ==
+        this->payment_transactions.end()) {
+        this->change_logs.emplace_back(std::make_shared<ChangeLog>(
+            changer,
+            std::nullopt,
+            std::make_optional(payment),
+            DealFields::PaymentTransactions,
+            ChangeLog::FieldType::null,
+            ChangeLog::FieldType::Payment,
+            ChangeLog::Action::Add
+        ));
+        this->payment_transactions.push_back(payment);
+        return true;
+    }
+    return false;
 }
 
-void Deal::delPaymentTransaction(size_t id, const InternalEmployeePtr& changer)
+bool Deal::delPaymentTransaction(size_t id, const InternalEmployeePtr& changer)
 {
     if (this->payment_transactions.size() > id) {
         auto removed = this->payment_transactions[id];
@@ -302,18 +329,21 @@ void Deal::delPaymentTransaction(size_t id, const InternalEmployeePtr& changer)
             ChangeLog::Action::Remove
         ));
         this->payment_transactions.erase(this->payment_transactions.begin() + id);
+        return true;
     }
+    return false;
 }
 
-void Deal::changeStatus(const Status status, const InternalEmployeePtr& changer)
+bool Deal::changeStatus(const Status status, const InternalEmployeePtr& changer)
 {
     if (this->status != status) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
-            this->other_status
-                ? std::make_optional(std::make_shared<std::string>(this->other_status.value()))
-                : std::make_optional<ChangeLog::ValueVariant>(this->status),
-            std::make_optional(status),
+            this->other_status ? std::make_optional<ChangeLog::ValueVariant>(
+                                     std::make_shared<std::string>(this->other_status.value())
+                                 )
+                               : std::make_optional<ChangeLog::ValueVariant>(this->status),
+            std::make_optional<ChangeLog::ValueVariant>(status),
             DealFields::Status,
             this->other_status ? ChangeLog::FieldType::String : ChangeLog::FieldType::DealStatus,
             ChangeLog::FieldType::DealStatus,
@@ -321,30 +351,37 @@ void Deal::changeStatus(const Status status, const InternalEmployeePtr& changer)
         ));
         this->other_status = std::nullopt;
         this->status       = status;
+        return true;
     }
+    return false;
 }
 
-void Deal::changeOtherStatus(const OptionalStr& status, const InternalEmployeePtr& changer)
+bool Deal::changeOtherStatus(const OptionalStr& status, const InternalEmployeePtr& changer)
 {
     if (this->other_status != status) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
-            this->other_status
-                ? std::make_optional(std::make_shared<std::string>(this->other_status.value()))
-                : std::make_optional<ChangeLog::ValueVariant>(this->status),
-            status ? std::make_optional(std::make_shared<std::string>(status.value()))
+            this->other_status ? std::make_optional<ChangeLog::ValueVariant>(
+                                     std::make_shared<std::string>(this->other_status.value())
+                                 )
+                               : std::make_optional<ChangeLog::ValueVariant>(this->status),
+            status ? std::make_optional<ChangeLog::ValueVariant>(
+                         std::make_shared<std::string>(status.value())
+                     )
                    : std::nullopt,
-            DealFields::OtherStatus,
+            DealFields::Status,
             this->other_status ? ChangeLog::FieldType::String : ChangeLog::FieldType::DealStatus,
-            status ? ChangeLog::FieldType::String : ChangeLog::FieldType::null,
+            status ? ChangeLog::FieldType::String : ChangeLog::FieldType::DealStatus,
             ChangeLog::Action::Change
         ));
         this->status       = Status::Other;
         this->other_status = status;
+        return true;
     }
+    return false;
 }
 
-void Deal::changeDealPriority(const Priority priority, const InternalEmployeePtr& changer)
+bool Deal::changeDealPriority(const Priority priority, const InternalEmployeePtr& changer)
 {
     if (this->deal_priority != priority) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -357,17 +394,19 @@ void Deal::changeDealPriority(const Priority priority, const InternalEmployeePtr
             ChangeLog::Action::Change
         ));
         this->deal_priority = priority;
+        return true;
     }
+    return false;
 }
 
-void Deal::setDrawingDate(const DatePtr& date, const InternalEmployeePtr& changer)
+bool Deal::setDrawingDate(const DatePtr& date, const InternalEmployeePtr& changer)
 {
     if (this->drawing_date == nullptr || date == nullptr) {
         if (this->drawing_date == date) {
-            return;
+            return false;
         }
     } else if (*this->drawing_date == *date) {
-        return;
+        return false;
     }
 
     this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -380,16 +419,17 @@ void Deal::setDrawingDate(const DatePtr& date, const InternalEmployeePtr& change
         ChangeLog::Action::Change
     ));
     this->drawing_date = date;
+    return true;
 }
 
-void Deal::setDateApproval(const DatePtr& date, const InternalEmployeePtr& changer)
+bool Deal::setDateApproval(const DatePtr& date, const InternalEmployeePtr& changer)
 {
     if (this->date_approval == nullptr || date == nullptr) {
         if (this->date_approval == date) {
-            return;
+            return false;
         }
     } else if (*this->date_approval == *date) {
-        return;
+        return false;
     }
 
     this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -402,9 +442,10 @@ void Deal::setDateApproval(const DatePtr& date, const InternalEmployeePtr& chang
         ChangeLog::Action::Change
     ));
     this->date_approval = date;
+    return true;
 }
 
-void Deal::changeManager(const InternalEmployeePtr& manager, const InternalEmployeePtr& changer)
+bool Deal::changeManager(const InternalEmployeePtr& manager, const InternalEmployeePtr& changer)
 {
     if (this->manager != manager) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -417,10 +458,12 @@ void Deal::changeManager(const InternalEmployeePtr& manager, const InternalEmplo
             ChangeLog::Action::Change
         ));
         this->manager = manager;
+        return true;
     }
+    return false;
 }
 
-void Deal::addAssignedEmployee(
+bool Deal::addAssignedEmployee(
     const InternalEmployeePtr& employee, const InternalEmployeePtr& changer
 )
 {
@@ -436,10 +479,12 @@ void Deal::addAssignedEmployee(
             ChangeLog::Action::Add
         ));
         this->assigned_employees.push_back(employee);
+        return true;
     }
+    return false;
 }
 
-void Deal::delAssignedEmployee(size_t id, const InternalEmployeePtr& changer)
+bool Deal::delAssignedEmployee(size_t id, const InternalEmployeePtr& changer)
 {
     if (this->assigned_employees.size() > id) {
         auto removed = this->assigned_employees[id];
@@ -453,10 +498,12 @@ void Deal::delAssignedEmployee(size_t id, const InternalEmployeePtr& changer)
             ChangeLog::Action::Remove
         ));
         this->assigned_employees.erase(this->assigned_employees.begin() + id);
+        return true;
     }
+    return false;
 }
 
-void Deal::addOffer(const OfferDealPtr& offer, const InternalEmployeePtr& changer)
+bool Deal::addOffer(const OfferDealPtr& offer, const InternalEmployeePtr& changer)
 {
     if (std::find(this->offers.begin(), this->offers.end(), offer) == this->offers.end()) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -469,10 +516,12 @@ void Deal::addOffer(const OfferDealPtr& offer, const InternalEmployeePtr& change
             ChangeLog::Action::Add
         ));
         this->offers.push_back(offer);
+        return true;
     }
+    return false;
 }
 
-void Deal::delOffer(size_t index, const InternalEmployeePtr& changer)
+bool Deal::delOffer(size_t index, const InternalEmployeePtr& changer)
 {
     if (this->offers.size() > index) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -485,10 +534,12 @@ void Deal::delOffer(size_t index, const InternalEmployeePtr& changer)
             ChangeLog::Action::Remove
         ));
         this->offers.erase(this->offers.begin() + index);
+        return true;
     }
+    return false;
 }
 
-void Deal::addDocument(const DocumentPtr& document, const InternalEmployeePtr& changer)
+bool Deal::addDocument(const DocumentPtr& document, const InternalEmployeePtr& changer)
 {
     if (std::find(this->documents.begin(), this->documents.end(), document) ==
         this->documents.end()) {
@@ -502,10 +553,12 @@ void Deal::addDocument(const DocumentPtr& document, const InternalEmployeePtr& c
             ChangeLog::Action::Add
         ));
         this->documents.push_back(document);
+        return true;
     }
+    return false;
 }
 
-void Deal::delDocument(size_t id, const InternalEmployeePtr& changer)
+bool Deal::delDocument(size_t id, const InternalEmployeePtr& changer)
 {
     if (this->documents.size() > id) {
         auto removed = this->documents[id];
@@ -519,10 +572,12 @@ void Deal::delDocument(size_t id, const InternalEmployeePtr& changer)
             ChangeLog::Action::Remove
         ));
         this->documents.erase(this->documents.begin() + id);
+        return true;
     }
+    return false;
 }
 
-void Deal::addTask(const TaskPtr& task, const InternalEmployeePtr& changer)
+bool Deal::addTask(const TaskPtr& task, const InternalEmployeePtr& changer)
 {
     if (std::find(this->tasks.begin(), this->tasks.end(), task) == this->tasks.end()) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -535,10 +590,12 @@ void Deal::addTask(const TaskPtr& task, const InternalEmployeePtr& changer)
             ChangeLog::Action::Add
         ));
         this->tasks.push_back(task);
+        return true;
     }
+    return false;
 }
 
-void Deal::delTask(size_t index, const InternalEmployeePtr& changer)
+bool Deal::delTask(size_t index, const InternalEmployeePtr& changer)
 {
     if (this->tasks.size() > index) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -551,10 +608,12 @@ void Deal::delTask(size_t index, const InternalEmployeePtr& changer)
             ChangeLog::Action::Remove
         ));
         this->tasks.erase(this->tasks.begin() + index);
+        return true;
     }
+    return false;
 }
 
-void Deal::setOwner(const std::weak_ptr<Person>& owner, const InternalEmployeePtr& changer)
+bool Deal::setOwner(const std::weak_ptr<Person>& owner, const InternalEmployeePtr& changer)
 {
     if (this->owner.lock() != owner.lock()) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -567,10 +626,12 @@ void Deal::setOwner(const std::weak_ptr<Person>& owner, const InternalEmployeePt
             ChangeLog::Action::Change
         ));
         this->owner = owner;
+        return true;
     }
+    return false;
 }
 
-void Deal::setDealManager(
+bool Deal::setDealManager(
     const std::weak_ptr<InternalEmployee>& manager, const InternalEmployeePtr& changer
 )
 {
@@ -580,15 +641,18 @@ void Deal::setDealManager(
             PTR_TO_OPTIONAL(this->deal_manager.lock()),
             PTR_TO_OPTIONAL(manager.lock()),
             DealFields::DealManager,
-            this->deal_manager.lock() ? ChangeLog::FieldType::Person : ChangeLog::FieldType::null,
-            manager.lock() ? ChangeLog::FieldType::Person : ChangeLog::FieldType::null,
-            ChangeLog::Action::Remove
+            this->deal_manager.lock() ? ChangeLog::FieldType::InternalEmployee
+                                      : ChangeLog::FieldType::null,
+            manager.lock() ? ChangeLog::FieldType::InternalEmployee : ChangeLog::FieldType::null,
+            ChangeLog::Action::Change
         ));
         this->deal_manager = manager;
+        return true;
     }
+    return false;
 }
 
-void Deal::addOffering(const OfferDealPtr& offering, const InternalEmployeePtr& changer)
+bool Deal::addOffering(const OfferDealPtr& offering, const InternalEmployeePtr& changer)
 {
     if (std::find(this->offerings.begin(), this->offerings.end(), offering) ==
         this->offerings.end()) {
@@ -602,10 +666,12 @@ void Deal::addOffering(const OfferDealPtr& offering, const InternalEmployeePtr& 
             ChangeLog::Action::Add
         ));
         this->offerings.push_back(offering);
+        return true;
     }
+    return false;
 }
 
-void Deal::delOffering(size_t index, const InternalEmployeePtr& changer)
+bool Deal::delOffering(size_t index, const InternalEmployeePtr& changer)
 {
     if (this->offerings.size() > index) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -618,5 +684,7 @@ void Deal::delOffering(size_t index, const InternalEmployeePtr& changer)
             ChangeLog::Action::Remove
         ));
         this->offerings.erase(this->offerings.begin() + index);
+        return true;
     }
+    return false;
 }

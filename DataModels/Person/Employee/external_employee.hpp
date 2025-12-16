@@ -99,44 +99,44 @@ public:
 
     /// @name Change functions
     /// @{
-    void setCompany(const ExternalCompanyPtr& company, const InternalEmployeePtr& changer);
-    void setJobTitle(const OptionalStr& title, const InternalEmployeePtr& changer);
-    void setDepartment(const OptionalStr& department, const InternalEmployeePtr& changer);
-    void setStatus(const EmployeeStatus status, const InternalEmployeePtr& changer);
-    void setOtherStatus(const OptionalStr& status, const InternalEmployeePtr& changer);
-    void setAccessRole(const AccessLevel access_role, const InternalEmployeePtr& changer);
-    void setOtherRole(const OptionalStr& other_role, const InternalEmployeePtr& changer);
-    void setCurrentInteraction(
+    bool setCompany(const ExternalCompanyPtr& company, const InternalEmployeePtr& changer);
+    bool setJobTitle(const OptionalStr& title, const InternalEmployeePtr& changer);
+    bool setDepartment(const OptionalStr& department, const InternalEmployeePtr& changer);
+    bool setStatus(const EmployeeStatus status, const InternalEmployeePtr& changer);
+    bool setOtherStatus(const OptionalStr& status, const InternalEmployeePtr& changer);
+    bool setAccessRole(const AccessLevel access_role, const InternalEmployeePtr& changer);
+    bool setOtherRole(const OptionalStr& other_role, const InternalEmployeePtr& changer);
+    bool setCurrentInteraction(
         const InteractionPtr& current_interaction, const InternalEmployeePtr& changer
     );
-    void setLastContactDate(const DatePtr& last_contact_date, const InternalEmployeePtr& changer);
-    void setTimeZone(const int time_zone, const InternalEmployeePtr& changer);
-    void setPreferredContactTime(
+    bool setLastContactDate(const DatePtr& last_contact_date, const InternalEmployeePtr& changer);
+    bool setTimeZone(const int time_zone, const InternalEmployeePtr& changer);
+    bool setPreferredContactTime(
         const OptionalStr& preferred_contact_time, const InternalEmployeePtr& changer
     );
-    void setDecisionInfluence(
+    bool setDecisionInfluence(
         const std::optional<InfluenceLevel>& decision_influence, const InternalEmployeePtr& changer
     );
-    void setInfluenceScore(
+    bool setInfluenceScore(
         const std::optional<double>& influence_score, const InternalEmployeePtr& changer
     );
-    void setBudgetAuthority(const MoneyPtr& budget_authority, const InternalEmployeePtr& changer);
-    void setSalary(const MoneyPtr& salary, const InternalEmployeePtr& changer);
+    bool setBudgetAuthority(const MoneyPtr& budget_authority, const InternalEmployeePtr& changer);
+    bool setSalary(const MoneyPtr& salary, const InternalEmployeePtr& changer);
 
-    void addPainPoint(const std::string& pain_point, const InternalEmployeePtr& changer);
-    void delPainPoint(size_t index, const InternalEmployeePtr& changer);
+    bool addPainPoint(const std::string& pain_point, const InternalEmployeePtr& changer);
+    bool delPainPoint(size_t index, const InternalEmployeePtr& changer);
 
-    void addAssignedDeal(const DealPtr& assigned_deal, const InternalEmployeePtr& changer);
-    void delAssignedDeal(size_t index, const InternalEmployeePtr& changer);
+    bool addAssignedDeal(const DealPtr& assigned_deal, const InternalEmployeePtr& changer);
+    bool delAssignedDeal(size_t index, const InternalEmployeePtr& changer);
 
-    void addCompletedDeal(const DealPtr& completed_deal, const InternalEmployeePtr& changer);
-    void delCompletedDeal(size_t index, const InternalEmployeePtr& changer);
+    bool addCompletedDeal(const DealPtr& completed_deal, const InternalEmployeePtr& changer);
+    bool delCompletedDeal(size_t index, const InternalEmployeePtr& changer);
 
-    void addAssignedTask(const TaskPtr& assigned_task, const InternalEmployeePtr& changer);
-    void delAssignedTask(size_t index, const InternalEmployeePtr& changer);
+    bool addAssignedTask(const TaskPtr& assigned_task, const InternalEmployeePtr& changer);
+    bool delAssignedTask(size_t index, const InternalEmployeePtr& changer);
 
-    void addCompletedTask(const TaskPtr& completed_task, const InternalEmployeePtr& changer);
-    void delCompletedTask(size_t index, const InternalEmployeePtr& changer);
+    bool addCompletedTask(const TaskPtr& completed_task, const InternalEmployeePtr& changer);
+    bool delCompletedTask(size_t index, const InternalEmployeePtr& changer);
     /// @}
 
 private:

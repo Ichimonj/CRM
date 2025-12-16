@@ -33,7 +33,7 @@ auto FileMetadata::getChangeLogs() const -> const std::vector<ChangeLogPtr>&
 }
 auto FileMetadata::getHach() const -> const std::string& { return this->content_hash; }
 
-void FileMetadata::setFileName(
+bool FileMetadata::setFileName(
     const std::string& file_name, const std::shared_ptr<InternalEmployee>& changer
 )
 {
@@ -48,10 +48,12 @@ void FileMetadata::setFileName(
             ChangeLog::Action::Change
         ));
         this->name = file_name;
+        return true;
     }
+    return false;
 }
 
-void FileMetadata::setFileFormat(
+bool FileMetadata::setFileFormat(
     const std::string& file_format, const std::shared_ptr<InternalEmployee>& changer
 )
 {
@@ -67,10 +69,12 @@ void FileMetadata::setFileFormat(
             ChangeLog::Action::Change
         ));
         this->format = file_format;
+        return true;
     }
+    return false;
 }
 
-void FileMetadata::setFilePath(
+bool FileMetadata::setFilePath(
     const std::string& file_path, const std::shared_ptr<InternalEmployee>& changer
 )
 {
@@ -85,10 +89,12 @@ void FileMetadata::setFilePath(
             ChangeLog::Action::Change
         ));
         this->path = file_path;
+        return true;
     }
+    return false;
 }
 
-void FileMetadata::setFileSize(const bool size, const std::shared_ptr<InternalEmployee>& changer)
+bool FileMetadata::setFileSize(const bool size, const std::shared_ptr<InternalEmployee>& changer)
 {
     if (this->size != size) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -96,15 +102,17 @@ void FileMetadata::setFileSize(const bool size, const std::shared_ptr<InternalEm
             std::make_optional<ChangeLog::ValueVariant>(this->size),
             std::make_optional<ChangeLog::ValueVariant>(size),
             FileMetadataFields::FileSize,
-            ChangeLog::FieldType::Bool,
-            ChangeLog::FieldType::Bool,
+            ChangeLog::FieldType::Uint,
+            ChangeLog::FieldType::Uint,
             ChangeLog::Action::Change
         ));
         this->size = size;
+        return true;
     }
+    return false;
 }
 
-void FileMetadata::setUploadDate(const Date& date, const std::shared_ptr<InternalEmployee>& changer)
+bool FileMetadata::setUploadDate(const Date& date, const std::shared_ptr<InternalEmployee>& changer)
 {
     if (this->upload_date != date) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -117,5 +125,7 @@ void FileMetadata::setUploadDate(const Date& date, const std::shared_ptr<Interna
             ChangeLog::Action::Change
         ));
         this->upload_date = date;
+        return true;
     }
+    return false;
 }

@@ -64,7 +64,7 @@ auto Message::getMessage() const -> const std::string& { return message; }
 auto Message::getPlatform() const -> const std::string& { return platform; }
 auto Message::getDateSending() const -> const Date& { return date_sending; }
 
-void Message::setNickname(const std::string& nickname, const InternalEmployeePtr& changer)
+bool Message::setNickname(const std::string& nickname, const InternalEmployeePtr& changer)
 {
     if (this->nickname != nickname) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -78,10 +78,12 @@ void Message::setNickname(const std::string& nickname, const InternalEmployeePtr
             ChangeLog::Action::Change
         ));
         this->nickname = nickname;
+        return true;
     }
+    return false;
 }
 
-void Message::setAuthor(const PersonPtr& author, const InternalEmployeePtr& changer)
+bool Message::setAuthor(const PersonPtr& author, const InternalEmployeePtr& changer)
 {
     if (this->author != author) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -94,10 +96,12 @@ void Message::setAuthor(const PersonPtr& author, const InternalEmployeePtr& chan
             ChangeLog::Action::Change
         ));
         this->author = author;
+        return true;
     }
+    return false;
 }
 
-void Message::setMessage(const std::string& message, const InternalEmployeePtr& changer)
+bool Message::setMessage(const std::string& message, const InternalEmployeePtr& changer)
 {
     if (this->message != message) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -111,10 +115,12 @@ void Message::setMessage(const std::string& message, const InternalEmployeePtr& 
             ChangeLog::Action::Change
         ));
         this->message = message;
+        return true;
     }
+    return false;
 }
 
-void Message::setPlatform(const std::string& platform, const InternalEmployeePtr& changer)
+bool Message::setPlatform(const std::string& platform, const InternalEmployeePtr& changer)
 {
     if (this->platform != platform) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -128,10 +134,12 @@ void Message::setPlatform(const std::string& platform, const InternalEmployeePtr
             ChangeLog::Action::Change
         ));
         this->platform = platform;
+        return true;
     }
+    return false;
 }
 
-void Message::setDateSending(const Date& date, const InternalEmployeePtr& changer)
+bool Message::setDateSending(const Date& date, const InternalEmployeePtr& changer)
 {
     if (this->date_sending != date) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -144,5 +152,7 @@ void Message::setDateSending(const Date& date, const InternalEmployeePtr& change
             ChangeLog::Action::Change
         ));
         this->date_sending = date;
+        return true;
     }
+    return false;
 }

@@ -70,7 +70,7 @@ auto PhoneCallData::getCallType() const -> const std::optional<CallType> { retur
 auto PhoneCallData::getCallCreator() const -> const PersonPtr { return this->call_creator; }
 auto PhoneCallData::getCallProvider() const -> const std::string& { return this->call_provider; }
 
-void PhoneCallData::setFromNumber(const PhoneNumberPtr& number, const InternalEmployeePtr& changer)
+bool PhoneCallData::setFromNumber(const PhoneNumberPtr& number, const InternalEmployeePtr& changer)
 {
     if (this->from_number != number) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -83,10 +83,12 @@ void PhoneCallData::setFromNumber(const PhoneNumberPtr& number, const InternalEm
             ChangeLog::Action::Change
         ));
         this->from_number = number;
+        return true;
     }
+    return false;
 }
 
-void PhoneCallData::setToNumber(const PhoneNumberPtr& number, const InternalEmployeePtr& changer)
+bool PhoneCallData::setToNumber(const PhoneNumberPtr& number, const InternalEmployeePtr& changer)
 {
     if (this->to_number != number) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -99,17 +101,19 @@ void PhoneCallData::setToNumber(const PhoneNumberPtr& number, const InternalEmpl
             ChangeLog::Action::Change
         ));
         this->to_number = number;
+        return true;
     }
+    return false;
 }
 
-void PhoneCallData::setStartCall(const DatePtr& start, const InternalEmployeePtr& changer)
+bool PhoneCallData::setStartCall(const DatePtr& start, const InternalEmployeePtr& changer)
 {
     if (this->start_call == nullptr || start == nullptr) {
         if (this->start_call == start) {
-            return;
+            return false;
         }
     } else if (*this->start_call == *start) {
-        return;
+        return false;
     }
 
     this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -122,16 +126,17 @@ void PhoneCallData::setStartCall(const DatePtr& start, const InternalEmployeePtr
         ChangeLog::Action::Change
     ));
     this->start_call = start;
+    return true;
 }
 
-void PhoneCallData::setEndCall(const DatePtr& end, const InternalEmployeePtr& changer)
+bool PhoneCallData::setEndCall(const DatePtr& end, const InternalEmployeePtr& changer)
 {
     if (this->end_call == nullptr || end == nullptr) {
         if (this->end_call == end) {
-            return;
+            return false;
         }
     } else if (*this->end_call == *end) {
-        return;
+        return false;
     }
 
     this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -144,9 +149,10 @@ void PhoneCallData::setEndCall(const DatePtr& end, const InternalEmployeePtr& ch
         ChangeLog::Action::Change
     ));
     this->end_call = end;
+    return true;
 }
 
-void PhoneCallData::setCallType(
+bool PhoneCallData::setCallType(
     const std::optional<CallType>& type, const InternalEmployeePtr& changer
 )
 {
@@ -157,16 +163,17 @@ void PhoneCallData::setCallType(
                             : std::nullopt,
             type ? std::make_optional<ChangeLog::ValueVariant>(type.value()) : std::nullopt,
             PhoneCallFields::CallType,
-            this->call_type == std::nullopt ? ChangeLog::FieldType::null
-                                            : ChangeLog::FieldType::CallType,
-            type == std::nullopt ? ChangeLog::FieldType::null : ChangeLog::FieldType::CallType,
+            this->call_type ? ChangeLog::FieldType::CallType : ChangeLog::FieldType::null,
+            type ? ChangeLog::FieldType::CallType : ChangeLog::FieldType::null,
             ChangeLog::Action::Change
         ));
         this->call_type = type;
+        return true;
     }
+    return false;
 }
 
-void PhoneCallData::setCallCreator(const PersonPtr& creator, const InternalEmployeePtr& changer)
+bool PhoneCallData::setCallCreator(const PersonPtr& creator, const InternalEmployeePtr& changer)
 {
     if (this->call_creator != creator) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -179,10 +186,12 @@ void PhoneCallData::setCallCreator(const PersonPtr& creator, const InternalEmplo
             ChangeLog::Action::Change
         ));
         this->call_creator = creator;
+        return true;
     }
+    return false;
 }
 
-void PhoneCallData::setCallProvider(const std::string& provider, const InternalEmployeePtr& changer)
+bool PhoneCallData::setCallProvider(const std::string& provider, const InternalEmployeePtr& changer)
 {
     if (this->call_provider != provider) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -197,5 +206,7 @@ void PhoneCallData::setCallProvider(const std::string& provider, const InternalE
             ChangeLog::Action::Change
         ));
         this->call_provider = provider;
+        return true;
     }
+    return false;
 }

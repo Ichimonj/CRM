@@ -4,7 +4,7 @@
 
 #include "location.hpp"
 
-Money::Money(const std::string & num, const Currencies currency)
+Money::Money(const std::string& num, const Currencies currency)
 {
     bool point = false;
     for (auto& ex : num) {

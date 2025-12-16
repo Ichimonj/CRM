@@ -36,8 +36,8 @@ public:
 
     /// @name Change functions
     /// @{
-    void addComment(const CommentarySocialNetworksPtr& comment, const InternalEmployeePtr& changer);
-    void delComment(const size_t id, const InternalEmployeePtr& changer);
+    bool addComment(const CommentarySocialNetworksPtr& comment, const InternalEmployeePtr& changer);
+    bool delComment(const size_t id, const InternalEmployeePtr& changer);
     /// @}
 
 private:

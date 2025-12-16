@@ -60,8 +60,7 @@ auto EmailThread::getEmployees() const -> const std::vector<InternalEmployeePtr>
 {
     return this->employees;
 }
-
-void EmailThread::addLetter(const EmailLetterPtr& letter, const InternalEmployeePtr& changer)
+bool EmailThread::addLetter(const EmailLetterPtr& letter, const InternalEmployeePtr& changer)
 {
     if (std::find(this->letters.begin(), this->letters.end(), letter) == this->letters.end()) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -74,10 +73,12 @@ void EmailThread::addLetter(const EmailLetterPtr& letter, const InternalEmployee
             ChangeLog::Action::Add
         ));
         this->letters.push_back(letter);
+        return true;
     }
+    return false;
 }
 
-void EmailThread::delLetter(const size_t id, const InternalEmployeePtr& changer)
+bool EmailThread::delLetter(const size_t id, const InternalEmployeePtr& changer)
 {
     if (this->letters.size() > id) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -90,10 +91,12 @@ void EmailThread::delLetter(const size_t id, const InternalEmployeePtr& changer)
             ChangeLog::Action::Remove
         ));
         this->letters.erase(this->letters.begin() + id);
+        return true;
     }
+    return false;
 }
 
-void EmailThread::addClient(const ClientPtr& client, const InternalEmployeePtr& changer)
+bool EmailThread::addClient(const ClientPtr& client, const InternalEmployeePtr& changer)
 {
     if (std::find(this->clients.begin(), this->clients.end(), client) == this->clients.end()) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -106,10 +109,12 @@ void EmailThread::addClient(const ClientPtr& client, const InternalEmployeePtr& 
             ChangeLog::Action::Add
         ));
         this->clients.push_back(client);
+        return true;
     }
+    return false;
 }
 
-void EmailThread::delClient(const size_t id, const InternalEmployeePtr& changer)
+bool EmailThread::delClient(const size_t id, const InternalEmployeePtr& changer)
 {
     if (this->clients.size() > id) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -122,10 +127,12 @@ void EmailThread::delClient(const size_t id, const InternalEmployeePtr& changer)
             ChangeLog::Action::Remove
         ));
         this->clients.erase(this->clients.begin() + id);
+        return true;
     }
+    return false;
 }
 
-void EmailThread::addEmployee(
+bool EmailThread::addEmployee(
     const InternalEmployeePtr& employee, const InternalEmployeePtr& changer
 )
 {
@@ -141,10 +148,12 @@ void EmailThread::addEmployee(
             ChangeLog::Action::Add
         ));
         this->employees.push_back(employee);
+        return true;
     }
+    return false;
 }
 
-void EmailThread::delEmployee(const size_t id, const InternalEmployeePtr& changer)
+bool EmailThread::delEmployee(const size_t id, const InternalEmployeePtr& changer)
 {
     if (this->employees.size() > id) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -157,5 +166,7 @@ void EmailThread::delEmployee(const size_t id, const InternalEmployeePtr& change
             ChangeLog::Action::Remove
         ));
         this->employees.erase(this->employees.begin() + id);
+        return true;
     }
+    return false;
 }

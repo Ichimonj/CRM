@@ -12,12 +12,12 @@ struct Date;
 class ChangeLog;
 class InternalEmployee;
 
-using DealPtr        = std::shared_ptr<Deal>;
-using DocumentPtr    = std::shared_ptr<Document>;
-using InteractionPtr = std::shared_ptr<BaseInteraction>;
-using FilePtr        = std::shared_ptr<FileMetadata>;
-using StringPair     = std::pair<std::string, std::string>;
-using InternalEmployeePtr    = std::shared_ptr<InternalEmployee>;
+using DealPtr             = std::shared_ptr<Deal>;
+using DocumentPtr         = std::shared_ptr<Document>;
+using InteractionPtr      = std::shared_ptr<BaseInteraction>;
+using FilePtr             = std::shared_ptr<FileMetadata>;
+using StringPair          = std::pair<std::string, std::string>;
+using InternalEmployeePtr = std::shared_ptr<InternalEmployee>;
 
 struct InteractionResult {
     enum class ResultStatus : uint8_t {
@@ -67,31 +67,37 @@ public:
 
     /// @name Change functions
     /// @{
-    void setInteractionResultTitle(const std::string& title, const InternalEmployeePtr& changer);
-    void setDescription(const std::string& description, const InternalEmployeePtr& changer);
+    bool setInteractionResultTitle(const std::string& title, const InternalEmployeePtr& changer);
+    bool setDescription(const std::string& description, const InternalEmployeePtr& changer);
 
-    void addDocument(const DocumentPtr& document, const InternalEmployeePtr& changer);
-    void delDocument(const size_t id, const InternalEmployeePtr& changer);
+    bool addDocument(const DocumentPtr& document, const InternalEmployeePtr& changer);
+    bool delDocument(const size_t id, const InternalEmployeePtr& changer);
 
-    void addDeal(const DealPtr& deal, const InternalEmployeePtr& changer);
-    void delDeal(const size_t id, const InternalEmployeePtr& changer);
+    bool addDeal(const DealPtr& deal, const InternalEmployeePtr& changer);
+    bool delDeal(const size_t id, const InternalEmployeePtr& changer);
 
-    void addPlannedInteraction(const InteractionPtr& interaction, const InternalEmployeePtr& changer);
-    void delPlannedInteraction(const size_t id, const InternalEmployeePtr& changer);
+    bool addPlannedInteraction(
+        const InteractionPtr& interaction, const InternalEmployeePtr& changer
+    );
+    bool delPlannedInteraction(const size_t id, const InternalEmployeePtr& changer);
 
-    void addFile(const FilePtr& file, const InternalEmployeePtr& changer);
-    void delFile(const size_t id, const InternalEmployeePtr& changer);
+    bool addFile(const FilePtr& file, const InternalEmployeePtr& changer);
+    bool delFile(const size_t id, const InternalEmployeePtr& changer);
 
-    void setResultStatus(const ResultStatus result_status, const InternalEmployeePtr& changer);
-    void setOtherResultStatus(const std::string& other_result_status, const InternalEmployeePtr& changer);
+    bool setResultStatus(const ResultStatus result_status, const InternalEmployeePtr& changer);
+    bool setOtherResultStatus(
+        const std::string& other_result_status, const InternalEmployeePtr& changer
+    );
 
-    void setIdentifiedIssue(const std::string& issue, const InternalEmployeePtr& changer);
+    bool setIdentifiedIssue(const std::string& issue, const InternalEmployeePtr& changer);
 
-    void addMoreData(const std::string& title, const std::string& data, const InternalEmployeePtr& changer);
-    void delMoreData(const size_t id, const InternalEmployeePtr& changer);
+    bool addMoreData(
+        const std::string& title, const std::string& data, const InternalEmployeePtr& changer
+    );
+    bool delMoreData(const size_t id, const InternalEmployeePtr& changer);
 
-    void addTag(const std::string& tag, const InternalEmployeePtr& changer);
-    void delTag(const size_t id, const InternalEmployeePtr& changer);
+    bool addTag(const std::string& tag, const InternalEmployeePtr& changer);
+    bool delTag(const size_t id, const InternalEmployeePtr& changer);
     /// @}
 
 private:

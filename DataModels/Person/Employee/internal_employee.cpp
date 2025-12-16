@@ -169,14 +169,12 @@ auto InternalEmployee::getDirectReports() const -> const std::vector<InternalEmp
 {
     return this->direct_reports;
 }
-
-void InternalEmployee::setManager(
+bool InternalEmployee::setManager(
     const InternalEmployeePtr& manager, const InternalEmployeePtr& changer
 )
 {
     if (this->manager != manager) {
         Date update = Date();
-
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
             PTR_TO_OPTIONAL(this->manager),
@@ -189,14 +187,15 @@ void InternalEmployee::setManager(
         ));
         this->updateAt(update);
         this->manager = manager;
+        return true;
     }
+    return false;
 }
 
-void InternalEmployee::setPosition(const OptionalStr& position, const InternalEmployeePtr& changer)
+bool InternalEmployee::setPosition(const OptionalStr& position, const InternalEmployeePtr& changer)
 {
     if (this->position != position) {
         Date update = Date();
-
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
             OPTIONAL_STR_TO_VALUE(this->position),
@@ -209,16 +208,17 @@ void InternalEmployee::setPosition(const OptionalStr& position, const InternalEm
         ));
         this->position = position;
         this->updateAt(update);
+        return true;
     }
+    return false;
 }
 
-void InternalEmployee::setDepartment(
+bool InternalEmployee::setDepartment(
     const OptionalStr& department, const InternalEmployeePtr& changer
 )
 {
     if (this->department != department) {
         Date update = Date();
-
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
             OPTIONAL_STR_TO_VALUE(this->department),
@@ -231,20 +231,20 @@ void InternalEmployee::setDepartment(
         ));
         this->updateAt(update);
         this->department = department;
+        return true;
     }
+    return false;
 }
 
-void InternalEmployee::setRole(const AccessLevel role, const InternalEmployeePtr& changer)
+bool InternalEmployee::setRole(const AccessLevel role, const InternalEmployeePtr& changer)
 {
     if (this->role != role) {
-        Date update = Date();
-
+        Date update   = Date();
         auto old_vale = this->other_role
                           ? std::make_optional<ChangeLog::ValueVariant>(
                                 std::make_shared<std::string>(this->other_role.value())
                             )
                           : std::make_optional(this->role);
-
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
             std::move(old_vale),
@@ -258,14 +258,15 @@ void InternalEmployee::setRole(const AccessLevel role, const InternalEmployeePtr
         this->updateAt(update);
         this->role       = role;
         this->other_role = std::nullopt;
+        return true;
     }
+    return false;
 }
 
-void InternalEmployee::setOtherRole(const std::string& role, const InternalEmployeePtr& changer)
+bool InternalEmployee::setOtherRole(const std::string& role, const InternalEmployeePtr& changer)
 {
     if (this->other_role != role) {
         Date update = Date();
-
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
             this->other_role ? std::make_optional<ChangeLog::ValueVariant>(
@@ -282,14 +283,15 @@ void InternalEmployee::setOtherRole(const std::string& role, const InternalEmplo
         this->updateAt(update);
         this->other_role = role;
         this->role       = AccessLevel::other;
+        return true;
     }
+    return false;
 }
 
-void InternalEmployee::setStatus(const EmployeeStatus status, const InternalEmployeePtr& changer)
+bool InternalEmployee::setStatus(const EmployeeStatus status, const InternalEmployeePtr& changer)
 {
     if (this->status != status) {
         Date update = Date();
-
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
             this->other_status ? std::make_optional<ChangeLog::ValueVariant>(
@@ -307,14 +309,15 @@ void InternalEmployee::setStatus(const EmployeeStatus status, const InternalEmpl
         this->updateAt(update);
         this->status       = status;
         this->other_status = std::nullopt;
+        return true;
     }
+    return false;
 }
 
-void InternalEmployee::setOtherStatus(const std::string& status, const InternalEmployeePtr& changer)
+bool InternalEmployee::setOtherStatus(const std::string& status, const InternalEmployeePtr& changer)
 {
     if (this->other_status != status) {
         Date update = Date();
-
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
             this->other_status ? std::make_optional<ChangeLog::ValueVariant>(
@@ -332,16 +335,17 @@ void InternalEmployee::setOtherStatus(const std::string& status, const InternalE
         this->updateAt(update);
         this->other_status = status;
         this->status       = EmployeeStatus::other;
+        return true;
     }
+    return false;
 }
 
-void InternalEmployee::setSalesTerritory(
+bool InternalEmployee::setSalesTerritory(
     const OptionalStr& sales_territory, const InternalEmployeePtr& changer
 )
 {
     if (this->sales_territory != sales_territory) {
         Date update = Date();
-
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
             OPTIONAL_STR_TO_VALUE(this->sales_territory),
@@ -354,21 +358,25 @@ void InternalEmployee::setSalesTerritory(
         ));
         this->updateAt(update);
         this->sales_territory = sales_territory;
+        return true;
     }
+    return false;
 }
 
-void InternalEmployee::setLastLoginDate(
+bool InternalEmployee::setLastLoginDate(
     const DatePtr& last_login_date, const InternalEmployeePtr& changer
 )
 {
+    bool changed = true;
     if (this->last_login_date == nullptr || last_login_date == nullptr) {
-        if (this->last_login_date == last_login_date) return;
+        if (this->last_login_date == last_login_date) changed = false;
     } else if (*this->last_login_date == *last_login_date) {
-        return;
+        changed = false;
     }
 
-    Date update = Date();
+    if (!changed) return false;
 
+    Date update = Date();
     this->change_logs.emplace_back(std::make_shared<ChangeLog>(
         changer,
         PTR_TO_OPTIONAL(this->last_login_date),
@@ -381,20 +389,23 @@ void InternalEmployee::setLastLoginDate(
     ));
     this->updateAt(update);
     this->last_login_date = last_login_date;
+    return true;
 }
 
-void InternalEmployee::setLastActionDate(
+bool InternalEmployee::setLastActionDate(
     const DatePtr& last_action_date, const InternalEmployeePtr& changer
 )
 {
+    bool changed = true;
     if (this->last_action_date == nullptr || last_action_date == nullptr) {
-        if (this->last_action_date == last_action_date) return;
+        if (this->last_action_date == last_action_date) changed = false;
     } else if (*this->last_action_date == *last_action_date) {
-        return;
+        changed = false;
     }
 
-    Date update = Date();
+    if (!changed) return false;
 
+    Date update = Date();
     this->change_logs.emplace_back(std::make_shared<ChangeLog>(
         changer,
         PTR_TO_OPTIONAL(this->last_action_date),
@@ -407,13 +418,13 @@ void InternalEmployee::setLastActionDate(
     ));
     this->updateAt(update);
     this->last_action_date = last_action_date;
+    return true;
 }
 
-void InternalEmployee::setIsActive(bool is_active, const InternalEmployeePtr& changer)
+bool InternalEmployee::setIsActive(bool is_active, const InternalEmployeePtr& changer)
 {
     if (this->is_active != is_active) {
         Date update = Date();
-
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
             std::make_optional(this->is_active),
@@ -426,20 +437,25 @@ void InternalEmployee::setIsActive(bool is_active, const InternalEmployeePtr& ch
         ));
         this->updateAt(update);
         this->is_active = is_active;
+        return true;
     }
+    return false;
 }
 
-void InternalEmployee::setNextReviewDate(
+bool InternalEmployee::setNextReviewDate(
     const DatePtr& next_review_date, const InternalEmployeePtr& changer
 )
 {
+    bool changed = true;
     if (this->next_review_date == nullptr || next_review_date == nullptr) {
-        if (this->next_review_date == next_review_date) return;
+        if (this->next_review_date == next_review_date) changed = false;
     } else if (*this->next_review_date == *next_review_date) {
-        return;
+        changed = false;
     }
-    Date update = Date();
 
+    if (!changed) return false;
+
+    Date update = Date();
     this->change_logs.emplace_back(std::make_shared<ChangeLog>(
         changer,
         PTR_TO_OPTIONAL(this->next_review_date),
@@ -452,13 +468,13 @@ void InternalEmployee::setNextReviewDate(
     ));
     this->updateAt(update);
     this->next_review_date = next_review_date;
+    return true;
 }
 
-void InternalEmployee::setTimeZone(const int time_zone, const InternalEmployeePtr& changer)
+bool InternalEmployee::setTimeZone(const int time_zone, const InternalEmployeePtr& changer)
 {
     if (this->time_zone != time_zone) {
         Date update = Date();
-
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
             std::make_optional(this->time_zone),
@@ -471,16 +487,17 @@ void InternalEmployee::setTimeZone(const int time_zone, const InternalEmployeePt
         ));
         this->updateAt(update);
         this->time_zone = time_zone;
+        return true;
     }
+    return false;
 }
 
-void InternalEmployee::setCommissionRate(
+bool InternalEmployee::setCommissionRate(
     const std::optional<double>& commission_rate, const InternalEmployeePtr& changer
 )
 {
     if (this->commission_rate != commission_rate) {
         Date update = Date();
-
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
             this->commission_rate,
@@ -495,21 +512,25 @@ void InternalEmployee::setCommissionRate(
         ));
         this->updateAt(update);
         this->commission_rate = commission_rate;
+        return true;
     }
+    return false;
 }
 
-void InternalEmployee::setBaseSalary(
+bool InternalEmployee::setBaseSalary(
     const MoneyPtr& base_salary, const InternalEmployeePtr& changer
 )
 {
+    bool changed = true;
     if (this->base_salary == nullptr || base_salary == nullptr) {
-        if (this->base_salary == base_salary) return;
+        if (this->base_salary == base_salary) changed = false;
     } else if (*this->base_salary == *base_salary) {
-        return;
+        changed = false;
     }
 
-    Date update = Date();
+    if (!changed) return false;
 
+    Date update = Date();
     this->change_logs.emplace_back(std::make_shared<ChangeLog>(
         changer,
         PTR_TO_OPTIONAL(this->base_salary),
@@ -522,15 +543,15 @@ void InternalEmployee::setBaseSalary(
     ));
     this->updateAt(update);
     this->base_salary = base_salary;
+    return true;
 }
 
-void InternalEmployee::setPerformanceScore(
+bool InternalEmployee::setPerformanceScore(
     const std::optional<double>& performance_score, const InternalEmployeePtr& changer
 )
 {
     if (this->performance_score != performance_score) {
         Date update = Date();
-
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
             this->performance_score,
@@ -543,15 +564,72 @@ void InternalEmployee::setPerformanceScore(
         ));
         this->updateAt(update);
         this->performance_score = performance_score;
+        return true;
     }
+    return false;
 }
 
-void InternalEmployee::addManagerDeal(const DealPtr& deal, const InternalEmployeePtr& changer)
+bool InternalEmployee::setHireDate(const DatePtr& hire_date, const InternalEmployeePtr& changer)
+{
+    bool changed = true;
+    if (this->hire_date == nullptr || hire_date == nullptr) {
+        if (this->hire_date == hire_date) changed = false;
+    } else if (*this->hire_date == *hire_date) {
+        changed = false;
+    }
+
+    if (!changed) return false;
+
+    Date update = Date();
+    this->change_logs.emplace_back(std::make_shared<ChangeLog>(
+        changer,
+        PTR_TO_OPTIONAL(this->hire_date),
+        PTR_TO_OPTIONAL(hire_date),
+        InternalEmployeeFields::HireDate,
+        this->hire_date ? ChangeLog::FieldType::Date : ChangeLog::FieldType::null,
+        hire_date ? ChangeLog::FieldType::Date : ChangeLog::FieldType::null,
+        ChangeLog::Action::Change,
+        update
+    ));
+    this->updateAt(update);
+    this->hire_date = hire_date;
+    return true;
+}
+
+bool InternalEmployee::setDismissalDate(
+    const DatePtr& dismissal_date, const InternalEmployeePtr& changer
+)
+{
+    bool changed = true;
+    if (this->dismissal_date == nullptr || dismissal_date == nullptr) {
+        if (this->dismissal_date == dismissal_date) changed = false;
+    } else if (*this->dismissal_date == *dismissal_date) {
+        changed = false;
+    }
+
+    if (!changed) return false;
+
+    Date update = Date();
+    this->change_logs.emplace_back(std::make_shared<ChangeLog>(
+        changer,
+        PTR_TO_OPTIONAL(this->dismissal_date),
+        PTR_TO_OPTIONAL(dismissal_date),
+        InternalEmployeeFields::DismissalDate,
+        this->dismissal_date ? ChangeLog::FieldType::Date : ChangeLog::FieldType::null,
+        dismissal_date ? ChangeLog::FieldType::Date : ChangeLog::FieldType::null,
+        ChangeLog::Action::Change,
+        update
+    ));
+    this->updateAt(update);
+    this->dismissal_date = dismissal_date;
+    return true;
+}
+
+bool InternalEmployee::addManagerDeal(const DealPtr& deal, const InternalEmployeePtr& changer)
 {
     if (std::find(this->managed_deals.begin(), this->managed_deals.end(), deal) ==
         this->managed_deals.end()) {
         Date update = Date();
-
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
             std::nullopt,
@@ -565,14 +643,15 @@ void InternalEmployee::addManagerDeal(const DealPtr& deal, const InternalEmploye
         this->updateAt(update);
         this->addRelatedDeals(deal, changer, update);
         this->managed_deals.push_back(deal);
+        return true;
     }
+    return false;
 }
 
-void InternalEmployee::delManagerDeal(size_t index, const InternalEmployeePtr& changer)
+bool InternalEmployee::delManagerDeal(size_t index, const InternalEmployeePtr& changer)
 {
     if (this->managed_deals.size() > index) {
         Date update = Date();
-
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
             std::make_optional(this->managed_deals[index]),
@@ -586,15 +665,16 @@ void InternalEmployee::delManagerDeal(size_t index, const InternalEmployeePtr& c
         this->updateAt(update);
         this->delRelatedDeals(this->managed_deals[index], changer, update);
         this->managed_deals.erase(this->managed_deals.begin() + index);
+        return true;
     }
+    return false;
 }
 
-void InternalEmployee::addProposedOffer(const OfferPtr& offer, const InternalEmployeePtr& changer)
+bool InternalEmployee::addProposedOffer(const OfferPtr& offer, const InternalEmployeePtr& changer)
 {
     if (std::find(this->proposed_offers.begin(), this->proposed_offers.end(), offer) ==
         this->proposed_offers.end()) {
         Date update = Date();
-
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
             std::nullopt,
@@ -607,14 +687,15 @@ void InternalEmployee::addProposedOffer(const OfferPtr& offer, const InternalEmp
         ));
         this->updateAt(update);
         this->proposed_offers.push_back(offer);
+        return true;
     }
+    return false;
 }
 
-void InternalEmployee::delProposedOffer(size_t index, const InternalEmployeePtr& changer)
+bool InternalEmployee::delProposedOffer(size_t index, const InternalEmployeePtr& changer)
 {
     if (this->proposed_offers.size() > index) {
         Date update = Date();
-
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
             std::make_optional(this->proposed_offers[index]),
@@ -627,64 +708,15 @@ void InternalEmployee::delProposedOffer(size_t index, const InternalEmployeePtr&
         ));
         this->updateAt(update);
         this->proposed_offers.erase(this->proposed_offers.begin() + index);
+        return true;
     }
+    return false;
 }
 
-void InternalEmployee::setHireDate(const DatePtr& hire_date, const InternalEmployeePtr& changer)
-{
-    if (this->hire_date == nullptr || hire_date == nullptr) {
-        if (this->hire_date == hire_date) return;
-    } else if (*this->hire_date == *hire_date) {
-        return;
-    }
-
-    Date update = Date();
-
-    this->change_logs.emplace_back(std::make_shared<ChangeLog>(
-        changer,
-        PTR_TO_OPTIONAL(this->hire_date),
-        PTR_TO_OPTIONAL(hire_date),
-        InternalEmployeeFields::HireDate,
-        this->hire_date ? ChangeLog::FieldType::Date : ChangeLog::FieldType::null,
-        hire_date ? ChangeLog::FieldType::Date : ChangeLog::FieldType::null,
-        ChangeLog::Action::Change,
-        update
-    ));
-    this->updateAt(update);
-    this->hire_date = hire_date;
-}
-
-void InternalEmployee::setDismissalDate(
-    const DatePtr& dismissal_date, const InternalEmployeePtr& changer
-)
-{
-    if (this->dismissal_date == nullptr || dismissal_date == nullptr) {
-        if (this->dismissal_date == dismissal_date) return;
-    } else if (*this->dismissal_date == *dismissal_date) {
-        return;
-    }
-
-    Date update = Date();
-
-    this->change_logs.emplace_back(std::make_shared<ChangeLog>(
-        changer,
-        PTR_TO_OPTIONAL(this->dismissal_date),
-        PTR_TO_OPTIONAL(dismissal_date),
-        InternalEmployeeFields::DismissalDate,
-        this->dismissal_date ? ChangeLog::FieldType::Date : ChangeLog::FieldType::null,
-        dismissal_date ? ChangeLog::FieldType::Date : ChangeLog::FieldType::null,
-        ChangeLog::Action::Change,
-        update
-    ));
-    this->updateAt(update);
-    this->dismissal_date = dismissal_date;
-}
-
-void InternalEmployee::addLead(const ClientPtr& lead, const InternalEmployeePtr& changer)
+bool InternalEmployee::addLead(const ClientPtr& lead, const InternalEmployeePtr& changer)
 {
     if (std::find(this->leads.begin(), this->leads.end(), lead) == this->leads.end()) {
         Date update = Date();
-
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
             std::nullopt,
@@ -697,14 +729,15 @@ void InternalEmployee::addLead(const ClientPtr& lead, const InternalEmployeePtr&
         ));
         this->updateAt(update);
         this->leads.push_back(lead);
+        return true;
     }
+    return false;
 }
 
-void InternalEmployee::delLead(size_t index, const InternalEmployeePtr& changer)
+bool InternalEmployee::delLead(size_t index, const InternalEmployeePtr& changer)
 {
     if (this->leads.size() > index) {
         Date update = Date();
-
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
             std::make_optional(this->leads[index]),
@@ -717,15 +750,16 @@ void InternalEmployee::delLead(size_t index, const InternalEmployeePtr& changer)
         ));
         this->updateAt(update);
         this->leads.erase(this->leads.begin() + index);
+        return true;
     }
+    return false;
 }
 
-void InternalEmployee::addMonthlyQuota(const Money& quota, const InternalEmployeePtr& changer)
+bool InternalEmployee::addMonthlyQuota(const Money& quota, const InternalEmployeePtr& changer)
 {
     if (std::find(this->monthly_quota.begin(), this->monthly_quota.end(), quota) ==
         this->monthly_quota.end()) {
         Date update = Date();
-
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
             std::nullopt,
@@ -738,14 +772,15 @@ void InternalEmployee::addMonthlyQuota(const Money& quota, const InternalEmploye
         ));
         this->updateAt(update);
         this->monthly_quota.push_back(quota);
+        return true;
     }
+    return false;
 }
 
-void InternalEmployee::delMonthlyQuota(size_t index, const InternalEmployeePtr& changer)
+bool InternalEmployee::delMonthlyQuota(size_t index, const InternalEmployeePtr& changer)
 {
     if (this->monthly_quota.size() > index) {
         Date update = Date();
-
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
             std::make_optional(std::make_shared<Money>(this->monthly_quota[index])),
@@ -758,14 +793,15 @@ void InternalEmployee::delMonthlyQuota(size_t index, const InternalEmployeePtr& 
         ));
         this->updateAt(update);
         this->monthly_quota.erase(this->monthly_quota.begin() + index);
+        return true;
     }
+    return false;
 }
 
-void InternalEmployee::addTask(const TaskPtr& task, const InternalEmployeePtr& changer)
+bool InternalEmployee::addTask(const TaskPtr& task, const InternalEmployeePtr& changer)
 {
     if (std::find(this->tasks.begin(), this->tasks.end(), task) == this->tasks.end()) {
         Date update = Date();
-
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
             std::nullopt,
@@ -778,14 +814,15 @@ void InternalEmployee::addTask(const TaskPtr& task, const InternalEmployeePtr& c
         ));
         this->updateAt(update);
         this->tasks.push_back(task);
+        return true;
     }
+    return false;
 }
 
-void InternalEmployee::delTask(size_t index, const InternalEmployeePtr& changer)
+bool InternalEmployee::delTask(size_t index, const InternalEmployeePtr& changer)
 {
     if (this->tasks.size() > index) {
         Date update = Date();
-
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
             std::make_optional(this->tasks[index]),
@@ -798,15 +835,16 @@ void InternalEmployee::delTask(size_t index, const InternalEmployeePtr& changer)
         ));
         this->updateAt(update);
         this->tasks.erase(this->tasks.begin() + index);
+        return true;
     }
+    return false;
 }
 
-void InternalEmployee::addDocument(const DocumentPtr& document, const InternalEmployeePtr& changer)
+bool InternalEmployee::addDocument(const DocumentPtr& document, const InternalEmployeePtr& changer)
 {
     if (std::find(this->documents.begin(), this->documents.end(), document) ==
         this->documents.end()) {
         Date update = Date();
-
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
             std::nullopt,
@@ -819,14 +857,15 @@ void InternalEmployee::addDocument(const DocumentPtr& document, const InternalEm
         ));
         this->updateAt(update);
         this->documents.push_back(document);
+        return true;
     }
+    return false;
 }
 
-void InternalEmployee::delDocument(size_t index, const InternalEmployeePtr& changer)
+bool InternalEmployee::delDocument(size_t index, const InternalEmployeePtr& changer)
 {
     if (this->documents.size() > index) {
         Date update = Date();
-
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
             std::make_optional(this->documents[index]),
@@ -839,14 +878,15 @@ void InternalEmployee::delDocument(size_t index, const InternalEmployeePtr& chan
         ));
         this->updateAt(update);
         this->documents.erase(this->documents.begin() + index);
+        return true;
     }
+    return false;
 }
 
-void InternalEmployee::addSkill(const std::string& skill, const InternalEmployeePtr& changer)
+bool InternalEmployee::addSkill(const std::string& skill, const InternalEmployeePtr& changer)
 {
     if (std::find(this->skills.begin(), this->skills.end(), skill) == this->skills.end()) {
         Date update = Date();
-
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
             std::nullopt,
@@ -859,14 +899,15 @@ void InternalEmployee::addSkill(const std::string& skill, const InternalEmployee
         ));
         this->updateAt(update);
         this->skills.push_back(skill);
+        return true;
     }
+    return false;
 }
 
-void InternalEmployee::delSkill(size_t index, const InternalEmployeePtr& changer)
+bool InternalEmployee::delSkill(size_t index, const InternalEmployeePtr& changer)
 {
     if (this->skills.size() > index) {
         Date update = Date();
-
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
             std::make_optional(std::make_shared<std::string>(this->skills[index])),
@@ -879,17 +920,18 @@ void InternalEmployee::delSkill(size_t index, const InternalEmployeePtr& changer
         ));
         this->updateAt(update);
         this->skills.erase(this->skills.begin() + index);
+        return true;
     }
+    return false;
 }
 
-void InternalEmployee::addDirectReport(
+bool InternalEmployee::addDirectReport(
     const InternalEmployeePtr& report, const InternalEmployeePtr& changer
 )
 {
     if (std::find(this->direct_reports.begin(), this->direct_reports.end(), report) ==
         this->direct_reports.end()) {
         Date update = Date();
-
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
             std::nullopt,
@@ -902,14 +944,15 @@ void InternalEmployee::addDirectReport(
         ));
         this->updateAt(update);
         this->direct_reports.push_back(report);
+        return true;
     }
+    return false;
 }
 
-void InternalEmployee::delDirectReport(size_t index, const InternalEmployeePtr& changer)
+bool InternalEmployee::delDirectReport(size_t index, const InternalEmployeePtr& changer)
 {
     if (this->direct_reports.size() > index) {
         Date update = Date();
-
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
             std::make_optional(this->direct_reports[index]),
@@ -922,5 +965,7 @@ void InternalEmployee::delDirectReport(size_t index, const InternalEmployeePtr& 
         ));
         this->updateAt(update);
         this->direct_reports.erase(this->direct_reports.begin() + index);
+        return true;
     }
+    return false;
 }

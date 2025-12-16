@@ -142,7 +142,6 @@ enum class DocumentFields : uint8_t {
     Partners,
     Status,
     Creator,
-    Partner,
     File
 };
 

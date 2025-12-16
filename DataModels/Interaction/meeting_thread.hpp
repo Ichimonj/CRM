@@ -40,14 +40,14 @@ public:
 
     /// @name Change functions
     /// @{
-    void addMeeting(const MeetingPtr& meeting, const InternalEmployeePtr& changer);
-    void delMeeting(const size_t id, const InternalEmployeePtr& changer);
+    bool addMeeting(const MeetingPtr& meeting, const InternalEmployeePtr& changer);
+    bool delMeeting(const size_t id, const InternalEmployeePtr& changer);
 
-    void addClient(const ClientPtr& client, const InternalEmployeePtr& changer);
-    void delClient(const size_t id, const InternalEmployeePtr& changer);
+    bool addClient(const ClientPtr& client, const InternalEmployeePtr& changer);
+    bool delClient(const size_t id, const InternalEmployeePtr& changer);
 
-    void addEmployee(const InternalEmployeePtr& employee, const InternalEmployeePtr& changer);
-    void delEmployee(const size_t id, const InternalEmployeePtr& changer);
+    bool addEmployee(const InternalEmployeePtr& employee, const InternalEmployeePtr& changer);
+    bool delEmployee(const size_t id, const InternalEmployeePtr& changer);
     /// @}
 
 private:

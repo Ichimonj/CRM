@@ -109,53 +109,53 @@ public:
 
     /// @name Change functions
     /// @{
-    void setManager(const InternalEmployeePtr& manager, const InternalEmployeePtr& changer);
-    void setPosition(const OptionalStr& position, const InternalEmployeePtr& changer);
-    void setDepartment(const OptionalStr& department, const InternalEmployeePtr& changer);
-    void setRole(const AccessLevel role, const InternalEmployeePtr& changer);
-    void setOtherRole(const std::string& role, const InternalEmployeePtr& changer);
-    void setStatus(const EmployeeStatus status, const InternalEmployeePtr& changer);
-    void setOtherStatus(const std::string& status, const InternalEmployeePtr& changer);
-    void setSalesTerritory(const OptionalStr& sales_territory, const InternalEmployeePtr& changer);
-    void setLastLoginDate(const DatePtr& last_login_date, const InternalEmployeePtr& changer);
-    void setLastActionDate(const DatePtr& last_action_date, const InternalEmployeePtr& changer);
-    void setTimeZone(const int time_zone, const InternalEmployeePtr& changer);
-    void setIsActive(bool is_active, const InternalEmployeePtr& changer);
-    void setNextReviewDate(const DatePtr& next_review_date, const InternalEmployeePtr& changer);
-    void setHireDate(const DatePtr& hire_date, const InternalEmployeePtr& changer);
-    void setDismissalDate(const DatePtr& dismissal_date, const InternalEmployeePtr& changer);
+    bool setManager(const InternalEmployeePtr& manager, const InternalEmployeePtr& changer);
+    bool setPosition(const OptionalStr& position, const InternalEmployeePtr& changer);
+    bool setDepartment(const OptionalStr& department, const InternalEmployeePtr& changer);
+    bool setRole(const AccessLevel role, const InternalEmployeePtr& changer);
+    bool setOtherRole(const std::string& role, const InternalEmployeePtr& changer);
+    bool setStatus(const EmployeeStatus status, const InternalEmployeePtr& changer);
+    bool setOtherStatus(const std::string& status, const InternalEmployeePtr& changer);
+    bool setSalesTerritory(const OptionalStr& sales_territory, const InternalEmployeePtr& changer);
+    bool setLastLoginDate(const DatePtr& last_login_date, const InternalEmployeePtr& changer);
+    bool setLastActionDate(const DatePtr& last_action_date, const InternalEmployeePtr& changer);
+    bool setTimeZone(const int time_zone, const InternalEmployeePtr& changer);
+    bool setIsActive(bool is_active, const InternalEmployeePtr& changer);
+    bool setNextReviewDate(const DatePtr& next_review_date, const InternalEmployeePtr& changer);
+    bool setHireDate(const DatePtr& hire_date, const InternalEmployeePtr& changer);
+    bool setDismissalDate(const DatePtr& dismissal_date, const InternalEmployeePtr& changer);
 
-    void setCommissionRate(
+    bool setCommissionRate(
         const std::optional<double>& commission_rate, const InternalEmployeePtr& changer
     );
-    void setBaseSalary(const MoneyPtr& base_salary, const InternalEmployeePtr& changer);
-    void setPerformanceScore(
+    bool setBaseSalary(const MoneyPtr& base_salary, const InternalEmployeePtr& changer);
+    bool setPerformanceScore(
         const std::optional<double>& performance_score, const InternalEmployeePtr& changer
     );
 
-    void addManagerDeal(const DealPtr& deal, const InternalEmployeePtr& changer);
-    void delManagerDeal(size_t index, const InternalEmployeePtr& changer);
+    bool addManagerDeal(const DealPtr& deal, const InternalEmployeePtr& changer);
+    bool delManagerDeal(size_t index, const InternalEmployeePtr& changer);
 
-    void addProposedOffer(const OfferPtr& offer, const InternalEmployeePtr& changer);
-    void delProposedOffer(size_t index, const InternalEmployeePtr& changer);
+    bool addProposedOffer(const OfferPtr& offer, const InternalEmployeePtr& changer);
+    bool delProposedOffer(size_t index, const InternalEmployeePtr& changer);
 
-    void addLead(const ClientPtr& lead, const InternalEmployeePtr& changer);
-    void delLead(size_t index, const InternalEmployeePtr& changer);
+    bool addLead(const ClientPtr& lead, const InternalEmployeePtr& changer);
+    bool delLead(size_t index, const InternalEmployeePtr& changer);
 
-    void addMonthlyQuota(const Money& quota, const InternalEmployeePtr& changer);
-    void delMonthlyQuota(size_t index, const InternalEmployeePtr& changer);
+    bool addMonthlyQuota(const Money& quota, const InternalEmployeePtr& changer);
+    bool delMonthlyQuota(size_t index, const InternalEmployeePtr& changer);
 
-    void addTask(const TaskPtr& task, const InternalEmployeePtr& changer);
-    void delTask(size_t index, const InternalEmployeePtr& changer);
+    bool addTask(const TaskPtr& task, const InternalEmployeePtr& changer);
+    bool delTask(size_t index, const InternalEmployeePtr& changer);
 
-    void addDocument(const DocumentPtr& document, const InternalEmployeePtr& changer);
-    void delDocument(size_t index, const InternalEmployeePtr& changer);
+    bool addDocument(const DocumentPtr& document, const InternalEmployeePtr& changer);
+    bool delDocument(size_t index, const InternalEmployeePtr& changer);
 
-    void addSkill(const std::string& skill, const InternalEmployeePtr& changer);
-    void delSkill(size_t index, const InternalEmployeePtr& changer);
+    bool addSkill(const std::string& skill, const InternalEmployeePtr& changer);
+    bool delSkill(size_t index, const InternalEmployeePtr& changer);
 
-    void addDirectReport(const InternalEmployeePtr& report, const InternalEmployeePtr& changer);
-    void delDirectReport(size_t index, const InternalEmployeePtr& changer);
+    bool addDirectReport(const InternalEmployeePtr& report, const InternalEmployeePtr& changer);
+    bool delDirectReport(size_t index, const InternalEmployeePtr& changer);
     /// @}
 
 private:

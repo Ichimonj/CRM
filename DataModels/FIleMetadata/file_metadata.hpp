@@ -32,11 +32,17 @@ public:
     auto getChangeLogs() const -> const std::vector<ChangeLogPtr>&;
     auto getHach() const -> const std::string&;
 
-    void setFileName(const std::string& file_name, const std::shared_ptr<InternalEmployee>& changer);
-    void setFileFormat(const std::string& file_format, const std::shared_ptr<InternalEmployee>& changer);
-    void setFilePath(const std::string& file_path, const std::shared_ptr<InternalEmployee>& changer);
-    void setFileSize(const bool size, const std::shared_ptr<InternalEmployee>& changer);
-    void setUploadDate(const Date& date, const std::shared_ptr<InternalEmployee>& changer);
+    bool setFileName(
+        const std::string& file_name, const std::shared_ptr<InternalEmployee>& changer
+    );
+    bool setFileFormat(
+        const std::string& file_format, const std::shared_ptr<InternalEmployee>& changer
+    );
+    bool setFilePath(
+        const std::string& file_path, const std::shared_ptr<InternalEmployee>& changer
+    );
+    bool setFileSize(const bool size, const std::shared_ptr<InternalEmployee>& changer);
+    bool setUploadDate(const Date& date, const std::shared_ptr<InternalEmployee>& changer);
     void calculateHash();
 
 private:

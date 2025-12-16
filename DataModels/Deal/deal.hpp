@@ -109,51 +109,51 @@ struct Deal {
 
     /// @name Change functions
     /// @{
-    void changeContractNumber(const std::string& number, const InternalEmployeePtr& changer);
-    void changeTitle(const std::string& title, const InternalEmployeePtr& changer);
-    void changeDescription(const OptionalStr& description, const InternalEmployeePtr& changer);
-    void changeSource(const OptionalStr& source, const InternalEmployeePtr& changer);
-    void addTag(const std::string& tag, const InternalEmployeePtr& changer);
-    void delTag(const size_t index, const InternalEmployeePtr& changer);
-    void addBuyer(
+    bool changeContractNumber(const std::string& number, const InternalEmployeePtr& changer);
+    bool changeTitle(const std::string& title, const InternalEmployeePtr& changer);
+    bool changeDescription(const OptionalStr& description, const InternalEmployeePtr& changer);
+    bool changeSource(const OptionalStr& source, const InternalEmployeePtr& changer);
+    bool addTag(const std::string& tag, const InternalEmployeePtr& changer);
+    bool delTag(const size_t index, const InternalEmployeePtr& changer);
+    bool addBuyer(
         const std::shared_ptr<Person>& buyer, const Money& money, const InternalEmployeePtr& changer
     );
-    void delBuyer(const size_t index, const InternalEmployeePtr& changer);
-    void updateBuyerMoney(size_t index, const Money& newMoney, const InternalEmployeePtr& changer);
-    void updateTotalAmount(const Money& amount, const InternalEmployeePtr& changer);
-    void updatePaidAmount(const Money& amount, const InternalEmployeePtr& changer);
-    void addPaymentTransaction(
+    bool delBuyer(const size_t index, const InternalEmployeePtr& changer);
+    bool updateBuyerMoney(size_t index, const Money& newMoney, const InternalEmployeePtr& changer);
+    bool updateTotalAmount(const Money& amount, const InternalEmployeePtr& changer);
+    bool updatePaidAmount(const Money& amount, const InternalEmployeePtr& changer);
+    bool addPaymentTransaction(
         const std::shared_ptr<Payment>& payment, const InternalEmployeePtr& changer
     );
-    void delPaymentTransaction(size_t index, const InternalEmployeePtr& changer);
-    void changeStatus(const Status status, const InternalEmployeePtr& changer);
-    void changeOtherStatus(const OptionalStr& status, const InternalEmployeePtr& changer);
-    void changeDealPriority(const Priority priority, const InternalEmployeePtr& changer);
-    void setDrawingDate(const DatePtr& date, const InternalEmployeePtr& changer);
-    void setDateApproval(const DatePtr& date, const InternalEmployeePtr& changer);
-    void changeManager(const InternalEmployeePtr& manager, const InternalEmployeePtr& changer);
+    bool delPaymentTransaction(size_t index, const InternalEmployeePtr& changer);
+    bool changeStatus(const Status status, const InternalEmployeePtr& changer);
+    bool changeOtherStatus(const OptionalStr& status, const InternalEmployeePtr& changer);
+    bool changeDealPriority(const Priority priority, const InternalEmployeePtr& changer);
+    bool setDrawingDate(const DatePtr& date, const InternalEmployeePtr& changer);
+    bool setDateApproval(const DatePtr& date, const InternalEmployeePtr& changer);
+    bool changeManager(const InternalEmployeePtr& manager, const InternalEmployeePtr& changer);
 
-    void addAssignedEmployee(
+    bool addAssignedEmployee(
         const InternalEmployeePtr& employee, const InternalEmployeePtr& changer
     );
-    void delAssignedEmployee(size_t index, const InternalEmployeePtr& changer);
+    bool delAssignedEmployee(size_t index, const InternalEmployeePtr& changer);
 
-    void addOffer(const OfferDealPtr& offer, const InternalEmployeePtr& changer);
-    void delOffer(size_t index, const InternalEmployeePtr& changer);
+    bool addOffer(const OfferDealPtr& offer, const InternalEmployeePtr& changer);
+    bool delOffer(size_t index, const InternalEmployeePtr& changer);
 
-    void addDocument(const DocumentPtr& document, const InternalEmployeePtr& changer);
-    void delDocument(size_t index, const InternalEmployeePtr& changer);
+    bool addDocument(const DocumentPtr& document, const InternalEmployeePtr& changer);
+    bool delDocument(size_t index, const InternalEmployeePtr& changer);
 
-    void addTask(const TaskPtr& task, const InternalEmployeePtr& changer);
-    void delTask(size_t index, const InternalEmployeePtr& changer);
+    bool addTask(const TaskPtr& task, const InternalEmployeePtr& changer);
+    bool delTask(size_t index, const InternalEmployeePtr& changer);
 
-    void setOwner(const std::weak_ptr<Person>& owner, const InternalEmployeePtr& changer);
-    void setDealManager(
+    bool setOwner(const std::weak_ptr<Person>& owner, const InternalEmployeePtr& changer);
+    bool setDealManager(
         const std::weak_ptr<InternalEmployee>& manager, const InternalEmployeePtr& changer
     );
 
-    void addOffering(const OfferDealPtr& offering, const InternalEmployeePtr& changer);
-    void delOffering(size_t index, const InternalEmployeePtr& changer);
+    bool addOffering(const OfferDealPtr& offering, const InternalEmployeePtr& changer);
+    bool delOffering(size_t index, const InternalEmployeePtr& changer);
     /// @}
 
 private:

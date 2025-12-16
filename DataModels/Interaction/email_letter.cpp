@@ -120,7 +120,7 @@ auto EmailLetter::getNextLetter() const -> const EmailLetterPtr { return this->n
 auto EmailLetter::getIsRead() const -> bool { return this->is_read; }
 auto EmailLetter::getIsFlagged() const -> bool { return this->is_flagged; }
 
-void EmailLetter::setFromEmailAddress(const std::string& email, const InternalEmployeePtr& changer)
+bool EmailLetter::setFromEmailAddress(const std::string& email, const InternalEmployeePtr& changer)
 {
     if (this->from_email_address != email) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -135,10 +135,12 @@ void EmailLetter::setFromEmailAddress(const std::string& email, const InternalEm
             ChangeLog::Action::Change
         ));
         this->from_email_address = email;
+        return true;
     }
+    return false;
 }
 
-void EmailLetter::setToEmailAddress(const std::string& email, const InternalEmployeePtr& changer)
+bool EmailLetter::setToEmailAddress(const std::string& email, const InternalEmployeePtr& changer)
 {
     if (this->to_email_address != email) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -153,10 +155,12 @@ void EmailLetter::setToEmailAddress(const std::string& email, const InternalEmpl
             ChangeLog::Action::Change
         ));
         this->to_email_address = email;
+        return true;
     }
+    return false;
 }
 
-void EmailLetter::setLetterType(EmailLetterType type, const InternalEmployeePtr& changer)
+bool EmailLetter::setLetterType(EmailLetterType type, const InternalEmployeePtr& changer)
 {
     if (this->letter_type != type) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -169,10 +173,12 @@ void EmailLetter::setLetterType(EmailLetterType type, const InternalEmployeePtr&
             ChangeLog::Action::Change
         ));
         this->letter_type = type;
+        return true;
     }
+    return false;
 }
 
-void EmailLetter::setEmailStatus(EmailStatus status, const InternalEmployeePtr& changer)
+bool EmailLetter::setEmailStatus(EmailStatus status, const InternalEmployeePtr& changer)
 {
     if (this->email_status != status) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -185,10 +191,12 @@ void EmailLetter::setEmailStatus(EmailStatus status, const InternalEmployeePtr& 
             ChangeLog::Action::Change
         ));
         this->email_status = status;
+        return true;
     }
+    return false;
 }
 
-void EmailLetter::addCcEmailAddress(const std::string& address, const InternalEmployeePtr& changer)
+bool EmailLetter::addCcEmailAddress(const std::string& address, const InternalEmployeePtr& changer)
 {
     if (std::find(this->cc_email_addresses.begin(), this->cc_email_addresses.end(), address) ==
         this->cc_email_addresses.end()) {
@@ -202,10 +210,12 @@ void EmailLetter::addCcEmailAddress(const std::string& address, const InternalEm
             ChangeLog::Action::Add
         ));
         this->cc_email_addresses.push_back(address);
+        return true;
     }
+    return false;
 }
 
-void EmailLetter::delCcEmailAddress(const size_t id, const InternalEmployeePtr& changer)
+bool EmailLetter::delCcEmailAddress(const size_t id, const InternalEmployeePtr& changer)
 {
     if (this->cc_email_addresses.size() > id) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -220,10 +230,12 @@ void EmailLetter::delCcEmailAddress(const size_t id, const InternalEmployeePtr& 
             ChangeLog::Action::Remove
         ));
         this->cc_email_addresses.erase(this->cc_email_addresses.begin() + id);
+        return true;
     }
+    return false;
 }
 
-void EmailLetter::addBccEmailAddress(const std::string& address, const InternalEmployeePtr& changer)
+bool EmailLetter::addBccEmailAddress(const std::string& address, const InternalEmployeePtr& changer)
 {
     if (std::find(this->bcc_email_addresses.begin(), this->bcc_email_addresses.end(), address) ==
         this->bcc_email_addresses.end()) {
@@ -237,10 +249,12 @@ void EmailLetter::addBccEmailAddress(const std::string& address, const InternalE
             ChangeLog::Action::Add
         ));
         this->bcc_email_addresses.push_back(address);
+        return true;
     }
+    return false;
 }
 
-void EmailLetter::delBccEmailAddress(const size_t id, const InternalEmployeePtr& changer)
+bool EmailLetter::delBccEmailAddress(const size_t id, const InternalEmployeePtr& changer)
 {
     if (this->bcc_email_addresses.size() > id) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -255,10 +269,12 @@ void EmailLetter::delBccEmailAddress(const size_t id, const InternalEmployeePtr&
             ChangeLog::Action::Remove
         ));
         this->bcc_email_addresses.erase(this->bcc_email_addresses.begin() + id);
+        return true;
     }
+    return false;
 }
 
-void EmailLetter::setSender(const PersonPtr& sender, const InternalEmployeePtr& changer)
+bool EmailLetter::setSender(const PersonPtr& sender, const InternalEmployeePtr& changer)
 {
     if (this->sender != sender) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -271,10 +287,12 @@ void EmailLetter::setSender(const PersonPtr& sender, const InternalEmployeePtr& 
             ChangeLog::Action::Change
         ));
         this->sender = sender;
+        return true;
     }
+    return false;
 }
 
-void EmailLetter::setRecipient(const PersonPtr& recipient, const InternalEmployeePtr& changer)
+bool EmailLetter::setRecipient(const PersonPtr& recipient, const InternalEmployeePtr& changer)
 {
     if (this->recipient != recipient) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -287,10 +305,12 @@ void EmailLetter::setRecipient(const PersonPtr& recipient, const InternalEmploye
             ChangeLog::Action::Change
         ));
         this->recipient = recipient;
+        return true;
     }
+    return false;
 }
 
-void EmailLetter::setBody(const std::string& body, const InternalEmployeePtr& changer)
+bool EmailLetter::setBody(const std::string& body, const InternalEmployeePtr& changer)
 {
     if (this->body != body) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -303,61 +323,65 @@ void EmailLetter::setBody(const std::string& body, const InternalEmployeePtr& ch
             ChangeLog::Action::Change
         ));
         this->body = body;
+        return true;
     }
+    return false;
 }
 
-void EmailLetter::setSendDate(const DatePtr& date, const InternalEmployeePtr& changer)
+bool EmailLetter::setSendDate(const DatePtr& date, const InternalEmployeePtr& changer)
 {
     if (this->send_date == nullptr || date == nullptr) {
         if (this->send_date == date) {
-            return;
+            return false;
         }
     } else if (*this->send_date == *date) {
-        return;
+        return false;
     }
 
     this->change_logs.emplace_back(std::make_shared<ChangeLog>(
         changer,
         PTR_TO_OPTIONAL(this->send_date),
-        PTR_TO_OPTIONAL(send_date),
+        PTR_TO_OPTIONAL(date),
         EmailLetterFields::SendDate,
         this->send_date ? ChangeLog::FieldType::Date : ChangeLog::FieldType::null,
-        send_date ? ChangeLog::FieldType::Date : ChangeLog::FieldType::null,
+        date ? ChangeLog::FieldType::Date : ChangeLog::FieldType::null,
         ChangeLog::Action::Change
     ));
     this->send_date = date;
+    return true;
 }
 
-void EmailLetter::setReceivedDate(const DatePtr& date, const InternalEmployeePtr& changer)
+bool EmailLetter::setReceivedDate(const DatePtr& date, const InternalEmployeePtr& changer)
 {
     if (this->received_date == nullptr || date == nullptr) {
         if (this->received_date == date) {
-            return;
+            return false;
         }
     } else if (*this->received_date == *date) {
-        return;
+        return false;
     }
 
     this->change_logs.emplace_back(std::make_shared<ChangeLog>(
         changer,
         PTR_TO_OPTIONAL(this->received_date),
-        PTR_TO_OPTIONAL(received_date),
+        PTR_TO_OPTIONAL(date),
         EmailLetterFields::ReceivedDate,
         this->received_date ? ChangeLog::FieldType::Date : ChangeLog::FieldType::null,
-        received_date ? ChangeLog::FieldType::Date : ChangeLog::FieldType::null,
+        date ? ChangeLog::FieldType::Date : ChangeLog::FieldType::null,
         ChangeLog::Action::Change
     ));
     this->received_date = date;
+    return true;
 }
 
-void EmailLetter::setReadTime(const DatePtr& time, const InternalEmployeePtr& changer)
+bool EmailLetter::setReadTime(const DatePtr& time, const InternalEmployeePtr& changer)
 {
     if (this->read_time == nullptr || time == nullptr) {
         if (this->read_time == time) {
-            return;
+            return false;
         }
     } else if (*this->read_time == *time) {
-        return;
+        return false;
     }
 
     this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -370,9 +394,10 @@ void EmailLetter::setReadTime(const DatePtr& time, const InternalEmployeePtr& ch
         ChangeLog::Action::Change
     ));
     this->read_time = time;
+    return true;
 }
 
-void EmailLetter::setEmailProvider(const std::string& provider, const InternalEmployeePtr& changer)
+bool EmailLetter::setEmailProvider(const std::string& provider, const InternalEmployeePtr& changer)
 {
     if (this->email_provider != provider) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -387,44 +412,50 @@ void EmailLetter::setEmailProvider(const std::string& provider, const InternalEm
             ChangeLog::Action::Change
         ));
         this->email_provider = provider;
+        return true;
     }
+    return false;
 }
 
-void EmailLetter::setPreviousLetter(
+bool EmailLetter::setPreviousLetter(
     const EmailLetterPtr& letter, const InternalEmployeePtr& changer
 )
 {
     if (this->previous_letter != letter) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
-            std::make_optional<ChangeLog::ValueVariant>(this->previous_letter),
-            std::make_optional<ChangeLog::ValueVariant>(letter),
+            PTR_TO_OPTIONAL(this->previous_letter),
+            PTR_TO_OPTIONAL(letter),
             EmailLetterFields::PreviousLetter,
-            ChangeLog::FieldType::EmailLetter,
-            ChangeLog::FieldType::EmailLetter,
+            this->previous_letter ? ChangeLog::FieldType::EmailLetter : ChangeLog::FieldType::null,
+            letter ? ChangeLog::FieldType::EmailLetter : ChangeLog::FieldType::null,
             ChangeLog::Action::Change
         ));
         this->previous_letter = letter;
+        return true;
     }
+    return false;
 }
 
-void EmailLetter::setNextLetter(const EmailLetterPtr& letter, const InternalEmployeePtr& changer)
+bool EmailLetter::setNextLetter(const EmailLetterPtr& letter, const InternalEmployeePtr& changer)
 {
     if (this->next_letter != letter) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
-            std::make_optional<ChangeLog::ValueVariant>(this->next_letter),
-            std::make_optional<ChangeLog::ValueVariant>(letter),
+            PTR_TO_OPTIONAL(this->next_letter),
+            PTR_TO_OPTIONAL(letter),
             EmailLetterFields::NextLetter,
-            ChangeLog::FieldType::EmailLetter,
-            ChangeLog::FieldType::EmailLetter,
+            this->next_letter ? ChangeLog::FieldType::EmailLetter : ChangeLog::FieldType::null,
+            letter ? ChangeLog::FieldType::EmailLetter : ChangeLog::FieldType::null,
             ChangeLog::Action::Change
         ));
         this->next_letter = letter;
+        return true;
     }
+    return false;
 }
 
-void EmailLetter::setIsRead(bool is_read, const InternalEmployeePtr& changer)
+bool EmailLetter::setIsRead(bool is_read, const InternalEmployeePtr& changer)
 {
     if (this->is_read != is_read) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -437,10 +468,12 @@ void EmailLetter::setIsRead(bool is_read, const InternalEmployeePtr& changer)
             ChangeLog::Action::Change
         ));
         this->is_read = is_read;
+        return true;
     }
+    return false;
 }
 
-void EmailLetter::setIsFlagged(bool is_flagged, const InternalEmployeePtr& changer)
+bool EmailLetter::setIsFlagged(bool is_flagged, const InternalEmployeePtr& changer)
 {
     if (this->is_flagged != is_flagged) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -453,5 +486,7 @@ void EmailLetter::setIsFlagged(bool is_flagged, const InternalEmployeePtr& chang
             ChangeLog::Action::Change
         ));
         this->is_flagged = is_flagged;
+        return true;
     }
+    return false;
 }

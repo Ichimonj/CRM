@@ -96,32 +96,32 @@ public:
 
     /// @name Change functions
     /// @{
-    void setLocation(const AddressPtr& location, const InternalEmployeePtr& changer);
-    void setMeetingStatus(MeetingStatus status, const InternalEmployeePtr& changer);
-    void setMeetingType(MeetingType type, const InternalEmployeePtr& changer);
+    bool setLocation(const AddressPtr& location, const InternalEmployeePtr& changer);
+    bool setMeetingStatus(MeetingStatus status, const InternalEmployeePtr& changer);
+    bool setMeetingType(MeetingType type, const InternalEmployeePtr& changer);
 
-    void addOutcome(const MeetingOutcome outcome, const InternalEmployeePtr& changer);
-    void delOutcome(size_t id, const InternalEmployeePtr& changer);
+    bool addOutcome(const MeetingOutcome outcome, const InternalEmployeePtr& changer);
+    bool delOutcome(size_t id, const InternalEmployeePtr& changer);
 
-    void addOtherOutcome(const std::string& outcome, const InternalEmployeePtr& changer);
-    void delOtherOutcome(size_t id, const InternalEmployeePtr& changer);
+    bool addOtherOutcome(const std::string& outcome, const InternalEmployeePtr& changer);
+    bool delOtherOutcome(size_t id, const InternalEmployeePtr& changer);
 
-    void setOtherType(const std::string& type, const InternalEmployeePtr& changer);
-    void setRecord(const std::string& record, const InternalEmployeePtr& changer);
+    bool setOtherType(const std::string& type, const InternalEmployeePtr& changer);
+    bool setRecord(const std::string& record, const InternalEmployeePtr& changer);
 
-    void addClient(const ClientPtr& client, const InternalEmployeePtr& changer);
-    void delClient(size_t id, const InternalEmployeePtr& changer);
+    bool addClient(const ClientPtr& client, const InternalEmployeePtr& changer);
+    bool delClient(size_t id, const InternalEmployeePtr& changer);
 
-    void addEmployee(const InternalEmployeePtr& employee, const InternalEmployeePtr& changer);
-    void delEmployee(size_t id, const InternalEmployeePtr& changer);
+    bool addEmployee(const InternalEmployeePtr& employee, const InternalEmployeePtr& changer);
+    bool delEmployee(size_t id, const InternalEmployeePtr& changer);
 
-    void addInvitee(const PersonPtr& invitee, const InternalEmployeePtr& changer);
-    void delInvitee(size_t id, const InternalEmployeePtr& changer);
+    bool addInvitee(const PersonPtr& invitee, const InternalEmployeePtr& changer);
+    bool delInvitee(size_t id, const InternalEmployeePtr& changer);
 
-    void setPreviousMeeting(const MeetingPtr& meeting, const InternalEmployeePtr& changer);
-    void setNextMeeting(const MeetingPtr& meeting, const InternalEmployeePtr& changer);
-    void setIsConfirmed(bool is_confirmed, const InternalEmployeePtr& changer);
-    void setIsVirtual(bool is_virtual, const InternalEmployeePtr& changer);
+    bool setPreviousMeeting(const MeetingPtr& meeting, const InternalEmployeePtr& changer);
+    bool setNextMeeting(const MeetingPtr& meeting, const InternalEmployeePtr& changer);
+    bool setIsConfirmed(bool is_confirmed, const InternalEmployeePtr& changer);
+    bool setIsVirtual(bool is_virtual, const InternalEmployeePtr& changer);
     /// @}
 
 private:

@@ -80,7 +80,7 @@ auto CommentarySocialNetworks::getAnswer() const -> const CommentarySocialNetwor
 auto CommentarySocialNetworks::getDateSending() const -> const Date& { return date_sending; }
 auto CommentarySocialNetworks::getIsFirst() const -> bool { return is_first; }
 
-void CommentarySocialNetworks::setNickname(
+bool CommentarySocialNetworks::setNickname(
     const std::string& nickname, const InternalEmployeePtr& changer
 )
 {
@@ -96,10 +96,12 @@ void CommentarySocialNetworks::setNickname(
             ChangeLog::Action::Change
         ));
         this->nickname = nickname;
+        return true;
     }
+    return false;
 }
 
-void CommentarySocialNetworks::setAuthor(
+bool CommentarySocialNetworks::setAuthor(
     const PersonPtr& author, const InternalEmployeePtr& changer
 )
 {
@@ -114,10 +116,12 @@ void CommentarySocialNetworks::setAuthor(
             ChangeLog::Action::Change
         ));
         this->author = author;
+        return true;
     }
+    return false;
 }
 
-void CommentarySocialNetworks::setCommentary(
+bool CommentarySocialNetworks::setCommentary(
     const std::string& commentary, const InternalEmployeePtr& changer
 )
 {
@@ -134,10 +138,12 @@ void CommentarySocialNetworks::setCommentary(
             ChangeLog::Action::Change
         ));
         this->commentary = commentary;
+        return true;
     }
+    return false;
 }
 
-void CommentarySocialNetworks::setAnswerTo(
+bool CommentarySocialNetworks::setAnswerTo(
     const CommentarySocialNetworksPtr& answer_to, const InternalEmployeePtr& changer
 )
 {
@@ -153,10 +159,12 @@ void CommentarySocialNetworks::setAnswerTo(
             ChangeLog::Action::Change
         ));
         this->answer_to = answer_to;
+        return true;
     }
+    return false;
 }
 
-void CommentarySocialNetworks::setAnswer(
+bool CommentarySocialNetworks::setAnswer(
     const CommentarySocialNetworksPtr& answer, const InternalEmployeePtr& changer
 )
 {
@@ -172,10 +180,12 @@ void CommentarySocialNetworks::setAnswer(
             ChangeLog::Action::Change
         ));
         this->answer = answer;
+        return true;
     }
+    return false;
 }
 
-void CommentarySocialNetworks::setDateSending(const Date& date, const InternalEmployeePtr& changer)
+bool CommentarySocialNetworks::setDateSending(const Date& date, const InternalEmployeePtr& changer)
 {
     if (this->date_sending != date) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -188,10 +198,12 @@ void CommentarySocialNetworks::setDateSending(const Date& date, const InternalEm
             ChangeLog::Action::Change
         ));
         this->date_sending = date;
+        return true;
     }
+    return false;
 }
 
-void CommentarySocialNetworks::setIsFirst(bool first, const InternalEmployeePtr& changer)
+bool CommentarySocialNetworks::setIsFirst(bool first, const InternalEmployeePtr& changer)
 {
     if (this->is_first != first) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -204,5 +216,7 @@ void CommentarySocialNetworks::setIsFirst(bool first, const InternalEmployeePtr&
             ChangeLog::Action::Change
         ));
         this->is_first = first;
+        return true;
     }
+    return false;
 }

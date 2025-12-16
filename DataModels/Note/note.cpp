@@ -14,30 +14,20 @@ Note::Note(
 }
 bool Note::operator==(const Note& other) const
 {
-    if (this->created_date != other.created_date)
-        return false;
-    if (this->creator != other.creator)
-        return false;
-    if (this->author != other.author)
-        return false;
-    if (this->title != other.title)
-        return false;
-    if (this->text != other.text)
-        return false;
+    if (this->created_date != other.created_date) return false;
+    if (this->creator != other.creator) return false;
+    if (this->author != other.author) return false;
+    if (this->title != other.title) return false;
+    if (this->text != other.text) return false;
     return true;
 }
 bool Note::operator!=(const Note& other) const
 {
-    if (this->created_date != other.created_date)
-        return true;
-    if (this->creator != other.creator)
-        return true;
-    if (this->author != other.author)
-        return true;
-    if (this->title != other.title)
-        return true;
-    if (this->text != other.text)
-        return true;
+    if (this->created_date != other.created_date) return true;
+    if (this->creator != other.creator) return true;
+    if (this->author != other.author) return true;
+    if (this->title != other.title) return true;
+    if (this->text != other.text) return true;
     return false;
 }
 

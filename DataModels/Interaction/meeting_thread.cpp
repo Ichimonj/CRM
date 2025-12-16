@@ -63,7 +63,7 @@ auto MeetingThread::getEmployees() const -> const std::vector<InternalEmployeePt
 {
     return this->employees;
 }
-void MeetingThread::addMeeting(const MeetingPtr& meeting, const InternalEmployeePtr& changer)
+bool MeetingThread::addMeeting(const MeetingPtr& meeting, const InternalEmployeePtr& changer)
 {
     if (std::find(this->meetings.begin(), this->meetings.end(), meeting) == this->meetings.end()) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -76,10 +76,12 @@ void MeetingThread::addMeeting(const MeetingPtr& meeting, const InternalEmployee
             ChangeLog::Action::Add
         ));
         this->meetings.push_back(meeting);
+        return true;
     }
+    return false;
 }
 
-void MeetingThread::delMeeting(const size_t id, const InternalEmployeePtr& changer)
+bool MeetingThread::delMeeting(const size_t id, const InternalEmployeePtr& changer)
 {
     if (this->meetings.size() > id) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -92,10 +94,12 @@ void MeetingThread::delMeeting(const size_t id, const InternalEmployeePtr& chang
             ChangeLog::Action::Remove
         ));
         this->meetings.erase(this->meetings.begin() + id);
+        return true;
     }
+    return false;
 }
 
-void MeetingThread::addClient(const ClientPtr& client, const InternalEmployeePtr& changer)
+bool MeetingThread::addClient(const ClientPtr& client, const InternalEmployeePtr& changer)
 {
     if (std::find(this->clients.begin(), this->clients.end(), client) == this->clients.end()) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -108,10 +112,12 @@ void MeetingThread::addClient(const ClientPtr& client, const InternalEmployeePtr
             ChangeLog::Action::Add
         ));
         this->clients.push_back(client);
+        return true;
     }
+    return false;
 }
 
-void MeetingThread::delClient(const size_t id, const InternalEmployeePtr& changer)
+bool MeetingThread::delClient(const size_t id, const InternalEmployeePtr& changer)
 {
     if (this->clients.size() > id) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -124,10 +130,12 @@ void MeetingThread::delClient(const size_t id, const InternalEmployeePtr& change
             ChangeLog::Action::Remove
         ));
         this->clients.erase(this->clients.begin() + id);
+        return true;
     }
+    return false;
 }
 
-void MeetingThread::addEmployee(
+bool MeetingThread::addEmployee(
     const InternalEmployeePtr& employee, const InternalEmployeePtr& changer
 )
 {
@@ -143,10 +151,12 @@ void MeetingThread::addEmployee(
             ChangeLog::Action::Add
         ));
         this->employees.push_back(employee);
+        return true;
     }
+    return false;
 }
 
-void MeetingThread::delEmployee(const size_t id, const InternalEmployeePtr& changer)
+bool MeetingThread::delEmployee(const size_t id, const InternalEmployeePtr& changer)
 {
     if (this->employees.size() > id) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -159,5 +169,7 @@ void MeetingThread::delEmployee(const size_t id, const InternalEmployeePtr& chan
             ChangeLog::Action::Remove
         ));
         this->employees.erase(this->employees.begin() + id);
+        return true;
     }
+    return false;
 }

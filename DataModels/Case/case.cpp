@@ -46,7 +46,7 @@ auto Case::getRelatedInteractions() const -> const std::vector<BaseInteractionPt
 }
 auto Case::getChangeLogs() const -> const std::vector<ChangeLogPtr>& { return this->change_logs; }
 
-void Case::setTitle(const std::string& title, const InternalEmployeePtr& changer)
+bool Case::setTitle(const std::string& title, const InternalEmployeePtr& changer)
 {
     if (this->title != title) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -59,10 +59,12 @@ void Case::setTitle(const std::string& title, const InternalEmployeePtr& changer
             ChangeLog::Action::Change
         ));
         this->title = title;
+        return true;
     }
+    return false;
 }
 
-void Case::setDescription(const OptionalStr& description, const InternalEmployeePtr& changer)
+bool Case::setDescription(const OptionalStr& description, const InternalEmployeePtr& changer)
 {
     if (this->description != description) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -75,10 +77,12 @@ void Case::setDescription(const OptionalStr& description, const InternalEmployee
             ChangeLog::Action::Change
         ));
         this->description = description;
+        return true;
     }
+    return false;
 }
 
-void Case::setStatus(const CaseStatus& status, const InternalEmployeePtr& changer)
+bool Case::setStatus(const CaseStatus& status, const InternalEmployeePtr& changer)
 {
     if (this->status != status) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -91,10 +95,12 @@ void Case::setStatus(const CaseStatus& status, const InternalEmployeePtr& change
             ChangeLog::Action::Change
         ));
         this->status = status;
+        return true;
     }
+    return false;
 }
 
-void Case::setPriority(const Priority& priority, const InternalEmployeePtr& changer)
+bool Case::setPriority(const Priority& priority, const InternalEmployeePtr& changer)
 {
     if (this->priority != priority) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -107,17 +113,19 @@ void Case::setPriority(const Priority& priority, const InternalEmployeePtr& chan
             ChangeLog::Action::Change
         ));
         this->priority = priority;
+        return true;
     }
+    return false;
 }
 
-void Case::setResolvedDate(const DatePtr& resolved_date, const InternalEmployeePtr& changer)
+bool Case::setResolvedDate(const DatePtr& resolved_date, const InternalEmployeePtr& changer)
 {
     if (this->resolved_date == nullptr || resolved_date == nullptr) {
         if (this->resolved_date == resolved_date) {
-            return;
+            return false;
         }
     } else if (*this->resolved_date == *resolved_date) {
-        return;
+        return false;
     }
 
     this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -129,10 +137,11 @@ void Case::setResolvedDate(const DatePtr& resolved_date, const InternalEmployeeP
         resolved_date ? ChangeLog::FieldType::Date : ChangeLog::FieldType::null,
         ChangeLog::Action::Change
     ));
-    this->priority = priority;
+    this->resolved_date = resolved_date;
+    return true;
 }
 
-void Case::setAssignedTo(const InternalEmployeePtr& assigned_to, const InternalEmployeePtr& changer)
+bool Case::setAssignedTo(const InternalEmployeePtr& assigned_to, const InternalEmployeePtr& changer)
 {
     if (this->assigned_to != assigned_to) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -141,14 +150,16 @@ void Case::setAssignedTo(const InternalEmployeePtr& assigned_to, const InternalE
             PTR_TO_OPTIONAL(assigned_to),
             CaseField::AssignedTo,
             this->assigned_to ? ChangeLog::FieldType::InternalEmployee : ChangeLog::FieldType::null,
-            resolved_date ? ChangeLog::FieldType::InternalEmployee : ChangeLog::FieldType::null,
+            assigned_to ? ChangeLog::FieldType::InternalEmployee : ChangeLog::FieldType::null,
             ChangeLog::Action::Change
         ));
         this->assigned_to = assigned_to;
+        return true;
     }
+    return false;
 }
 
-void Case::setRelatedClient(const ClientPtr& related_client, const InternalEmployeePtr& changer)
+bool Case::setRelatedClient(const ClientPtr& related_client, const InternalEmployeePtr& changer)
 {
     if (this->related_client != related_client) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -161,10 +172,12 @@ void Case::setRelatedClient(const ClientPtr& related_client, const InternalEmplo
             ChangeLog::Action::Change
         ));
         this->related_client = related_client;
+        return true;
     }
+    return false;
 }
 
-void Case::addNote(const Note& note, const InternalEmployeePtr& changer)
+bool Case::addNote(const Note& note, const InternalEmployeePtr& changer)
 {
     if (std::find(this->notes.begin(), this->notes.end(), note) == this->notes.end()) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -177,10 +190,12 @@ void Case::addNote(const Note& note, const InternalEmployeePtr& changer)
             ChangeLog::Action::Add
         ));
         this->notes.push_back(note);
+        return true;
     }
+    return false;
 }
 
-void Case::delNote(size_t index, const InternalEmployeePtr& changer)
+bool Case::delNote(size_t index, const InternalEmployeePtr& changer)
 {
     if (this->notes.size() > index) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -193,10 +208,12 @@ void Case::delNote(size_t index, const InternalEmployeePtr& changer)
             ChangeLog::Action::Remove
         ));
         this->notes.erase(this->notes.begin() + index);
+        return true;
     }
+    return false;
 }
 
-void Case::addRelatedInteraction(
+bool Case::addRelatedInteraction(
     const BaseInteractionPtr& interaction, const InternalEmployeePtr& changer
 )
 {
@@ -213,10 +230,12 @@ void Case::addRelatedInteraction(
             ChangeLog::Action::Add
         ));
         this->related_interactions.push_back(interaction);
+        return true;
     }
+    return false;
 }
 
-void Case::delRelatedInteraction(size_t index, const InternalEmployeePtr& changer)
+bool Case::delRelatedInteraction(size_t index, const InternalEmployeePtr& changer)
 {
     if (this->related_interactions.size() > index) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -229,5 +248,7 @@ void Case::delRelatedInteraction(size_t index, const InternalEmployeePtr& change
             ChangeLog::Action::Remove
         ));
         this->related_interactions.erase(this->related_interactions.begin() + index);
+        return true;
     }
+    return false;
 }

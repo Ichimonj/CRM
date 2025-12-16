@@ -39,9 +39,9 @@ public:
 
     /// @name Change functions
     /// @{
-    void addMessage(const MessagePtr& message, const InternalEmployeePtr& changer);
-    void delMessage(const size_t id, const InternalEmployeePtr& changer);
-    void setPlatform(const std::string& platform, const InternalEmployeePtr& changer);
+    bool addMessage(const MessagePtr& message, const InternalEmployeePtr& changer);
+    bool delMessage(const size_t id, const InternalEmployeePtr& changer);
+    bool setPlatform(const std::string& platform, const InternalEmployeePtr& changer);
     /// @}
 
 private:

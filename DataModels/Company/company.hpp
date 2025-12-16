@@ -89,42 +89,42 @@ public:
 
     /// @name Change functions
     /// @{
-    void setCompanyName(const std::string& company_name, const InternalEmployeePtr& changer);
-    void setLegalName(const OptionalStr& legal_name, const InternalEmployeePtr& changer);
-    void setWebsiteUrl(const OptionalStr& website_url, const InternalEmployeePtr& changer);
-    void setIndustry(const OptionalStr& industry, const InternalEmployeePtr& changer);
-    void setPhoneNumber(const PhoneNumberPtr& phone_number, const InternalEmployeePtr& changer);
-    void setEmail(const OptionalStr& email, const InternalEmployeePtr& changer);
-    void setCountryCode(const OptionalStr& country_code, const InternalEmployeePtr& changer);
-    void setRegisteredAddress(
+    bool setCompanyName(const std::string& company_name, const InternalEmployeePtr& changer);
+    bool setLegalName(const OptionalStr& legal_name, const InternalEmployeePtr& changer);
+    bool setWebsiteUrl(const OptionalStr& website_url, const InternalEmployeePtr& changer);
+    bool setIndustry(const OptionalStr& industry, const InternalEmployeePtr& changer);
+    bool setPhoneNumber(const PhoneNumberPtr& phone_number, const InternalEmployeePtr& changer);
+    bool setEmail(const OptionalStr& email, const InternalEmployeePtr& changer);
+    bool setCountryCode(const OptionalStr& country_code, const InternalEmployeePtr& changer);
+    bool setRegisteredAddress(
         const AddressPtr& registered_address, const InternalEmployeePtr& changer
     );
-    void setFoundedDate(const DatePtr& founded_date, const InternalEmployeePtr& changer);
-    void setTaxId(const OptionalStr& tax_id, const InternalEmployeePtr& changer);
-    void setStatus(const std::optional<CompanyStatus>& status, const InternalEmployeePtr& changer);
-    void setEmployeeCount(
+    bool setFoundedDate(const DatePtr& founded_date, const InternalEmployeePtr& changer);
+    bool setTaxId(const OptionalStr& tax_id, const InternalEmployeePtr& changer);
+    bool setStatus(const std::optional<CompanyStatus>& status, const InternalEmployeePtr& changer);
+    bool setEmployeeCount(
         const std::optional<uint32_t>& employee_count, const InternalEmployeePtr& changer
     );
-    void setAnnualRevenue(const MoneyPtr& annual_revenue, const InternalEmployeePtr& changer);
-    void setBudget(const MoneyPtr& budget, const InternalEmployeePtr& changer);
+    bool setAnnualRevenue(const MoneyPtr& annual_revenue, const InternalEmployeePtr& changer);
+    bool setBudget(const MoneyPtr& budget, const InternalEmployeePtr& changer);
 
-    void addTaxRate(const TaxInfo& tax_rate, const InternalEmployeePtr& changer);
-    void delTaxRate(size_t index, const InternalEmployeePtr& changer);
+    bool addTaxRate(const TaxInfo& tax_rate, const InternalEmployeePtr& changer);
+    bool delTaxRate(size_t index, const InternalEmployeePtr& changer);
 
-    void addNote(const Note& note, const InternalEmployeePtr& changer);
-    void delNote(size_t index, const InternalEmployeePtr& changer);
+    bool addNote(const Note& note, const InternalEmployeePtr& changer);
+    bool delNote(size_t index, const InternalEmployeePtr& changer);
 
-    void addMorePhoneNumber(const PhoneNumber& phone_number, const InternalEmployeePtr& changer);
-    void delMorePhoneNumber(size_t index, const InternalEmployeePtr& changer);
+    bool addMorePhoneNumber(const PhoneNumber& phone_number, const InternalEmployeePtr& changer);
+    bool delMorePhoneNumber(size_t index, const InternalEmployeePtr& changer);
 
-    void addMoreEmail(const std::string& email, const InternalEmployeePtr& changer);
-    void delMoreEmail(size_t index, const InternalEmployeePtr& changer);
+    bool addMoreEmail(const std::string& email, const InternalEmployeePtr& changer);
+    bool delMoreEmail(size_t index, const InternalEmployeePtr& changer);
 
-    void addDeal(const DealPtr& deal, const InternalEmployeePtr& changer);
-    void delDeal(size_t index, const InternalEmployeePtr& changer);
+    bool addDeal(const DealPtr& deal, const InternalEmployeePtr& changer);
+    bool delDeal(size_t index, const InternalEmployeePtr& changer);
 
-    void addTask(const TaskPtr& task, const InternalEmployeePtr& changer);
-    void delTask(size_t index, const InternalEmployeePtr& changer);
+    bool addTask(const TaskPtr& task, const InternalEmployeePtr& changer);
+    bool delTask(size_t index, const InternalEmployeePtr& changer);
     /// @}
 
 private:

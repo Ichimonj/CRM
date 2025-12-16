@@ -167,7 +167,7 @@ auto ExternalCompany::getChurnProbability() const -> const std::optional<double>
     return this->churn_probability;
 }
 
-void ExternalCompany::setType(const CompanyType type, const InternalEmployeePtr& changer)
+bool ExternalCompany::setType(const CompanyType type, const InternalEmployeePtr& changer)
 {
     if (this->type != type) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -184,10 +184,12 @@ void ExternalCompany::setType(const CompanyType type, const InternalEmployeePtr&
         ));
         this->type       = type;
         this->other_type = std::nullopt;
+        return true;
     }
+    return false;
 }
 
-void ExternalCompany::setOtherType(
+bool ExternalCompany::setOtherType(
     const OptionalStr& other_type, const InternalEmployeePtr& changer
 )
 {
@@ -198,18 +200,24 @@ void ExternalCompany::setOtherType(
                                    std::make_shared<std::string>(this->other_type.value())
                                )
                              : std::make_optional(this->type),
-            std::make_optional(std::make_shared<std::string>(other_type.value())),
+            other_type.has_value() ? std::make_optional<ChangeLog::ValueVariant>(
+                                         std::make_shared<std::string>(other_type.value())
+                                     )
+                                   : std::nullopt,
             ExternalCompanyFields::Type,
             this->other_type ? ChangeLog::FieldType::String : ChangeLog::FieldType::CompanyType,
-            ChangeLog::FieldType::String,
+            other_type.has_value() ? ChangeLog::FieldType::String
+                                   : ChangeLog::FieldType::CompanyType,
             ChangeLog::Action::Change
         ));
         this->other_type = other_type;
         this->type       = CompanyType::Other;
+        return true;
     }
+    return false;
 }
 
-void ExternalCompany::setRating(const Rating rating, const InternalEmployeePtr& changer)
+bool ExternalCompany::setRating(const Rating rating, const InternalEmployeePtr& changer)
 {
     if (this->rating != rating) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -222,10 +230,12 @@ void ExternalCompany::setRating(const Rating rating, const InternalEmployeePtr& 
             ChangeLog::Action::Change
         ));
         this->rating = rating;
+        return true;
     }
+    return false;
 }
 
-void ExternalCompany::setRiskLevel(const RiskLevel risk_level, const InternalEmployeePtr& changer)
+bool ExternalCompany::setRiskLevel(const RiskLevel risk_level, const InternalEmployeePtr& changer)
 {
     if (this->risk_level != risk_level) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -238,10 +248,12 @@ void ExternalCompany::setRiskLevel(const RiskLevel risk_level, const InternalEmp
             ChangeLog::Action::Change
         ));
         this->risk_level = risk_level;
+        return true;
     }
+    return false;
 }
 
-void ExternalCompany::setAccountManager(
+bool ExternalCompany::setAccountManager(
     const InternalEmployeePtr& account_manager, const InternalEmployeePtr& changer
 )
 {
@@ -256,20 +268,22 @@ void ExternalCompany::setAccountManager(
             account_manager ? ChangeLog::FieldType::InternalEmployee : ChangeLog::FieldType::null,
             ChangeLog::Action::Change
         ));
-        this->account_manager = this->account_manager = account_manager;
+        this->account_manager = account_manager;
+        return true;
     }
+    return false;
 }
 
-void ExternalCompany::setLastInteractionDate(
+bool ExternalCompany::setLastInteractionDate(
     const DatePtr& last_interaction_date, const InternalEmployeePtr& changer
 )
 {
     if (this->last_interaction_date == nullptr || last_interaction_date == nullptr) {
         if (this->last_interaction_date == last_interaction_date) {
-            return;
+            return false;
         }
     } else if (*this->last_interaction_date == *last_interaction_date) {
-        return;
+        return false;
     }
 
     this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -282,18 +296,19 @@ void ExternalCompany::setLastInteractionDate(
         ChangeLog::Action::Change
     ));
     this->last_interaction_date = last_interaction_date;
+    return true;
 }
 
-void ExternalCompany::setCreditLimit(
+bool ExternalCompany::setCreditLimit(
     const MoneyPtr& credit_limit, const InternalEmployeePtr& changer
 )
 {
     if (this->credit_limit == nullptr || credit_limit == nullptr) {
         if (this->credit_limit == credit_limit) {
-            return;
+            return false;
         }
     } else if (*this->credit_limit == *credit_limit) {
-        return;
+        return false;
     }
 
     this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -306,18 +321,19 @@ void ExternalCompany::setCreditLimit(
         ChangeLog::Action::Change
     ));
     this->credit_limit = credit_limit;
+    return true;
 }
 
-void ExternalCompany::setTotalRevenueGenerated(
+bool ExternalCompany::setTotalRevenueGenerated(
     const MoneyPtr& total_revenue_generated, const InternalEmployeePtr& changer
 )
 {
     if (this->total_revenue_generated == nullptr || total_revenue_generated == nullptr) {
         if (this->total_revenue_generated == total_revenue_generated) {
-            return;
+            return false;
         }
     } else if (*this->total_revenue_generated == *total_revenue_generated) {
-        return;
+        return false;
     }
 
     this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -330,51 +346,56 @@ void ExternalCompany::setTotalRevenueGenerated(
         ChangeLog::Action::Change
     ));
     this->total_revenue_generated = total_revenue_generated;
+    return true;
 }
 
-void ExternalCompany::setOutstandingBalance(
+bool ExternalCompany::setOutstandingBalance(
     const MoneyPtr& outstanding_balance, const InternalEmployeePtr& changer
 )
 {
     if (this->outstanding_balance == nullptr || outstanding_balance == nullptr) {
         if (this->outstanding_balance == outstanding_balance) {
-            return;
+            return false;
         }
     } else if (*this->outstanding_balance == *outstanding_balance) {
-        return;
+        return false;
     }
 
     this->change_logs.emplace_back(std::make_shared<ChangeLog>(
         changer,
         PTR_TO_OPTIONAL(this->outstanding_balance),
         PTR_TO_OPTIONAL(outstanding_balance),
-        ExternalCompanyFields::TotalRevenueGenerated,
+        ExternalCompanyFields::OutstandingBalance,
         this->outstanding_balance ? ChangeLog::FieldType::Money : ChangeLog::FieldType::null,
         outstanding_balance ? ChangeLog::FieldType::Money : ChangeLog::FieldType::null,
         ChangeLog::Action::Change
     ));
     this->outstanding_balance = outstanding_balance;
+    return true;
 }
 
-void ExternalCompany::setChurnProbability(
+bool ExternalCompany::setChurnProbability(
     const std::optional<double>& churn_probability, const InternalEmployeePtr& changer
 )
 {
     if (this->churn_probability != churn_probability) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
-            this->churn_probability,
-            churn_probability,
+            this->churn_probability ? std::make_optional(this->churn_probability.value())
+                                    : std::nullopt,
+            churn_probability ? std::make_optional(churn_probability.value()) : std::nullopt,
             ExternalCompanyFields::ChurnProbability,
             this->churn_probability ? ChangeLog::FieldType::Double : ChangeLog::FieldType::null,
             churn_probability ? ChangeLog::FieldType::Double : ChangeLog::FieldType::null,
             ChangeLog::Action::Change
         ));
         this->churn_probability = churn_probability;
+        return true;
     }
+    return false;
 }
 
-void ExternalCompany::addContact(
+bool ExternalCompany::addContact(
     const ExternalEmployeePtr& contact, const InternalEmployeePtr& changer
 )
 {
@@ -389,10 +410,12 @@ void ExternalCompany::addContact(
             ChangeLog::Action::Add
         ));
         this->contacts.push_back(contact);
+        return true;
     }
+    return false;
 }
 
-void ExternalCompany::delContact(size_t index, const InternalEmployeePtr& changer)
+bool ExternalCompany::delContact(size_t index, const InternalEmployeePtr& changer)
 {
     if (this->contacts.size() > index) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -405,10 +428,12 @@ void ExternalCompany::delContact(size_t index, const InternalEmployeePtr& change
             ChangeLog::Action::Remove
         ));
         this->contacts.erase(this->contacts.begin() + index);
+        return true;
     }
+    return false;
 }
 
-void ExternalCompany::addAssociatedClient(
+bool ExternalCompany::addAssociatedClient(
     const ClientPtr& associated_client, const InternalEmployeePtr& changer
 )
 {
@@ -425,16 +450,17 @@ void ExternalCompany::addAssociatedClient(
             ChangeLog::Action::Add
         ));
         this->associated_clients.push_back(associated_client);
+        return true;
     }
+    return false;
 }
 
-void ExternalCompany::delAssociatedClient(size_t index, const InternalEmployeePtr& changer)
+bool ExternalCompany::delAssociatedClient(size_t index, const InternalEmployeePtr& changer)
 {
     if (this->associated_clients.size() > index) {
-        ClientPtr removed = this->associated_clients[index];
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
-            std::make_optional(removed),
+            std::make_optional(this->associated_clients[index]),
             std::nullopt,
             ExternalCompanyFields::AssociatedClients,
             ChangeLog::FieldType::Client,
@@ -442,10 +468,12 @@ void ExternalCompany::delAssociatedClient(size_t index, const InternalEmployeePt
             ChangeLog::Action::Remove
         ));
         this->associated_clients.erase(this->associated_clients.begin() + index);
+        return true;
     }
+    return false;
 }
 
-void ExternalCompany::addDocument(const FilePtr& document, const InternalEmployeePtr& changer)
+bool ExternalCompany::addDocument(const FilePtr& document, const InternalEmployeePtr& changer)
 {
     if (std::find(this->documents.begin(), this->documents.end(), document) ==
         this->documents.end()) {
@@ -459,16 +487,17 @@ void ExternalCompany::addDocument(const FilePtr& document, const InternalEmploye
             ChangeLog::Action::Add
         ));
         this->documents.push_back(document);
+        return true;
     }
+    return false;
 }
 
-void ExternalCompany::delDocument(size_t index, const InternalEmployeePtr& changer)
+bool ExternalCompany::delDocument(size_t index, const InternalEmployeePtr& changer)
 {
     if (this->documents.size() > index) {
-        FilePtr removed = this->documents[index];
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
-            std::make_optional(removed),
+            std::make_optional(this->documents[index]),
             std::nullopt,
             ExternalCompanyFields::Documents,
             ChangeLog::FieldType::FileMetadata,
@@ -476,10 +505,12 @@ void ExternalCompany::delDocument(size_t index, const InternalEmployeePtr& chang
             ChangeLog::Action::Remove
         ));
         this->documents.erase(this->documents.begin() + index);
+        return true;
     }
+    return false;
 }
 
-void ExternalCompany::setSize(const CompanySize size, const InternalEmployeePtr& changer)
+bool ExternalCompany::setSize(const CompanySize size, const InternalEmployeePtr& changer)
 {
     if (this->size != size) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -492,10 +523,12 @@ void ExternalCompany::setSize(const CompanySize size, const InternalEmployeePtr&
             ChangeLog::Action::Change
         ));
         this->size = size;
+        return true;
     }
+    return false;
 }
 
-void ExternalCompany::setVatNumber(
+bool ExternalCompany::setVatNumber(
     const OptionalStr& VAT_number, const InternalEmployeePtr& changer
 )
 {
@@ -510,9 +543,12 @@ void ExternalCompany::setVatNumber(
             ChangeLog::Action::Change
         ));
         this->VAT_number = VAT_number;
+        return true;
     }
+    return false;
 }
-void ExternalCompany::setPreferredContactMethod(
+
+bool ExternalCompany::setPreferredContactMethod(
     const OptionalStr& preferred_contact_method, const InternalEmployeePtr& changer
 )
 {
@@ -528,10 +564,12 @@ void ExternalCompany::setPreferredContactMethod(
             ChangeLog::Action::Change
         ));
         this->preferred_contact_method = preferred_contact_method;
+        return true;
     }
+    return false;
 }
 
-void ExternalCompany::setPaymentTerms(
+bool ExternalCompany::setPaymentTerms(
     const OptionalStr& payment_terms, const InternalEmployeePtr& changer
 )
 {
@@ -546,10 +584,12 @@ void ExternalCompany::setPaymentTerms(
             ChangeLog::Action::Change
         ));
         this->payment_terms = payment_terms;
+        return true;
     }
+    return false;
 }
 
-void ExternalCompany::setPreferredCurrency(
+bool ExternalCompany::setPreferredCurrency(
     const Currencies& preferred_currency, const InternalEmployeePtr& changer
 )
 {
@@ -564,10 +604,12 @@ void ExternalCompany::setPreferredCurrency(
             ChangeLog::Action::Change
         ));
         this->preferred_currency = preferred_currency;
+        return true;
     }
+    return false;
 }
 
-void ExternalCompany::setServiceLevelAgreement(
+bool ExternalCompany::setServiceLevelAgreement(
     const OptionalStr& service_level_agreement, const InternalEmployeePtr& changer
 )
 {
@@ -583,10 +625,12 @@ void ExternalCompany::setServiceLevelAgreement(
             ChangeLog::Action::Change
         ));
         this->service_level_agreement = service_level_agreement;
+        return true;
     }
+    return false;
 }
 
-void ExternalCompany::setPreferredIntegrationTool(
+bool ExternalCompany::setPreferredIntegrationTool(
     const OptionalStr& preferred_integration_tool, const InternalEmployeePtr& changer
 )
 {
@@ -602,18 +646,21 @@ void ExternalCompany::setPreferredIntegrationTool(
             ChangeLog::Action::Change
         ));
         this->preferred_integration_tool = preferred_integration_tool;
+        return true;
     }
+    return false;
 }
 
-void ExternalCompany::setIntegrationStatus(
+bool ExternalCompany::setIntegrationStatus(
     const std::optional<IntegrationStatus>& integration_status, const InternalEmployeePtr& changer
 )
 {
     if (this->integration_status != integration_status) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
-            this->integration_status,
-            integration_status,
+            this->integration_status ? std::make_optional(this->integration_status.value())
+                                     : std::nullopt,
+            integration_status ? std::make_optional(integration_status.value()) : std::nullopt,
             ExternalCompanyFields::IntegrationStatus,
             this->integration_status ? ChangeLog::FieldType::IntegrationStatus
                                      : ChangeLog::FieldType::null,
@@ -622,36 +669,41 @@ void ExternalCompany::setIntegrationStatus(
             ChangeLog::Action::Change
         ));
         this->integration_status = integration_status;
+        return true;
     }
+    return false;
 }
 
-void ExternalCompany::setWinRate(
+bool ExternalCompany::setWinRate(
     const std::optional<double>& win_rate, const InternalEmployeePtr& changer
 )
 {
     if (this->win_rate != win_rate) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
-            this->win_rate,
-            win_rate,
+            this->win_rate ? std::make_optional(this->win_rate.value()) : std::nullopt,
+            win_rate ? std::make_optional(win_rate.value()) : std::nullopt,
             ExternalCompanyFields::WinRate,
             this->win_rate ? ChangeLog::FieldType::Double : ChangeLog::FieldType::null,
             win_rate ? ChangeLog::FieldType::Double : ChangeLog::FieldType::null,
             ChangeLog::Action::Change
         ));
         this->win_rate = win_rate;
+        return true;
     }
+    return false;
 }
 
-void ExternalCompany::setComplianceStatus(
+bool ExternalCompany::setComplianceStatus(
     const std::optional<ComplianceLevel>& compliance_status, const InternalEmployeePtr& changer
 )
 {
     if (this->compliance_status != compliance_status) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
-            this->compliance_status,
-            compliance_status,
+            this->compliance_status ? std::make_optional(this->compliance_status.value())
+                                    : std::nullopt,
+            compliance_status ? std::make_optional(compliance_status.value()) : std::nullopt,
             ExternalCompanyFields::ComplianceStatus,
             this->compliance_status ? ChangeLog::FieldType::ComplianceLevel
                                     : ChangeLog::FieldType::null,
@@ -659,5 +711,7 @@ void ExternalCompany::setComplianceStatus(
             ChangeLog::Action::Change
         ));
         this->compliance_status = compliance_status;
+        return true;
     }
+    return false;
 }

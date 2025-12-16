@@ -49,17 +49,17 @@ public:
 
     /// @name Setters
     /// @{
-    void setType(ReportType type, const InternalEmployeePtr& changer);
-    void setOtherType(const OptionalStr& other_type, const InternalEmployeePtr& changer);
+    bool setType(ReportType type, const InternalEmployeePtr& changer);
+    bool setOtherType(const OptionalStr& other_type, const InternalEmployeePtr& changer);
 
-    void addData(const std::string& data, const InternalEmployeePtr& changer);
-    void delData(size_t index, const InternalEmployeePtr& changer);
+    bool addData(const std::string& data, const InternalEmployeePtr& changer);
+    bool delData(size_t index, const InternalEmployeePtr& changer);
 
-    void addParameter(const StringPair& parameter, const InternalEmployeePtr& changer);
-    void delParameter(size_t index, const InternalEmployeePtr& changer);
+    bool addParameter(const StringPair& parameter, const InternalEmployeePtr& changer);
+    bool delParameter(size_t index, const InternalEmployeePtr& changer);
 
-    void setCreator(const InternalEmployeePtr& creator, const InternalEmployeePtr& changer);
-    void setExportFormat(ExportFormat export_format, const InternalEmployeePtr& changer);
+    bool setCreator(const InternalEmployeePtr& creator, const InternalEmployeePtr& changer);
+    bool setExportFormat(ExportFormat export_format, const InternalEmployeePtr& changer);
     /// @}
 
 private:

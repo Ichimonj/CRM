@@ -117,7 +117,7 @@ auto Client::getLifetimeValue() const -> const std::optional<Money>&
 
 auto Client::getOwnedDeals() const -> const std::vector<DealPtr>& { return this->owned_deals; }
 
-void Client::setOwner(const InternalEmployeePtr& owner, const InternalEmployeePtr& changer)
+bool Client::setOwner(const InternalEmployeePtr& owner, const InternalEmployeePtr& changer)
 {
     if (this->owner != owner) {
         Date update = Date();
@@ -134,10 +134,12 @@ void Client::setOwner(const InternalEmployeePtr& owner, const InternalEmployeePt
         ));
         this->updateAt(update);
         this->owner = owner;
+        return true;
     }
+    return false;
 }
 
-void Client::setType(const ClientType type, const InternalEmployeePtr& changer)
+bool Client::setType(const ClientType type, const InternalEmployeePtr& changer)
 {
     if (this->type != type) {
         Date update = Date();
@@ -147,8 +149,8 @@ void Client::setType(const ClientType type, const InternalEmployeePtr& changer)
             this->other_type ? std::make_optional<ChangeLog::ValueVariant>(
                                    std::make_shared<std::string>(this->other_type.value())
                                )
-                             : std::make_optional(this->type),
-            std::make_optional(type),
+                             : std::make_optional<ChangeLog::ValueVariant>(this->type),
+            std::make_optional<ChangeLog::ValueVariant>(type),
             ClientFields::Type,
             this->other_type ? ChangeLog::FieldType::String : ChangeLog::FieldType::ClientType,
             ChangeLog::FieldType::ClientType,
@@ -158,10 +160,12 @@ void Client::setType(const ClientType type, const InternalEmployeePtr& changer)
         this->updateAt(update);
         this->type       = type;
         this->other_type = std::nullopt;
+        return true;
     }
+    return false;
 }
 
-void Client::setOtherType(const std::string& other_type, const InternalEmployeePtr& changer)
+bool Client::setOtherType(const std::string& other_type, const InternalEmployeePtr& changer)
 {
     if (this->other_type != other_type) {
         Date update = Date();
@@ -171,9 +175,9 @@ void Client::setOtherType(const std::string& other_type, const InternalEmployeeP
             this->other_type ? std::make_optional<ChangeLog::ValueVariant>(
                                    std::make_shared<std::string>(this->other_type.value())
                                )
-                             : std::make_optional(this->type),
-            std::make_shared<std::string>(other_type),
-            ClientFields::OtherType,
+                             : std::make_optional<ChangeLog::ValueVariant>(this->type),
+            std::make_optional<ChangeLog::ValueVariant>(std::make_shared<std::string>(other_type)),
+            ClientFields::Type,
             this->other_type ? ChangeLog::FieldType::String : ChangeLog::FieldType::ClientType,
             ChangeLog::FieldType::String,
             ChangeLog::Action::Change,
@@ -182,10 +186,12 @@ void Client::setOtherType(const std::string& other_type, const InternalEmployeeP
         this->updateAt(update);
         this->other_type = other_type;
         this->type       = ClientType::other;
+        return true;
     }
+    return false;
 }
 
-void Client::setLeadSource(const LeadSource lead_source, const InternalEmployeePtr& changer)
+bool Client::setLeadSource(const LeadSource lead_source, const InternalEmployeePtr& changer)
 {
     if (this->lead_source != lead_source) {
         Date update = Date();
@@ -196,8 +202,8 @@ void Client::setLeadSource(const LeadSource lead_source, const InternalEmployeeP
                 ? std::make_optional<ChangeLog::ValueVariant>(
                       std::make_shared<std::string>(this->other_lead_source.value())
                   )
-                : std::make_optional(this->lead_source),
-            std::make_optional(lead_source),
+                : std::make_optional<ChangeLog::ValueVariant>(this->lead_source),
+            std::make_optional<ChangeLog::ValueVariant>(lead_source),
             ClientFields::LeadSource,
             this->other_lead_source ? ChangeLog::FieldType::String
                                     : ChangeLog::FieldType::LeadSource,
@@ -208,10 +214,12 @@ void Client::setLeadSource(const LeadSource lead_source, const InternalEmployeeP
         this->updateAt(update);
         this->lead_source       = lead_source;
         this->other_lead_source = std::nullopt;
+        return true;
     }
+    return false;
 }
 
-void Client::setOtherLeadSource(
+bool Client::setOtherLeadSource(
     const std::string& other_lead_source, const InternalEmployeePtr& changer
 )
 {
@@ -224,9 +232,11 @@ void Client::setOtherLeadSource(
                 ? std::make_optional<ChangeLog::ValueVariant>(
                       std::make_shared<std::string>(this->other_lead_source.value())
                   )
-                : std::make_optional(this->lead_source),
-            std::make_shared<std::string>(other_lead_source),
-            ClientFields::OtherLeadSource,
+                : std::make_optional<ChangeLog::ValueVariant>(this->lead_source),
+            std::make_optional<ChangeLog::ValueVariant>(
+                std::make_shared<std::string>(other_lead_source)
+            ),
+            ClientFields::LeadSource,
             this->other_lead_source ? ChangeLog::FieldType::String
                                     : ChangeLog::FieldType::LeadSource,
             ChangeLog::FieldType::String,
@@ -236,18 +246,20 @@ void Client::setOtherLeadSource(
         this->updateAt(update);
         this->other_lead_source = other_lead_source;
         this->lead_source       = LeadSource::other;
+        return true;
     }
+    return false;
 }
 
-void Client::setMarketingConsent(const bool marketing_consent, const InternalEmployeePtr& changer)
+bool Client::setMarketingConsent(const bool marketing_consent, const InternalEmployeePtr& changer)
 {
     if (this->marketing_consent != marketing_consent) {
         Date update = Date();
 
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
-            std::make_optional(this->marketing_consent),
-            std::make_optional(marketing_consent),
+            std::make_optional<ChangeLog::ValueVariant>(this->marketing_consent),
+            std::make_optional<ChangeLog::ValueVariant>(marketing_consent),
             ClientFields::MarketingConsent,
             ChangeLog::FieldType::Bool,
             ChangeLog::FieldType::Bool,
@@ -256,10 +268,12 @@ void Client::setMarketingConsent(const bool marketing_consent, const InternalEmp
         ));
         this->updateAt(update);
         this->marketing_consent = marketing_consent;
+        return true;
     }
+    return false;
 }
 
-void Client::setCommunicationChannel(const OptionalStr& channel, const InternalEmployeePtr& changer)
+bool Client::setCommunicationChannel(const OptionalStr& channel, const InternalEmployeePtr& changer)
 {
     if (this->preferred_communication_channel != channel) {
         Date update = Date();
@@ -277,10 +291,12 @@ void Client::setCommunicationChannel(const OptionalStr& channel, const InternalE
         ));
         this->updateAt(update);
         this->preferred_communication_channel = channel;
+        return true;
     }
+    return false;
 }
 
-void Client::setReferralCode(const OptionalStr& code, const InternalEmployeePtr& changer)
+bool Client::setReferralCode(const OptionalStr& code, const InternalEmployeePtr& changer)
 {
     if (this->referral_code != code) {
         Date update = Date();
@@ -297,24 +313,29 @@ void Client::setReferralCode(const OptionalStr& code, const InternalEmployeePtr&
         ));
         this->updateAt(update);
         this->referral_code = code;
+        return true;
     }
+    return false;
 }
 
-void Client::setCustomerAcquisitionCost(
+bool Client::setCustomerAcquisitionCost(
     const std::optional<Money>& money, const InternalEmployeePtr& changer
 )
 {
     if (this->customer_acquisition_cost != money) {
-        Date          update = Date();
-        std::optional old_value =
-            this->customer_acquisition_cost == std::nullopt
-                ? std::nullopt
-                : std::make_optional(std::make_shared<Money>(this->customer_acquisition_cost.value()
-                  ));
+        Date                                   update = Date();
+        std::optional<ChangeLog::ValueVariant> old_value =
+            this->customer_acquisition_cost
+                ? std::make_optional<ChangeLog::ValueVariant>(
+                      std::make_shared<Money>(this->customer_acquisition_cost.value())
+                  )
+                : std::nullopt;
 
-        std::optional new_value = money == std::nullopt
-                                    ? std::nullopt
-                                    : std::make_optional(std::make_shared<Money>(money.value()));
+        std::optional<ChangeLog::ValueVariant> new_value =
+            money
+                ? std::make_optional<ChangeLog::ValueVariant>(std::make_shared<Money>(money.value())
+                  )
+                : std::nullopt;
 
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
@@ -328,20 +349,24 @@ void Client::setCustomerAcquisitionCost(
         ));
         this->updateAt(update);
         this->customer_acquisition_cost = money;
+        return true;
     }
+    return false;
 }
 
-void Client::setLeadStatus(
+bool Client::setLeadStatus(
     const std::optional<LeadStatus>& lead_status, const InternalEmployeePtr& changer
 )
 {
     if (this->lead_status != lead_status) {
-        Date          update    = Date();
-        std::optional old_value = this->lead_status == std::nullopt
-                                    ? std::nullopt
-                                    : std::make_optional(this->lead_status.value());
-        std::optional new_value =
-            lead_status == std::nullopt ? std::nullopt : std::make_optional(lead_status.value());
+        Date                                   update = Date();
+        std::optional<ChangeLog::ValueVariant> old_value =
+            this->lead_status
+                ? std::make_optional<ChangeLog::ValueVariant>(this->lead_status.value())
+                : std::nullopt;
+        std::optional<ChangeLog::ValueVariant> new_value =
+            lead_status ? std::make_optional<ChangeLog::ValueVariant>(lead_status.value())
+                        : std::nullopt;
 
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
@@ -355,10 +380,12 @@ void Client::setLeadStatus(
         ));
         this->updateAt(update);
         this->lead_status = lead_status;
+        return true;
     }
+    return false;
 }
 
-void Client::setLeadScore(
+bool Client::setLeadScore(
     const std::optional<double>& lead_score, const InternalEmployeePtr& changer
 )
 {
@@ -367,8 +394,10 @@ void Client::setLeadScore(
 
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
-            this->lead_score,
-            lead_score,
+            this->lead_score ? std::make_optional<ChangeLog::ValueVariant>(this->lead_score.value())
+                             : std::nullopt,
+            lead_score ? std::make_optional<ChangeLog::ValueVariant>(lead_score.value())
+                       : std::nullopt,
             ClientFields::LeadScore,
             this->lead_score ? ChangeLog::FieldType::Double : ChangeLog::FieldType::null,
             lead_score ? ChangeLog::FieldType::Double : ChangeLog::FieldType::null,
@@ -377,23 +406,27 @@ void Client::setLeadScore(
         ));
         this->updateAt(update);
         this->lead_score = lead_score;
+        return true;
     }
+    return false;
 }
 
-void Client::setAnnualRevenue(
+bool Client::setAnnualRevenue(
     const std::optional<Money>& annual_revenue, const InternalEmployeePtr& changer
 )
 {
     if (this->annual_revenue != annual_revenue) {
-        Date          update = Date();
-        std::optional old_value =
-            this->annual_revenue == std::nullopt
-                ? std::nullopt
-                : std::make_optional(std::make_shared<Money>(this->annual_revenue.value()));
-        std::optional new_value =
-            annual_revenue == std::nullopt
-                ? std::nullopt
-                : std::make_optional(std::make_shared<Money>(annual_revenue.value()));
+        Date                                   update = Date();
+        std::optional<ChangeLog::ValueVariant> old_value =
+            this->annual_revenue ? std::make_optional<ChangeLog::ValueVariant>(
+                                       std::make_shared<Money>(this->annual_revenue.value())
+                                   )
+                                 : std::nullopt;
+        std::optional<ChangeLog::ValueVariant> new_value =
+            annual_revenue ? std::make_optional<ChangeLog::ValueVariant>(
+                                 std::make_shared<Money>(annual_revenue.value())
+                             )
+                           : std::nullopt;
 
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
@@ -407,24 +440,28 @@ void Client::setAnnualRevenue(
         ));
         this->updateAt(update);
         this->annual_revenue = annual_revenue;
+        return true;
     }
+    return false;
 }
 
-void Client::setLifetimeValue(
+bool Client::setLifetimeValue(
     const std::optional<Money>& lifetime_value, const InternalEmployeePtr& changer
 )
 {
     if (this->lifetime_value != lifetime_value) {
-        Date          update = Date();
-        std::optional old_value =
-            this->lifetime_value == std::nullopt
-                ? std::nullopt
-                : std::make_optional(std::make_shared<Money>(this->lifetime_value.value()));
+        Date                                   update = Date();
+        std::optional<ChangeLog::ValueVariant> old_value =
+            this->lifetime_value ? std::make_optional<ChangeLog::ValueVariant>(
+                                       std::make_shared<Money>(this->lifetime_value.value())
+                                   )
+                                 : std::nullopt;
 
-        std::optional new_value =
-            lifetime_value == std::nullopt
-                ? std::nullopt
-                : std::make_optional(std::make_shared<Money>(lifetime_value.value()));
+        std::optional<ChangeLog::ValueVariant> new_value =
+            lifetime_value ? std::make_optional<ChangeLog::ValueVariant>(
+                                 std::make_shared<Money>(lifetime_value.value())
+                             )
+                           : std::nullopt;
 
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
@@ -438,9 +475,12 @@ void Client::setLifetimeValue(
         ));
         this->updateAt(update);
         this->lifetime_value = lifetime_value;
+        return true;
     }
+    return false;
 }
-void Client::addOwnedDeal(const DealPtr& deal, const InternalEmployeePtr& changer)
+
+bool Client::addOwnedDeal(const DealPtr& deal, const InternalEmployeePtr& changer)
 {
     if (std::find(this->owned_deals.begin(), this->owned_deals.end(), deal) ==
         this->owned_deals.end()) {
@@ -449,7 +489,7 @@ void Client::addOwnedDeal(const DealPtr& deal, const InternalEmployeePtr& change
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
             std::nullopt,
-            std::make_optional(deal),
+            std::make_optional<ChangeLog::ValueVariant>(deal),
             ClientFields::OwnedDeals,
             ChangeLog::FieldType::null,
             ChangeLog::FieldType::Deal,
@@ -460,17 +500,19 @@ void Client::addOwnedDeal(const DealPtr& deal, const InternalEmployeePtr& change
         this->updateAt(update);
         this->addRelatedDeals(deal, changer, update);
         this->owned_deals.push_back(deal);
+        return true;
     }
+    return false;
 }
 
-void Client::delOwnedDeal(size_t index, const InternalEmployeePtr& changer)
+bool Client::delOwnedDeal(size_t index, const InternalEmployeePtr& changer)
 {
-    if (this->owned_deals.size() > index) {
+    if (index < this->owned_deals.size()) {
         Date update = Date();
 
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
-            std::make_optional(this->owned_deals[index]),
+            std::make_optional<ChangeLog::ValueVariant>(this->owned_deals[index]),
             std::nullopt,
             ClientFields::OwnedDeals,
             ChangeLog::FieldType::Deal,
@@ -481,10 +523,12 @@ void Client::delOwnedDeal(size_t index, const InternalEmployeePtr& changer)
         this->updateAt(update);
         this->delRelatedDeals(this->owned_deals[index], changer, update);
         this->owned_deals.erase(this->owned_deals.begin() + index);
+        return true;
     }
+    return false;
 }
 
-void Client::addInterestedOffer(
+bool Client::addInterestedOffer(
     const OfferPtr& interested_offer, const InternalEmployeePtr& changer
 )
 {
@@ -496,7 +540,7 @@ void Client::addInterestedOffer(
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
             std::nullopt,
-            std::make_optional(interested_offer),
+            std::make_optional<ChangeLog::ValueVariant>(interested_offer),
             ClientFields::InterestedOffers,
             ChangeLog::FieldType::null,
             ChangeLog::FieldType::Offer,
@@ -505,17 +549,19 @@ void Client::addInterestedOffer(
         ));
         this->updateAt(update);
         this->interested_offers.push_back(interested_offer);
+        return true;
     }
+    return false;
 }
 
-void Client::delInterestedOffer(size_t index, const InternalEmployeePtr& changer)
+bool Client::delInterestedOffer(size_t index, const InternalEmployeePtr& changer)
 {
-    if (this->interested_offers.size() > index) {
+    if (index < this->interested_offers.size()) {
         Date update = Date();
 
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
-            std::make_optional(this->interested_offers[index]),
+            std::make_optional<ChangeLog::ValueVariant>(this->interested_offers[index]),
             std::nullopt,
             ClientFields::InterestedOffers,
             ChangeLog::FieldType::Offer,
@@ -525,5 +571,7 @@ void Client::delInterestedOffer(size_t index, const InternalEmployeePtr& changer
         ));
         this->updateAt(update);
         this->interested_offers.erase(this->interested_offers.begin() + index);
+        return true;
     }
+    return false;
 }

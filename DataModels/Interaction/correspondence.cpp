@@ -3,7 +3,7 @@
 #include "change_log.hpp"
 
 Correspondence::Correspondence(const BigUint& id)
-    :BaseInteraction(id, InteractionType::correspondence)
+    : BaseInteraction(id, InteractionType::correspondence)
 {
 }
 
@@ -60,8 +60,7 @@ auto Correspondence::getMessages() const -> const std::vector<MessagePtr>&
     return this->messages;
 }
 auto Correspondence::getPlatform() const -> const std::string& { return this->platform; }
-
-void Correspondence::addMessage(const MessagePtr& message, const InternalEmployeePtr& changer)
+bool Correspondence::addMessage(const MessagePtr& message, const InternalEmployeePtr& changer)
 {
     if (std::find(this->messages.begin(), this->messages.end(), message) == this->messages.end()) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -74,10 +73,12 @@ void Correspondence::addMessage(const MessagePtr& message, const InternalEmploye
             ChangeLog::Action::Add
         ));
         this->messages.push_back(message);
+        return true;
     }
+    return false;
 }
 
-void Correspondence::delMessage(const size_t id, const InternalEmployeePtr& changer)
+bool Correspondence::delMessage(const size_t id, const InternalEmployeePtr& changer)
 {
     if (this->messages.size() > id) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -90,10 +91,12 @@ void Correspondence::delMessage(const size_t id, const InternalEmployeePtr& chan
             ChangeLog::Action::Remove
         ));
         this->messages.erase(this->messages.begin() + id);
+        return true;
     }
+    return false;
 }
 
-void Correspondence::setPlatform(const std::string& platform, const InternalEmployeePtr& changer)
+bool Correspondence::setPlatform(const std::string& platform, const InternalEmployeePtr& changer)
 {
     if (this->platform != platform) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -107,5 +110,7 @@ void Correspondence::setPlatform(const std::string& platform, const InternalEmpl
             ChangeLog::Action::Change
         ));
         this->platform = platform;
+        return true;
     }
+    return false;
 }

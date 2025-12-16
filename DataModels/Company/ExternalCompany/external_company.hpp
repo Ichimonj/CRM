@@ -94,60 +94,60 @@ public:
 
     /// @name Setters
     /// @{
-    void setType(const CompanyType type, const InternalEmployeePtr& changer);
-    void setOtherType(const OptionalStr& other_type, const InternalEmployeePtr& changer);
-    void setSize(const CompanySize size, const InternalEmployeePtr& changer);
-    void setRating(const Rating rating, const InternalEmployeePtr& changer);
-    void setRiskLevel(const RiskLevel risk_level, const InternalEmployeePtr& changer);
-    void setAccountManager(
+    bool setType(const CompanyType type, const InternalEmployeePtr& changer);
+    bool setOtherType(const OptionalStr& other_type, const InternalEmployeePtr& changer);
+    bool setSize(const CompanySize size, const InternalEmployeePtr& changer);
+    bool setRating(const Rating rating, const InternalEmployeePtr& changer);
+    bool setRiskLevel(const RiskLevel risk_level, const InternalEmployeePtr& changer);
+    bool setAccountManager(
         const InternalEmployeePtr& account_manager, const InternalEmployeePtr& changer
     );
-    void setVatNumber(const OptionalStr& VAT_number, const InternalEmployeePtr& changer);
-    void setLastInteractionDate(
+    bool setVatNumber(const OptionalStr& VAT_number, const InternalEmployeePtr& changer);
+    bool setLastInteractionDate(
         const DatePtr& last_interaction_date, const InternalEmployeePtr& changer
     );
-    void setCreditLimit(const MoneyPtr& credit_limit, const InternalEmployeePtr& changer);
-    void setTotalRevenueGenerated(
+    bool setCreditLimit(const MoneyPtr& credit_limit, const InternalEmployeePtr& changer);
+    bool setTotalRevenueGenerated(
         const MoneyPtr& total_revenue_generated, const InternalEmployeePtr& changer
     );
-    void setOutstandingBalance(
+    bool setOutstandingBalance(
         const MoneyPtr& outstanding_balance, const InternalEmployeePtr& changer
     );
-    void setChurnProbability(
+    bool setChurnProbability(
         const std::optional<double>& churn_probability, const InternalEmployeePtr& changer
     );
-    void setPreferredContactMethod(
+    bool setPreferredContactMethod(
         const OptionalStr& preferred_contact_method, const InternalEmployeePtr& changer
     );
-    void setPaymentTerms(const OptionalStr& payment_terms, const InternalEmployeePtr& changer);
-    void setPreferredCurrency(
+    bool setPaymentTerms(const OptionalStr& payment_terms, const InternalEmployeePtr& changer);
+    bool setPreferredCurrency(
         const Currencies& preferred_currency, const InternalEmployeePtr& changer
     );
-    void setServiceLevelAgreement(
+    bool setServiceLevelAgreement(
         const OptionalStr& service_level_agreement, const InternalEmployeePtr& changer
     );
-    void setPreferredIntegrationTool(
+    bool setPreferredIntegrationTool(
         const OptionalStr& preferred_integration_tool, const InternalEmployeePtr& changer
     );
-    void setIntegrationStatus(
+    bool setIntegrationStatus(
         const std::optional<IntegrationStatus>& integration_status,
         const InternalEmployeePtr&              changer
     );
-    void setWinRate(const std::optional<double>& win_rate, const InternalEmployeePtr& changer);
-    void setComplianceStatus(
+    bool setWinRate(const std::optional<double>& win_rate, const InternalEmployeePtr& changer);
+    bool setComplianceStatus(
         const std::optional<ComplianceLevel>& compliance_status, const InternalEmployeePtr& changer
     );
 
-    void addContact(const ExternalEmployeePtr& contact, const InternalEmployeePtr& changer);
-    void delContact(size_t index, const InternalEmployeePtr& changer);
+    bool addContact(const ExternalEmployeePtr& contact, const InternalEmployeePtr& changer);
+    bool delContact(size_t index, const InternalEmployeePtr& changer);
 
-    void addAssociatedClient(
+    bool addAssociatedClient(
         const ClientPtr& associated_client, const InternalEmployeePtr& changer
     );
-    void delAssociatedClient(size_t index, const InternalEmployeePtr& changer);
+    bool delAssociatedClient(size_t index, const InternalEmployeePtr& changer);
 
-    void addDocument(const FilePtr& document, const InternalEmployeePtr& changer);
-    void delDocument(size_t index, const InternalEmployeePtr& changer);
+    bool addDocument(const FilePtr& document, const InternalEmployeePtr& changer);
+    bool delDocument(size_t index, const InternalEmployeePtr& changer);
     /// @}
 
 private:

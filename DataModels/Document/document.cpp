@@ -51,7 +51,7 @@ auto Document::getChangeLogs() const -> const std::vector<ChangeLogPtr>&
     return this->change_logs;
 }
 
-void Document::setDocumentTitle(const std::string& title, const InternalEmployeePtr& changer)
+bool Document::setDocumentTitle(const std::string& title, const InternalEmployeePtr& changer)
 {
     if (this->title != title) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -64,10 +64,12 @@ void Document::setDocumentTitle(const std::string& title, const InternalEmployee
             ChangeLog::Action::Change
         ));
         this->title = title;
+        return true;
     }
+    return false;
 }
 
-void Document::setDocumentName(const std::string& name, const InternalEmployeePtr& changer)
+bool Document::setDocumentName(const std::string& name, const InternalEmployeePtr& changer)
 {
     if (this->name != name) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -80,10 +82,12 @@ void Document::setDocumentName(const std::string& name, const InternalEmployeePt
             ChangeLog::Action::Change
         ));
         this->name = name;
+        return true;
     }
+    return false;
 }
 
-void Document::setDocumentNumber(const std::string& number, const InternalEmployeePtr& changer)
+bool Document::setDocumentNumber(const std::string& number, const InternalEmployeePtr& changer)
 {
     if (this->number != number) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -97,10 +101,12 @@ void Document::setDocumentNumber(const std::string& number, const InternalEmploy
             ChangeLog::Action::Change
         ));
         this->number = number;
+        return true;
     }
+    return false;
 }
 
-void Document::setDocumentPath(const std::string& path, const InternalEmployeePtr& changer)
+bool Document::setDocumentPath(const std::string& path, const InternalEmployeePtr& changer)
 {
     if (this->path != path) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -113,17 +119,19 @@ void Document::setDocumentPath(const std::string& path, const InternalEmployeePt
             ChangeLog::Action::Change
         ));
         this->path = path;
+        return true;
     }
+    return false;
 }
 
-void Document::setEnteredForce(const DatePtr& date, const InternalEmployeePtr& changer)
+bool Document::setEnteredForce(const DatePtr& date, const InternalEmployeePtr& changer)
 {
     if (this->entered_force == nullptr || date == nullptr) {
         if (this->entered_force == date) {
-            return;
+            return false;
         }
     } else if (*this->entered_force == *date) {
-        return;
+        return false;
     }
 
     this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -136,16 +144,17 @@ void Document::setEnteredForce(const DatePtr& date, const InternalEmployeePtr& c
         ChangeLog::Action::Change
     ));
     this->entered_force = date;
+    return true;
 }
 
-void Document::setStoppedWorking(const DatePtr& date, const InternalEmployeePtr& changer)
+bool Document::setStoppedWorking(const DatePtr& date, const InternalEmployeePtr& changer)
 {
     if (this->stopped_working == nullptr || date == nullptr) {
         if (this->stopped_working == date) {
-            return;
+            return false;
         }
     } else if (*this->stopped_working == *date) {
-        return;
+        return false;
     }
 
     this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -158,9 +167,10 @@ void Document::setStoppedWorking(const DatePtr& date, const InternalEmployeePtr&
         ChangeLog::Action::Change
     ));
     this->stopped_working = date;
+    return true;
 }
 
-void Document::setStatus(const DocumentStatus& status, const InternalEmployeePtr& changer)
+bool Document::setStatus(const DocumentStatus& status, const InternalEmployeePtr& changer)
 {
     if (this->status != status) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -173,10 +183,12 @@ void Document::setStatus(const DocumentStatus& status, const InternalEmployeePtr
             ChangeLog::Action::Change
         ));
         this->status = status;
+        return true;
     }
+    return false;
 }
 
-void Document::setCreatedBy(const InternalEmployeePtr& creator, const InternalEmployeePtr& changer)
+bool Document::setCreatedBy(const InternalEmployeePtr& creator, const InternalEmployeePtr& changer)
 {
     if (this->created_by != creator) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -189,42 +201,48 @@ void Document::setCreatedBy(const InternalEmployeePtr& creator, const InternalEm
             ChangeLog::Action::Change
         ));
         this->created_by = creator;
+        return true;
     }
+    return false;
 }
 
-void Document::addPartner(const PersonPtr& partner, const InternalEmployeePtr& changer)
+bool Document::addPartner(const PersonPtr& partner, const InternalEmployeePtr& changer)
 {
     if (std::find(this->partners.begin(), this->partners.end(), partner) == this->partners.end()) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
             std::nullopt,
             std::make_optional<ChangeLog::ValueVariant>(partner),
-            DocumentFields::Partner,
+            DocumentFields::Partners,
             ChangeLog::FieldType::null,
             ChangeLog::FieldType::Person,
             ChangeLog::Action::Add
         ));
         this->partners.push_back(partner);
+        return true;
     }
+    return false;
 }
 
-void Document::delPartner(const size_t id, const InternalEmployeePtr& changer)
+bool Document::delPartner(const size_t id, const InternalEmployeePtr& changer)
 {
     if (this->partners.size() > id) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
             std::make_optional<ChangeLog::ValueVariant>(this->partners[id]),
             std::nullopt,
-            DocumentFields::Partner,
+            DocumentFields::Partners,
             ChangeLog::FieldType::Person,
             ChangeLog::FieldType::null,
             ChangeLog::Action::Remove
         ));
         this->partners.erase(this->partners.begin() + id);
+        return true;
     }
+    return false;
 }
 
-void Document::addFile(const FilePtr& file, const InternalEmployeePtr& changer)
+bool Document::addFile(const FilePtr& file, const InternalEmployeePtr& changer)
 {
     if (std::find(this->attachment_files.begin(), this->attachment_files.end(), file) ==
         this->attachment_files.end()) {
@@ -238,10 +256,12 @@ void Document::addFile(const FilePtr& file, const InternalEmployeePtr& changer)
             ChangeLog::Action::Add
         ));
         this->attachment_files.push_back(file);
+        return true;
     }
+    return false;
 }
 
-void Document::delFile(const size_t id, const InternalEmployeePtr& changer)
+bool Document::delFile(const size_t id, const InternalEmployeePtr& changer)
 {
     if (this->attachment_files.size() > id) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -254,7 +274,9 @@ void Document::delFile(const size_t id, const InternalEmployeePtr& changer)
             ChangeLog::Action::Remove
         ));
         this->attachment_files.erase(this->attachment_files.begin() + id);
+        return true;
     }
+    return false;
 }
 
 bool Document::operator<(const Document& other) const

@@ -3,14 +3,14 @@
 #include "change_log.hpp"
 
 Report::Report(
-    const BigUint& id,
-    const ReportType& type,
-    const OptionalStr& other_type,
+    const BigUint&                 id,
+    const ReportType&              type,
+    const OptionalStr&             other_type,
     std::vector<std::string>       data,
-    const DatePtr& generated_date,
+    const DatePtr&                 generated_date,
     const std::vector<StringPair>& parameters,
-    const InternalEmployeePtr& creator,
-    const ExportFormat& export_format
+    const InternalEmployeePtr&     creator,
+    const ExportFormat&            export_format
 )
     : id(id)
     , type(type)
@@ -39,7 +39,7 @@ auto Report::getCreator() const -> const InternalEmployeePtr& { return this->cre
 
 auto Report::getExportFormat() const -> const ExportFormat { return this->export_format; }
 
-void Report::setType(ReportType type, const InternalEmployeePtr& changer)
+bool Report::setType(ReportType type, const InternalEmployeePtr& changer)
 {
     if (this->type != type) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -55,12 +55,14 @@ void Report::setType(ReportType type, const InternalEmployeePtr& changer)
         ));
         this->type       = type;
         this->other_type = std::nullopt;
+        return true;
     }
+    return false;
 }
 
-void Report::setOtherType(const OptionalStr& other_type, const InternalEmployeePtr& changer)
+bool Report::setOtherType(const OptionalStr& other_type, const InternalEmployeePtr& changer)
 {
-    if (this->type != type) {
+    if (this->other_type != other_type) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
             this->other_type
@@ -69,15 +71,17 @@ void Report::setOtherType(const OptionalStr& other_type, const InternalEmployeeP
             OPTIONAL_STR_TO_VALUE(other_type),
             ReportFields::Type,
             this->other_type ? ChangeLog::FieldType::String : ChangeLog::FieldType::ReportType,
-            other_type ? ChangeLog::FieldType::String : ChangeLog::FieldType::ReportType,
+            other_type ? ChangeLog::FieldType::String : ChangeLog::FieldType::null,
             ChangeLog::Action::Change
         ));
         this->other_type = other_type;
         this->type       = ReportType::other;
+        return true;
     }
+    return false;
 }
 
-void Report::addData(const std::string& data, const InternalEmployeePtr& changer)
+bool Report::addData(const std::string& data, const InternalEmployeePtr& changer)
 {
     if (std::find(this->data.begin(), this->data.end(), data) == this->data.end()) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -90,10 +94,12 @@ void Report::addData(const std::string& data, const InternalEmployeePtr& changer
             ChangeLog::Action::Add
         ));
         this->data.push_back(data);
+        return true;
     }
+    return false;
 }
 
-void Report::delData(size_t index, const InternalEmployeePtr& changer)
+bool Report::delData(size_t index, const InternalEmployeePtr& changer)
 {
     if (this->data.size() > index) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -106,10 +112,12 @@ void Report::delData(size_t index, const InternalEmployeePtr& changer)
             ChangeLog::Action::Remove
         ));
         this->data.erase(this->data.begin() + index);
+        return true;
     }
+    return false;
 }
 
-void Report::addParameter(const StringPair& parameter, const InternalEmployeePtr& changer)
+bool Report::addParameter(const StringPair& parameter, const InternalEmployeePtr& changer)
 {
     if (std::find(this->parameters.begin(), this->parameters.end(), parameter) ==
         this->parameters.end()) {
@@ -125,10 +133,12 @@ void Report::addParameter(const StringPair& parameter, const InternalEmployeePtr
             ChangeLog::Action::Add
         ));
         this->parameters.push_back(parameter);
+        return true;
     }
+    return false;
 }
 
-void Report::delParameter(size_t index, const InternalEmployeePtr& changer)
+bool Report::delParameter(size_t index, const InternalEmployeePtr& changer)
 {
     if (this->parameters.size() > index) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -145,10 +155,12 @@ void Report::delParameter(size_t index, const InternalEmployeePtr& changer)
             ChangeLog::Action::Remove
         ));
         this->parameters.erase(this->parameters.begin() + index);
+        return true;
     }
+    return false;
 }
 
-void Report::setCreator(const InternalEmployeePtr& creator, const InternalEmployeePtr& changer)
+bool Report::setCreator(const InternalEmployeePtr& creator, const InternalEmployeePtr& changer)
 {
     if (this->creator != creator) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -161,10 +173,12 @@ void Report::setCreator(const InternalEmployeePtr& creator, const InternalEmploy
             ChangeLog::Action::Change
         ));
         this->creator = creator;
+        return true;
     }
+    return false;
 }
 
-void Report::setExportFormat(ExportFormat export_format, const InternalEmployeePtr& changer)
+bool Report::setExportFormat(ExportFormat export_format, const InternalEmployeePtr& changer)
 {
     if (this->export_format != export_format) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -177,6 +191,7 @@ void Report::setExportFormat(ExportFormat export_format, const InternalEmployeeP
             ChangeLog::Action::Change
         ));
         this->export_format = export_format;
+        return true;
     }
+    return false;
 }
-

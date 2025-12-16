@@ -14,8 +14,8 @@ struct PhoneNumber {
 private:
     uint16_t    country_code;  // 8
     uint16_t    area_code;     // 800
-    uint16_t    exchange;     // 555
-    uint16_t    number;       // 3535
+    uint16_t    exchange;      // 555
+    uint16_t    number;        // 3535
 
     std::string phone_number;
 };

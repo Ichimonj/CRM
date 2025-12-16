@@ -14,14 +14,12 @@ CampaignLead::CampaignLead(
 
 void CampaignLead::setConvertDate(const DatePtr& date)
 {
-    if (this->converted_date != date)
-        this->converted_date = date;
+    if (this->converted_date != date) this->converted_date = date;
 }
 
 void CampaignLead::setConversionValue(const std::optional<Money> value)
 {
-    if (this->conversion_value != value)
-        this->conversion_value = value;
+    if (this->conversion_value != value) this->conversion_value = value;
 }
 
 auto CampaignLead::getCampaign() const -> const CampaignPtr& { return this->campaign; }

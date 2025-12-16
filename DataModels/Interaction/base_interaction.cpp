@@ -94,7 +94,7 @@ auto BaseInteraction::getChangeLogs() const -> const std::vector<ChangeLogPtr>&
 {
     return this->change_logs;
 }
-void BaseInteraction::setExternalId(const OptionalStr& id, const InternalEmployeePtr& changer)
+bool BaseInteraction::setExternalId(const OptionalStr& id, const InternalEmployeePtr& changer)
 {
     if (this->external_id != id) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -107,10 +107,12 @@ void BaseInteraction::setExternalId(const OptionalStr& id, const InternalEmploye
             ChangeLog::Action::Change
         ));
         this->external_id = id;
+        return true;
     }
+    return false;
 }
 
-void BaseInteraction::setTitle(const std::string& title, const InternalEmployeePtr& changer)
+bool BaseInteraction::setTitle(const std::string& title, const InternalEmployeePtr& changer)
 {
     if (this->title != title) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -123,10 +125,12 @@ void BaseInteraction::setTitle(const std::string& title, const InternalEmployeeP
             ChangeLog::Action::Change
         ));
         this->title = title;
+        return true;
     }
+    return false;
 }
 
-void BaseInteraction::setDescription(
+bool BaseInteraction::setDescription(
     const OptionalStr& description, const InternalEmployeePtr& changer
 )
 {
@@ -141,10 +145,12 @@ void BaseInteraction::setDescription(
             ChangeLog::Action::Change
         ));
         this->description = description;
+        return true;
     }
+    return false;
 }
 
-void BaseInteraction::setDuration(
+bool BaseInteraction::setDuration(
     const std::optional<TimeDuration>& duration, const InternalEmployeePtr& changer
 )
 {
@@ -167,10 +173,12 @@ void BaseInteraction::setDuration(
             ChangeLog::Action::Change
         ));
         this->interaction_duration = duration;
+        return true;
     }
+    return false;
 }
 
-void BaseInteraction::setPriority(const Priority& priority, const InternalEmployeePtr& changer)
+bool BaseInteraction::setPriority(const Priority& priority, const InternalEmployeePtr& changer)
 {
     if (this->priority != priority) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -183,10 +191,12 @@ void BaseInteraction::setPriority(const Priority& priority, const InternalEmploy
             ChangeLog::Action::Change
         ));
         this->priority = priority;
+        return true;
     }
+    return false;
 }
 
-void BaseInteraction::addTag(const std::string& tag, const InternalEmployeePtr& changer)
+bool BaseInteraction::addTag(const std::string& tag, const InternalEmployeePtr& changer)
 {
     if (std::find(this->tags.begin(), this->tags.end(), tag) == this->tags.end()) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -199,10 +209,12 @@ void BaseInteraction::addTag(const std::string& tag, const InternalEmployeePtr& 
             ChangeLog::Action::Add
         ));
         this->tags.push_back(tag);
+        return true;
     }
+    return false;
 }
 
-void BaseInteraction::delTag(const size_t index, const InternalEmployeePtr& changer)
+bool BaseInteraction::delTag(const size_t index, const InternalEmployeePtr& changer)
 {
     if (this->tags.size() > index) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -217,10 +229,12 @@ void BaseInteraction::delTag(const size_t index, const InternalEmployeePtr& chan
             ChangeLog::Action::Remove
         ));
         this->tags.erase(this->tags.begin() + index);
+        return true;
     }
+    return false;
 }
 
-void BaseInteraction::addResult(const InteractionResult& result, const InternalEmployeePtr& changer)
+bool BaseInteraction::addResult(const InteractionResult& result, const InternalEmployeePtr& changer)
 {
     this->change_logs.emplace_back(std::make_shared<ChangeLog>(
         changer,
@@ -232,9 +246,10 @@ void BaseInteraction::addResult(const InteractionResult& result, const InternalE
         ChangeLog::Action::Add
     ));
     this->results.push_back(result);
+    return true;
 }
 
-void BaseInteraction::delResult(const size_t index, const InternalEmployeePtr& changer)
+bool BaseInteraction::delResult(const size_t index, const InternalEmployeePtr& changer)
 {
     if (this->results.size() > index) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -249,10 +264,12 @@ void BaseInteraction::delResult(const size_t index, const InternalEmployeePtr& c
             ChangeLog::Action::Remove
         ));
         this->results.erase(this->results.begin() + index);
+        return true;
     }
+    return false;
 }
 
-void BaseInteraction::setManager(
+bool BaseInteraction::setManager(
     const InternalEmployeePtr& manager, const InternalEmployeePtr& changer
 )
 {
@@ -267,10 +284,12 @@ void BaseInteraction::setManager(
             ChangeLog::Action::Change
         ));
         this->manager = manager;
+        return true;
     }
+    return false;
 }
 
-void BaseInteraction::addNote(const Note& note, const InternalEmployeePtr& changer)
+bool BaseInteraction::addNote(const Note& note, const InternalEmployeePtr& changer)
 {
     this->change_logs.emplace_back(std::make_shared<ChangeLog>(
         changer,
@@ -282,9 +301,10 @@ void BaseInteraction::addNote(const Note& note, const InternalEmployeePtr& chang
         ChangeLog::Action::Add
     ));
     this->notes.push_back(note);
+    return true;
 }
 
-void BaseInteraction::delNote(const size_t index, const InternalEmployeePtr& changer)
+bool BaseInteraction::delNote(const size_t index, const InternalEmployeePtr& changer)
 {
     if (this->notes.size() > index) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -297,10 +317,12 @@ void BaseInteraction::delNote(const size_t index, const InternalEmployeePtr& cha
             ChangeLog::Action::Remove
         ));
         this->notes.erase(this->notes.begin() + index);
+        return true;
     }
+    return false;
 }
 
-void BaseInteraction::addMoreData(
+bool BaseInteraction::addMoreData(
     const std::string& title, const std::string& data, const InternalEmployeePtr& changer
 )
 {
@@ -318,10 +340,12 @@ void BaseInteraction::addMoreData(
             ChangeLog::Action::Add
         ));
         this->more_data.push_back(pair);
+        return true;
     }
+    return false;
 }
 
-void BaseInteraction::delMoreData(const size_t index, const InternalEmployeePtr& changer)
+bool BaseInteraction::delMoreData(const size_t index, const InternalEmployeePtr& changer)
 {
     if (this->more_data.size() > index) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -338,10 +362,12 @@ void BaseInteraction::delMoreData(const size_t index, const InternalEmployeePtr&
             ChangeLog::Action::Remove
         ));
         this->more_data.erase(this->more_data.begin() + index);
+        return true;
     }
+    return false;
 }
 
-void BaseInteraction::addRelatedInteractions(
+bool BaseInteraction::addRelatedInteractions(
     const InteractionPtr& interaction, const InternalEmployeePtr& changer
 )
 {
@@ -358,10 +384,12 @@ void BaseInteraction::addRelatedInteractions(
             ChangeLog::Action::Add
         ));
         this->related_interactions.push_back(interaction);
+        return true;
     }
+    return false;
 }
 
-void BaseInteraction::delRelatedInteractions(const size_t index, const InternalEmployeePtr& changer)
+bool BaseInteraction::delRelatedInteractions(const size_t index, const InternalEmployeePtr& changer)
 {
     if (this->related_interactions.size() > index) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -374,10 +402,12 @@ void BaseInteraction::delRelatedInteractions(const size_t index, const InternalE
             ChangeLog::Action::Remove
         ));
         this->related_interactions.erase(this->related_interactions.begin() + index);
+        return true;
     }
+    return false;
 }
 
-void BaseInteraction::addAttachmentFiles(const FilePtr& file, const InternalEmployeePtr& changer)
+bool BaseInteraction::addAttachmentFiles(const FilePtr& file, const InternalEmployeePtr& changer)
 {
     if (std::find(this->attachment_files.begin(), this->attachment_files.end(), file) ==
         this->attachment_files.end()) {
@@ -391,10 +421,12 @@ void BaseInteraction::addAttachmentFiles(const FilePtr& file, const InternalEmpl
             ChangeLog::Action::Add
         ));
         this->attachment_files.push_back(file);
+        return true;
     }
+    return false;
 }
 
-void BaseInteraction::delAttachmentFiles(const size_t index, const InternalEmployeePtr& changer)
+bool BaseInteraction::delAttachmentFiles(const size_t index, const InternalEmployeePtr& changer)
 {
     if (this->attachment_files.size() > index) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -407,10 +439,12 @@ void BaseInteraction::delAttachmentFiles(const size_t index, const InternalEmplo
             ChangeLog::Action::Remove
         ));
         this->attachment_files.erase(this->attachment_files.begin() + index);
+        return true;
     }
+    return false;
 }
 
-void BaseInteraction::setSubject(const OptionalStr& subject, const InternalEmployeePtr& changer)
+bool BaseInteraction::setSubject(const OptionalStr& subject, const InternalEmployeePtr& changer)
 {
     if (this->subject != subject) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -423,17 +457,19 @@ void BaseInteraction::setSubject(const OptionalStr& subject, const InternalEmplo
             ChangeLog::Action::Change
         ));
         this->subject = subject;
+        return true;
     }
+    return false;
 }
 
-void BaseInteraction::setStartDate(const DatePtr& date, const InternalEmployeePtr& changer)
+bool BaseInteraction::setStartDate(const DatePtr& date, const InternalEmployeePtr& changer)
 {
     if (this->start_date == nullptr || date == nullptr) {
         if (this->start_date == date) {
-            return;
+            return false;
         }
     } else if (*this->start_date == *date) {
-        return;
+        return false;
     }
 
     this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -446,16 +482,17 @@ void BaseInteraction::setStartDate(const DatePtr& date, const InternalEmployeePt
         ChangeLog::Action::Change
     ));
     this->start_date = date;
+    return true;
 }
 
-void BaseInteraction::setEndDate(const DatePtr& date, const InternalEmployeePtr& changer)
+bool BaseInteraction::setEndDate(const DatePtr& date, const InternalEmployeePtr& changer)
 {
     if (this->end_date == nullptr || date == nullptr) {
         if (this->end_date == date) {
-            return;
+            return false;
         }
     } else if (*this->end_date == *date) {
-        return;
+        return false;
     }
 
     this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -468,13 +505,14 @@ void BaseInteraction::setEndDate(const DatePtr& date, const InternalEmployeePtr&
         ChangeLog::Action::Change
     ));
     this->end_date = date;
+    return true;
 }
 
-void BaseInteraction::setChecker(
+bool BaseInteraction::setChecker(
     const InternalEmployeePtr& checker, const InternalEmployeePtr& changer
 )
 {
-    if (this->checker != checker)
+    if (this->checker != checker) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
             PTR_TO_OPTIONAL(this->checker),
@@ -484,10 +522,13 @@ void BaseInteraction::setChecker(
             checker ? ChangeLog::FieldType::InternalEmployee : ChangeLog::FieldType::null,
             ChangeLog::Action::Change
         ));
-    this->checker = checker;
+        this->checker = checker;
+        return true;
+    }
+    return false;
 }
 
-void BaseInteraction::addParticipants(
+bool BaseInteraction::addParticipants(
     const PersonPtr& participant, const InternalEmployeePtr& changer
 )
 {
@@ -503,10 +544,12 @@ void BaseInteraction::addParticipants(
             ChangeLog::Action::Add
         ));
         this->participants.push_back(participant);
+        return true;
     }
+    return false;
 }
 
-void BaseInteraction::delParticipants(const size_t index, const InternalEmployeePtr& changer)
+bool BaseInteraction::delParticipants(const size_t index, const InternalEmployeePtr& changer)
 {
     if (this->participants.size() > index) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -519,10 +562,12 @@ void BaseInteraction::delParticipants(const size_t index, const InternalEmployee
             ChangeLog::Action::Remove
         ));
         this->participants.erase(this->participants.begin() + index);
+        return true;
     }
+    return false;
 }
 
-void BaseInteraction::addCampaign(const CampaignWPTR& campaign, const InternalEmployeePtr& changer)
+bool BaseInteraction::addCampaign(const CampaignWPTR& campaign, const InternalEmployeePtr& changer)
 {
     auto campaign_ptr = campaign.lock();
     auto is_unique    = std::find_if(
@@ -544,10 +589,12 @@ void BaseInteraction::addCampaign(const CampaignWPTR& campaign, const InternalEm
             ChangeLog::Action::Add
         ));
         this->campaigns.push_back(campaign);
+        return true;
     }
+    return false;
 }
 
-void BaseInteraction::delCampaign(size_t index, const InternalEmployeePtr& changer)
+bool BaseInteraction::delCampaign(size_t index, const InternalEmployeePtr& changer)
 {
     if (this->campaigns.size() > index) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -559,10 +606,13 @@ void BaseInteraction::delCampaign(size_t index, const InternalEmployeePtr& chang
             ChangeLog::FieldType::null,
             ChangeLog::Action::Remove
         ));
+        this->campaigns.erase(this->campaigns.begin() + index);
+        return true;
     }
+    return false;
 }
 
-void BaseInteraction::setType(const InteractionType& type, const InternalEmployeePtr& changer)
+bool BaseInteraction::setType(const InteractionType& type, const InternalEmployeePtr& changer)
 {
     if (this->type != type) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -575,7 +625,9 @@ void BaseInteraction::setType(const InteractionType& type, const InternalEmploye
             ChangeLog::Action::Change
         ));
         this->type = type;
+        return true;
     }
+    return false;
 }
 
 void BaseInteraction::addChangeLog(const ChangeLogPtr& changeLog)

@@ -87,46 +87,46 @@ public:
     /// @}
 
     /// @name Change functions
-    void setName(const std::string& name, const InternalEmployeePtr& changer);
-    void setSurname(const std::string& surname, const InternalEmployeePtr& changer);
-    void setPatronymic(const OptionalStr& patronymic, const InternalEmployeePtr& changer);
-    void setPreferredLanguage(const OptionalStr& lan, const InternalEmployeePtr& changer);
-    void setBirthday(const DatePtr& birthday, const InternalEmployeePtr& changer);
-    void setPhoneNumber(const PhoneNumberPtr& number, const InternalEmployeePtr& changer);
-    void setAddress(const AddressPtr& address, const InternalEmployeePtr& changer);
-    void setEmail(const OptionalStr& email, const InternalEmployeePtr& changer);
-    void setGender(const Gender gender, const InternalEmployeePtr& changer);
+    bool setName(const std::string& name, const InternalEmployeePtr& changer);
+    bool setSurname(const std::string& surname, const InternalEmployeePtr& changer);
+    bool setPatronymic(const OptionalStr& patronymic, const InternalEmployeePtr& changer);
+    bool setPreferredLanguage(const OptionalStr& lan, const InternalEmployeePtr& changer);
+    bool setBirthday(const DatePtr& birthday, const InternalEmployeePtr& changer);
+    bool setPhoneNumber(const PhoneNumberPtr& number, const InternalEmployeePtr& changer);
+    bool setAddress(const AddressPtr& address, const InternalEmployeePtr& changer);
+    bool setEmail(const OptionalStr& email, const InternalEmployeePtr& changer);
+    bool setGender(const Gender gender, const InternalEmployeePtr& changer);
 
-    void addRelatedDeals(
+    bool addRelatedDeals(
         const DealPtr& deal, const InternalEmployeePtr& changer, const Date& change_date = Date()
     );
-    void delRelatedDeals(
+    bool delRelatedDeals(
         const DealPtr& deal, const InternalEmployeePtr& changer, const Date& change_date = Date()
     );
 
-    void addMorePhoneNumber(const PhoneNumber& number, const InternalEmployeePtr& changer);
-    void delMorePhoneNumber(size_t index, const InternalEmployeePtr& changer);
+    bool addMorePhoneNumber(const PhoneNumber& number, const InternalEmployeePtr& changer);
+    bool delMorePhoneNumber(size_t index, const InternalEmployeePtr& changer);
 
-    void addMoreAddress(const Address& address, const InternalEmployeePtr& changer);
-    void delMoreAddress(size_t index, const InternalEmployeePtr& changer);
+    bool addMoreAddress(const Address& address, const InternalEmployeePtr& changer);
+    bool delMoreAddress(size_t index, const InternalEmployeePtr& changer);
 
-    void addMoreEmails(const std::string& email, const InternalEmployeePtr& changer);
-    void delMoreEmails(size_t index, const InternalEmployeePtr& changer);
+    bool addMoreEmails(const std::string& email, const InternalEmployeePtr& changer);
+    bool delMoreEmails(size_t index, const InternalEmployeePtr& changer);
 
-    void addOtherDocument(const DocumentPtr& document, const InternalEmployeePtr& changer);
-    void delOtherDocument(size_t index, const InternalEmployeePtr& changer);
+    bool addOtherDocument(const DocumentPtr& document, const InternalEmployeePtr& changer);
+    bool delOtherDocument(size_t index, const InternalEmployeePtr& changer);
 
-    void addOtherFile(const FileMetadataPtr& file, const InternalEmployeePtr& changer);
-    void delOtherFile(size_t index, const InternalEmployeePtr& changer);
+    bool addOtherFile(const FileMetadataPtr& file, const InternalEmployeePtr& changer);
+    bool delOtherFile(size_t index, const InternalEmployeePtr& changer);
 
-    void addInteraction(const InteractionPtr& interaction, const InternalEmployeePtr& changer);
-    void delInteraction(size_t index, const InternalEmployeePtr& changer);
+    bool addInteraction(const InteractionPtr& interaction, const InternalEmployeePtr& changer);
+    bool delInteraction(size_t index, const InternalEmployeePtr& changer);
 
-    void addTag(const std::string& tag, const InternalEmployeePtr& changer);
-    void delTag(size_t index, const InternalEmployeePtr& changer);
+    bool addTag(const std::string& tag, const InternalEmployeePtr& changer);
+    bool delTag(size_t index, const InternalEmployeePtr& changer);
 
-    void addNote(const Note& note, const InternalEmployeePtr& changer);
-    void delNote(size_t index, const InternalEmployeePtr& changer);
+    bool addNote(const Note& note, const InternalEmployeePtr& changer);
+    bool delNote(size_t index, const InternalEmployeePtr& changer);
 
     void updateAt(const Date& date);
     /// @}

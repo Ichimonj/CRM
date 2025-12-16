@@ -81,28 +81,28 @@ public:
 
     /// @name Change functions
     /// @{
-    void setFromEmailAddress(const std::string& email, const InternalEmployeePtr& changer);
-    void setToEmailAddress(const std::string& email, const InternalEmployeePtr& changer);
-    void setLetterType(EmailLetterType type, const InternalEmployeePtr& changer);
-    void setEmailStatus(EmailStatus status, const InternalEmployeePtr& changer);
+    bool setFromEmailAddress(const std::string& email, const InternalEmployeePtr& changer);
+    bool setToEmailAddress(const std::string& email, const InternalEmployeePtr& changer);
+    bool setLetterType(EmailLetterType type, const InternalEmployeePtr& changer);
+    bool setEmailStatus(EmailStatus status, const InternalEmployeePtr& changer);
 
-    void addCcEmailAddress(const std::string& address, const InternalEmployeePtr& changer);
-    void delCcEmailAddress(size_t id, const InternalEmployeePtr& changer);
+    bool addCcEmailAddress(const std::string& address, const InternalEmployeePtr& changer);
+    bool delCcEmailAddress(size_t id, const InternalEmployeePtr& changer);
 
-    void addBccEmailAddress(const std::string& address, const InternalEmployeePtr& changer);
-    void delBccEmailAddress(size_t id, const InternalEmployeePtr& changer);
+    bool addBccEmailAddress(const std::string& address, const InternalEmployeePtr& changer);
+    bool delBccEmailAddress(size_t id, const InternalEmployeePtr& changer);
 
-    void setSender(const PersonPtr& sender, const InternalEmployeePtr& changer);
-    void setRecipient(const PersonPtr& recipient, const InternalEmployeePtr& changer);
-    void setBody(const std::string& body, const InternalEmployeePtr& changer);
-    void setSendDate(const DatePtr& date, const InternalEmployeePtr& changer);
-    void setReceivedDate(const DatePtr& date, const InternalEmployeePtr& changer);
-    void setReadTime(const DatePtr& time, const InternalEmployeePtr& changer);
-    void setEmailProvider(const std::string& provider, const InternalEmployeePtr& changer);
-    void setPreviousLetter(const EmailLetterPtr& letter, const InternalEmployeePtr& changer);
-    void setNextLetter(const EmailLetterPtr& letter, const InternalEmployeePtr& changer);
-    void setIsRead(bool is_read, const InternalEmployeePtr& changer);
-    void setIsFlagged(bool is_flagged, const InternalEmployeePtr& changer);
+    bool setSender(const PersonPtr& sender, const InternalEmployeePtr& changer);
+    bool setRecipient(const PersonPtr& recipient, const InternalEmployeePtr& changer);
+    bool setBody(const std::string& body, const InternalEmployeePtr& changer);
+    bool setSendDate(const DatePtr& date, const InternalEmployeePtr& changer);
+    bool setReceivedDate(const DatePtr& date, const InternalEmployeePtr& changer);
+    bool setReadTime(const DatePtr& time, const InternalEmployeePtr& changer);
+    bool setEmailProvider(const std::string& provider, const InternalEmployeePtr& changer);
+    bool setPreviousLetter(const EmailLetterPtr& letter, const InternalEmployeePtr& changer);
+    bool setNextLetter(const EmailLetterPtr& letter, const InternalEmployeePtr& changer);
+    bool setIsRead(bool is_read, const InternalEmployeePtr& changer);
+    bool setIsFlagged(bool is_flagged, const InternalEmployeePtr& changer);
     /// @}
 
 private:

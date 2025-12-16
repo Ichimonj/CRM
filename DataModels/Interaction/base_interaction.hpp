@@ -92,50 +92,50 @@ public:
 
     /// @name Change functions
     /// @{
-    void setTitle(const std::string& title, const InternalEmployeePtr& changer);
-    void setExternalId(const OptionalStr& id, const InternalEmployeePtr& changer);
-    void setDescription(const OptionalStr& description, const InternalEmployeePtr& changer);
-    void setDuration(
+    bool setTitle(const std::string& title, const InternalEmployeePtr& changer);
+    bool setExternalId(const OptionalStr& id, const InternalEmployeePtr& changer);
+    bool setDescription(const OptionalStr& description, const InternalEmployeePtr& changer);
+    bool setDuration(
         const std::optional<TimeDuration>& duration, const InternalEmployeePtr& changer
     );
-    void setPriority(const Priority& priority, const InternalEmployeePtr& changer);
+    bool setPriority(const Priority& priority, const InternalEmployeePtr& changer);
 
-    void addTag(const std::string& tag, const InternalEmployeePtr& changer);
-    void delTag(const size_t index, const InternalEmployeePtr& changer);
+    bool addTag(const std::string& tag, const InternalEmployeePtr& changer);
+    bool delTag(const size_t index, const InternalEmployeePtr& changer);
 
-    void addResult(const InteractionResult& result, const InternalEmployeePtr& changer);
-    void delResult(const size_t index, const InternalEmployeePtr& changer);
+    bool addResult(const InteractionResult& result, const InternalEmployeePtr& changer);
+    bool delResult(const size_t index, const InternalEmployeePtr& changer);
 
-    void setManager(const InternalEmployeePtr& manager, const InternalEmployeePtr& changer);
+    bool setManager(const InternalEmployeePtr& manager, const InternalEmployeePtr& changer);
 
-    void addNote(const Note& note, const InternalEmployeePtr& changer);
-    void delNote(const size_t index, const InternalEmployeePtr& changer);
+    bool addNote(const Note& note, const InternalEmployeePtr& changer);
+    bool delNote(const size_t index, const InternalEmployeePtr& changer);
 
-    void addMoreData(
+    bool addMoreData(
         const std::string& title, const std::string& data, const InternalEmployeePtr& changer
     );
-    void delMoreData(const size_t index, const InternalEmployeePtr& changer);
+    bool delMoreData(const size_t index, const InternalEmployeePtr& changer);
 
-    void addRelatedInteractions(
+    bool addRelatedInteractions(
         const InteractionPtr& interaction, const InternalEmployeePtr& changer
     );
-    void delRelatedInteractions(const size_t index, const InternalEmployeePtr& changer);
+    bool delRelatedInteractions(const size_t index, const InternalEmployeePtr& changer);
 
-    void addAttachmentFiles(const FilePtr& file, const InternalEmployeePtr& changer);
-    void delAttachmentFiles(const size_t index, const InternalEmployeePtr& changer);
+    bool addAttachmentFiles(const FilePtr& file, const InternalEmployeePtr& changer);
+    bool delAttachmentFiles(const size_t index, const InternalEmployeePtr& changer);
 
-    void setSubject(const OptionalStr& subject, const InternalEmployeePtr& changer);
-    void setStartDate(const DatePtr& date, const InternalEmployeePtr& changer);
-    void setEndDate(const DatePtr& date, const InternalEmployeePtr& changer);
-    void setChecker(const InternalEmployeePtr& checker, const InternalEmployeePtr& changer);
+    bool setSubject(const OptionalStr& subject, const InternalEmployeePtr& changer);
+    bool setStartDate(const DatePtr& date, const InternalEmployeePtr& changer);
+    bool setEndDate(const DatePtr& date, const InternalEmployeePtr& changer);
+    bool setChecker(const InternalEmployeePtr& checker, const InternalEmployeePtr& changer);
 
-    void addParticipants(const PersonPtr& participant, const InternalEmployeePtr& changer);
-    void delParticipants(const size_t index, const InternalEmployeePtr& changer);
+    bool addParticipants(const PersonPtr& participant, const InternalEmployeePtr& changer);
+    bool delParticipants(const size_t index, const InternalEmployeePtr& changer);
 
-    void addCampaign(const CampaignWPTR& campaign, const InternalEmployeePtr& changer);
-    void delCampaign(size_t index, const InternalEmployeePtr& changer);
+    bool addCampaign(const CampaignWPTR& campaign, const InternalEmployeePtr& changer);
+    bool delCampaign(size_t index, const InternalEmployeePtr& changer);
 
-    void setType(const InteractionType& type, const InternalEmployeePtr& changer);
+    bool setType(const InteractionType& type, const InternalEmployeePtr& changer);
     /// @}
 
     void addChangeLog(const ChangeLogPtr& changeLog);

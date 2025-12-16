@@ -72,33 +72,33 @@ public:
 
     /// @name Change functions
     /// @{
-    void setTitle(const std::string& title, const InternalEmployeePtr& changer);
-    void setDescription(const OptionalStr& description, const InternalEmployeePtr& changer);
-    void setSubject(const OptionalStr& subject, const InternalEmployeePtr& changer);
-    void setStatus(const Status& status, const InternalEmployeePtr& changer);
-    void setPriority(const Priority& priority, const InternalEmployeePtr& changer);
-    void setDeadline(const DatePtr& deadline, const InternalEmployeePtr& changer);
-    void setStartDate(const DatePtr& start_date, const InternalEmployeePtr& changer);
-    void setETC(const DurationPtr& ETC, const InternalEmployeePtr& changer);
-    void setATS(const DurationPtr& ATS, const InternalEmployeePtr& changer);
-    void setManager(const InternalEmployeePtr& manager, const InternalEmployeePtr& changer);
+    bool setTitle(const std::string& title, const InternalEmployeePtr& changer);
+    bool setDescription(const OptionalStr& description, const InternalEmployeePtr& changer);
+    bool setSubject(const OptionalStr& subject, const InternalEmployeePtr& changer);
+    bool setStatus(const Status& status, const InternalEmployeePtr& changer);
+    bool setPriority(const Priority& priority, const InternalEmployeePtr& changer);
+    bool setDeadline(const DatePtr& deadline, const InternalEmployeePtr& changer);
+    bool setStartDate(const DatePtr& start_date, const InternalEmployeePtr& changer);
+    bool setETC(const DurationPtr& ETC, const InternalEmployeePtr& changer);
+    bool setATS(const DurationPtr& ATS, const InternalEmployeePtr& changer);
+    bool setManager(const InternalEmployeePtr& manager, const InternalEmployeePtr& changer);
 
-    void addTask(const TaskPtr& task, const InternalEmployeePtr& changer);
-    void delTask(size_t index, const InternalEmployeePtr& changer);
+    bool addTask(const TaskPtr& task, const InternalEmployeePtr& changer);
+    bool delTask(size_t index, const InternalEmployeePtr& changer);
 
-    void addFile(const FilePtr& file, const InternalEmployeePtr& changer);
-    void delFile(size_t index, const InternalEmployeePtr& changer);
+    bool addFile(const FilePtr& file, const InternalEmployeePtr& changer);
+    bool delFile(size_t index, const InternalEmployeePtr& changer);
 
-    void addNote(const std::string& note, const InternalEmployeePtr& changer);
-    void delNote(size_t index, const InternalEmployeePtr& changer);
+    bool addNote(const std::string& note, const InternalEmployeePtr& changer);
+    bool delNote(size_t index, const InternalEmployeePtr& changer);
 
-    void addMoreData(
+    bool addMoreData(
         const std::string& title, const std::string& data, const InternalEmployeePtr& changer
     );
-    void delMoreData(size_t index, const InternalEmployeePtr& changer);
+    bool delMoreData(size_t index, const InternalEmployeePtr& changer);
 
-    void addTeemMember(const PersonPtr& member, const InternalEmployeePtr& changer);
-    void delTeemMember(size_t index, const InternalEmployeePtr& changer);
+    bool addTeemMember(const PersonPtr& member, const InternalEmployeePtr& changer);
+    bool delTeemMember(size_t index, const InternalEmployeePtr& changer);
     /// @}
 
 private:

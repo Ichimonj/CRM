@@ -50,15 +50,15 @@ public:
 
     /// @name Change functions
     /// @{
-    void setNickname(const std::string& nickname, const InternalEmployeePtr& changer);
-    void setAuthor(const PersonPtr& author, const InternalEmployeePtr& changer);
-    void setCommentary(const std::string& commentary, const InternalEmployeePtr& changer);
-    void setAnswerTo(
+    bool setNickname(const std::string& nickname, const InternalEmployeePtr& changer);
+    bool setAuthor(const PersonPtr& author, const InternalEmployeePtr& changer);
+    bool setCommentary(const std::string& commentary, const InternalEmployeePtr& changer);
+    bool setAnswerTo(
         const CommentarySocialNetworksPtr& answer_to, const InternalEmployeePtr& changer
     );
-    void setAnswer(const CommentarySocialNetworksPtr& answer, const InternalEmployeePtr& changer);
-    void setDateSending(const Date& date, const InternalEmployeePtr& changer);
-    void setIsFirst(bool first, const InternalEmployeePtr& changer);
+    bool setAnswer(const CommentarySocialNetworksPtr& answer, const InternalEmployeePtr& changer);
+    bool setDateSending(const Date& date, const InternalEmployeePtr& changer);
+    bool setIsFirst(bool first, const InternalEmployeePtr& changer);
     /// @}
 
 private:

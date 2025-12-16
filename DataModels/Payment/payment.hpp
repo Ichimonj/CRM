@@ -77,27 +77,27 @@ struct Payment {
 
     /// @name Change functions
     /// @{
-    void setRequestedAmount(const MoneyPtr& requested_amount, const InternalEmployeePtr& changer);
-    void setSendingAmount(const MoneyPtr& sending_amount, const InternalEmployeePtr& changer);
-    void setReceivedAmount(const MoneyPtr& received_amount, const InternalEmployeePtr& changer);
-    void setTaxAmount(const MoneyPtr& tax_amount, const InternalEmployeePtr& changer);
-    void setCurrency(const Currencies& currency, const InternalEmployeePtr& changer);
-    void setSendingDate(const DatePtr& sending_date, const InternalEmployeePtr& changer);
-    void setReceivedDate(const DatePtr& received_date, const InternalEmployeePtr& changer);
-    void setCreationDate(const DatePtr& creation_date, const InternalEmployeePtr& changer);
-    void setPaymentStatus(const PaymentStatus status, const InternalEmployeePtr& changer);
-    void setPaymentMethod(const OptionalStr& payment_method, const InternalEmployeePtr& changer);
-    void setDeal(const WDealPtr& deal, const InternalEmployeePtr& changer);
-    void setPayer(const PersonPtr& payer, const InternalEmployeePtr& changer);
-    void setPayerCompany(const CompanyPtr& payer_company, const InternalEmployeePtr& changer);
-    void setInvoiceNumber(const OptionalStr& invoice_number, const InternalEmployeePtr& changer);
-    void setTransactionId(const OptionalStr& transaction_id, const InternalEmployeePtr& changer);
-    void addDocument(const DocumentPtr& document, const InternalEmployeePtr& changer);
-    void delDocument(size_t index, const InternalEmployeePtr& changer);
-    void addComment(const std::string& comment, const InternalEmployeePtr& changer);
-    void delComment(size_t index, const InternalEmployeePtr& changer);
-    void setPaymentPurpose(const OptionalStr& payment_purpose, const InternalEmployeePtr& changer);
-    void setCreatedBy(const InternalEmployeePtr& created_by, const InternalEmployeePtr& changer);
+    bool setRequestedAmount(const MoneyPtr& requested_amount, const InternalEmployeePtr& changer);
+    bool setSendingAmount(const MoneyPtr& sending_amount, const InternalEmployeePtr& changer);
+    bool setReceivedAmount(const MoneyPtr& received_amount, const InternalEmployeePtr& changer);
+    bool setTaxAmount(const MoneyPtr& tax_amount, const InternalEmployeePtr& changer);
+    bool setCurrency(const Currencies& currency, const InternalEmployeePtr& changer);
+    bool setSendingDate(const DatePtr& sending_date, const InternalEmployeePtr& changer);
+    bool setReceivedDate(const DatePtr& received_date, const InternalEmployeePtr& changer);
+    bool setCreationDate(const DatePtr& creation_date, const InternalEmployeePtr& changer);
+    bool setPaymentStatus(const PaymentStatus status, const InternalEmployeePtr& changer);
+    bool setPaymentMethod(const OptionalStr& payment_method, const InternalEmployeePtr& changer);
+    bool setDeal(const WDealPtr& deal, const InternalEmployeePtr& changer);
+    bool setPayer(const PersonPtr& payer, const InternalEmployeePtr& changer);
+    bool setPayerCompany(const CompanyPtr& payer_company, const InternalEmployeePtr& changer);
+    bool setInvoiceNumber(const OptionalStr& invoice_number, const InternalEmployeePtr& changer);
+    bool setTransactionId(const OptionalStr& transaction_id, const InternalEmployeePtr& changer);
+    bool addDocument(const DocumentPtr& document, const InternalEmployeePtr& changer);
+    bool delDocument(size_t index, const InternalEmployeePtr& changer);
+    bool addComment(const std::string& comment, const InternalEmployeePtr& changer);
+    bool delComment(size_t index, const InternalEmployeePtr& changer);
+    bool setPaymentPurpose(const OptionalStr& payment_purpose, const InternalEmployeePtr& changer);
+    bool setCreatedBy(const InternalEmployeePtr& created_by, const InternalEmployeePtr& changer);
     /// @}
 
 private:

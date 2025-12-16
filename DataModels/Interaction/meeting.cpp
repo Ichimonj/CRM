@@ -109,7 +109,7 @@ auto Meeting::getCreatedDate() const -> const Date& { return this->created_date;
 auto Meeting::getIsConfirmed() const -> bool { return this->is_confirmed; }
 auto Meeting::getIsVirtual() const -> bool { return this->is_virtual; }
 
-void Meeting::setLocation(const AddressPtr& location, const InternalEmployeePtr& changer)
+bool Meeting::setLocation(const AddressPtr& location, const InternalEmployeePtr& changer)
 {
     if (this->location != location) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -122,10 +122,12 @@ void Meeting::setLocation(const AddressPtr& location, const InternalEmployeePtr&
             ChangeLog::Action::Change
         ));
         this->location = location;
+        return true;
     }
+    return false;
 }
 
-void Meeting::setMeetingStatus(const MeetingStatus status, const InternalEmployeePtr& changer)
+bool Meeting::setMeetingStatus(const MeetingStatus status, const InternalEmployeePtr& changer)
 {
     if (this->meeting_status != status) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -138,10 +140,12 @@ void Meeting::setMeetingStatus(const MeetingStatus status, const InternalEmploye
             ChangeLog::Action::Change
         ));
         this->meeting_status = status;
+        return true;
     }
+    return false;
 }
 
-void Meeting::setMeetingType(const MeetingType type, const InternalEmployeePtr& changer)
+bool Meeting::setMeetingType(const MeetingType type, const InternalEmployeePtr& changer)
 {
     if (this->meeting_type != type) {
         bool isOtherType = !this->other_type.empty();
@@ -160,10 +164,12 @@ void Meeting::setMeetingType(const MeetingType type, const InternalEmployeePtr& 
         ));
         this->meeting_type = type;
         this->other_type.clear();
+        return true;
     }
+    return false;
 }
 
-void Meeting::addOutcome(const MeetingOutcome outcome, const InternalEmployeePtr& changer)
+bool Meeting::addOutcome(const MeetingOutcome outcome, const InternalEmployeePtr& changer)
 {
     if (std::find(this->outcomes.begin(), this->outcomes.end(), outcome) == this->outcomes.end()) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -176,10 +182,12 @@ void Meeting::addOutcome(const MeetingOutcome outcome, const InternalEmployeePtr
             ChangeLog::Action::Add
         ));
         this->outcomes.push_back(outcome);
+        return true;
     }
+    return false;
 }
 
-void Meeting::delOutcome(const size_t id, const InternalEmployeePtr& changer)
+bool Meeting::delOutcome(const size_t id, const InternalEmployeePtr& changer)
 {
     if (this->outcomes.size() > id) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -192,10 +200,12 @@ void Meeting::delOutcome(const size_t id, const InternalEmployeePtr& changer)
             ChangeLog::Action::Remove
         ));
         this->outcomes.erase(this->outcomes.begin() + id);
+        return true;
     }
+    return false;
 }
 
-void Meeting::addOtherOutcome(const std::string& outcome, const InternalEmployeePtr& changer)
+bool Meeting::addOtherOutcome(const std::string& outcome, const InternalEmployeePtr& changer)
 {
     if (std::find(this->other_outcomes.begin(), this->other_outcomes.end(), outcome) ==
         this->other_outcomes.end()) {
@@ -209,10 +219,12 @@ void Meeting::addOtherOutcome(const std::string& outcome, const InternalEmployee
             ChangeLog::Action::Add
         ));
         this->other_outcomes.push_back(outcome);
+        return true;
     }
+    return false;
 }
 
-void Meeting::delOtherOutcome(const size_t id, const InternalEmployeePtr& changer)
+bool Meeting::delOtherOutcome(const size_t id, const InternalEmployeePtr& changer)
 {
     if (this->other_outcomes.size() > id) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -227,10 +239,12 @@ void Meeting::delOtherOutcome(const size_t id, const InternalEmployeePtr& change
             ChangeLog::Action::Remove
         ));
         this->other_outcomes.erase(this->other_outcomes.begin() + id);
+        return true;
     }
+    return false;
 }
 
-void Meeting::setOtherType(const std::string& type, const InternalEmployeePtr& changer)
+bool Meeting::setOtherType(const std::string& type, const InternalEmployeePtr& changer)
 {
     if (this->other_type != type) {
         bool isOtherType = !this->other_type.empty();
@@ -242,17 +256,19 @@ void Meeting::setOtherType(const std::string& type, const InternalEmployeePtr& c
                           )
                         : std::make_optional<ChangeLog::ValueVariant>(this->meeting_type),
             std::make_optional<ChangeLog::ValueVariant>(std::make_shared<std::string>(type)),
-            MeetingFields::OtherType,
+            MeetingFields::MeetingType,
             isOtherType ? ChangeLog::FieldType::String : ChangeLog::FieldType::MeetingType,
             ChangeLog::FieldType::String,
             ChangeLog::Action::Change
         ));
         this->other_type   = type;
         this->meeting_type = MeetingType::Other;
+        return true;
     }
+    return false;
 }
 
-void Meeting::setRecord(const std::string& record, const InternalEmployeePtr& changer)
+bool Meeting::setRecord(const std::string& record, const InternalEmployeePtr& changer)
 {
     if (this->record != record) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -266,10 +282,12 @@ void Meeting::setRecord(const std::string& record, const InternalEmployeePtr& ch
             ChangeLog::Action::Change
         ));
         this->record = record;
+        return true;
     }
+    return false;
 }
 
-void Meeting::addClient(const ClientPtr& client, const InternalEmployeePtr& changer)
+bool Meeting::addClient(const ClientPtr& client, const InternalEmployeePtr& changer)
 {
     if (std::find(this->clients.begin(), this->clients.end(), client) == this->clients.end()) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -282,10 +300,12 @@ void Meeting::addClient(const ClientPtr& client, const InternalEmployeePtr& chan
             ChangeLog::Action::Add
         ));
         this->clients.push_back(client);
+        return true;
     }
+    return false;
 }
 
-void Meeting::delClient(const size_t id, const InternalEmployeePtr& changer)
+bool Meeting::delClient(const size_t id, const InternalEmployeePtr& changer)
 {
     if (this->clients.size() > id) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -298,10 +318,12 @@ void Meeting::delClient(const size_t id, const InternalEmployeePtr& changer)
             ChangeLog::Action::Remove
         ));
         this->clients.erase(this->clients.begin() + id);
+        return true;
     }
+    return false;
 }
 
-void Meeting::addEmployee(const InternalEmployeePtr& employee, const InternalEmployeePtr& changer)
+bool Meeting::addEmployee(const InternalEmployeePtr& employee, const InternalEmployeePtr& changer)
 {
     if (std::find(this->employees.begin(), this->employees.end(), employee) ==
         this->employees.end()) {
@@ -315,10 +337,12 @@ void Meeting::addEmployee(const InternalEmployeePtr& employee, const InternalEmp
             ChangeLog::Action::Add
         ));
         this->employees.push_back(employee);
+        return true;
     }
+    return false;
 }
 
-void Meeting::delEmployee(const size_t id, const InternalEmployeePtr& changer)
+bool Meeting::delEmployee(const size_t id, const InternalEmployeePtr& changer)
 {
     if (this->employees.size() > id) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -331,10 +355,12 @@ void Meeting::delEmployee(const size_t id, const InternalEmployeePtr& changer)
             ChangeLog::Action::Remove
         ));
         this->employees.erase(this->employees.begin() + id);
+        return true;
     }
+    return false;
 }
 
-void Meeting::addInvitee(const PersonPtr& invitee, const InternalEmployeePtr& changer)
+bool Meeting::addInvitee(const PersonPtr& invitee, const InternalEmployeePtr& changer)
 {
     if (std::find(this->invitees.begin(), this->invitees.end(), invitee) == this->invitees.end()) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -347,10 +373,12 @@ void Meeting::addInvitee(const PersonPtr& invitee, const InternalEmployeePtr& ch
             ChangeLog::Action::Add
         ));
         this->invitees.push_back(invitee);
+        return true;
     }
+    return false;
 }
 
-void Meeting::delInvitee(const size_t id, const InternalEmployeePtr& changer)
+bool Meeting::delInvitee(const size_t id, const InternalEmployeePtr& changer)
 {
     if (this->invitees.size() > id) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -363,10 +391,12 @@ void Meeting::delInvitee(const size_t id, const InternalEmployeePtr& changer)
             ChangeLog::Action::Remove
         ));
         this->invitees.erase(this->invitees.begin() + id);
+        return true;
     }
+    return false;
 }
 
-void Meeting::setPreviousMeeting(const MeetingPtr& meeting, const InternalEmployeePtr& changer)
+bool Meeting::setPreviousMeeting(const MeetingPtr& meeting, const InternalEmployeePtr& changer)
 {
     if (this->previous_meeting != meeting) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -379,10 +409,12 @@ void Meeting::setPreviousMeeting(const MeetingPtr& meeting, const InternalEmploy
             ChangeLog::Action::Change
         ));
         this->previous_meeting = meeting;
+        return true;
     }
+    return false;
 }
 
-void Meeting::setNextMeeting(const MeetingPtr& meeting, const InternalEmployeePtr& changer)
+bool Meeting::setNextMeeting(const MeetingPtr& meeting, const InternalEmployeePtr& changer)
 {
     if (this->next_meeting != meeting) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -395,10 +427,12 @@ void Meeting::setNextMeeting(const MeetingPtr& meeting, const InternalEmployeePt
             ChangeLog::Action::Change
         ));
         this->next_meeting = meeting;
+        return true;
     }
+    return false;
 }
 
-void Meeting::setIsConfirmed(bool is_confirmed, const InternalEmployeePtr& changer)
+bool Meeting::setIsConfirmed(bool is_confirmed, const InternalEmployeePtr& changer)
 {
     if (this->is_confirmed != is_confirmed) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -411,10 +445,12 @@ void Meeting::setIsConfirmed(bool is_confirmed, const InternalEmployeePtr& chang
             ChangeLog::Action::Change
         ));
         this->is_confirmed = is_confirmed;
+        return true;
     }
+    return false;
 }
 
-void Meeting::setIsVirtual(bool is_virtual, const InternalEmployeePtr& changer)
+bool Meeting::setIsVirtual(bool is_virtual, const InternalEmployeePtr& changer)
 {
     if (this->is_virtual != is_virtual) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -427,5 +463,7 @@ void Meeting::setIsVirtual(bool is_virtual, const InternalEmployeePtr& changer)
             ChangeLog::Action::Change
         ));
         this->is_virtual = is_virtual;
+        return true;
     }
+    return false;
 }

@@ -18,7 +18,7 @@ public:
     void setConvertDate(const DatePtr& date);
     void setConversionValue(const std::optional<Money> value);
     /// @}
-    
+
     /// @name Getters
     /// @{
     auto getCampaign() const -> const CampaignPtr&;

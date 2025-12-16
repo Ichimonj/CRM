@@ -106,7 +106,7 @@ auto Person::getTags() const -> const std::vector<std::string>& { return this->t
 auto Person::getNotes() const -> const std::vector<Note>& { return this->notes; }
 auto Person::getChangeLogs() const -> const std::vector<ChangeLogPtr>& { return this->change_logs; }
 
-void Person::setName(const std::string& name, const InternalEmployeePtr& changer)
+bool Person::setName(const std::string& name, const InternalEmployeePtr& changer)
 {
     if (this->name != name) {
         Date update     = Date();
@@ -122,10 +122,12 @@ void Person::setName(const std::string& name, const InternalEmployeePtr& changer
             update
         ));
         this->name = name;
+        return true;
     }
+    return false;
 }
 
-void Person::setSurname(const std::string& surname, const InternalEmployeePtr& changer)
+bool Person::setSurname(const std::string& surname, const InternalEmployeePtr& changer)
 {
     if (this->surname != surname) {
         Date update     = Date();
@@ -141,10 +143,12 @@ void Person::setSurname(const std::string& surname, const InternalEmployeePtr& c
             update
         ));
         this->surname = surname;
+        return true;
     }
+    return false;
 }
 
-void Person::setPatronymic(const OptionalStr& patronymic, const InternalEmployeePtr& changer)
+bool Person::setPatronymic(const OptionalStr& patronymic, const InternalEmployeePtr& changer)
 {
     if (this->patronymic != patronymic) {
         Date update     = Date();
@@ -161,10 +165,12 @@ void Person::setPatronymic(const OptionalStr& patronymic, const InternalEmployee
             update
         ));
         this->patronymic = patronymic;
+        return true;
     }
+    return false;
 }
 
-void Person::setPreferredLanguage(const OptionalStr& lan, const InternalEmployeePtr& changer)
+bool Person::setPreferredLanguage(const OptionalStr& lan, const InternalEmployeePtr& changer)
 {
     if (this->preferred_language != lan) {
         Date update     = Date();
@@ -181,43 +187,49 @@ void Person::setPreferredLanguage(const OptionalStr& lan, const InternalEmployee
             update
         ));
         this->preferred_language = lan;
+        return true;
     }
+    return false;
 }
 
-void Person::setBirthday(const DatePtr& birthday, const InternalEmployeePtr& changer)
+bool Person::setBirthday(const DatePtr& birthday, const InternalEmployeePtr& changer)
 {
+    bool isChanged = false;
+
     if (this->birthday == nullptr || birthday == nullptr) {
-        if (this->birthday == birthday) {
-            return;
-        }
-    } else if (*this->birthday == *birthday) {
-        return;
+        isChanged = (this->birthday != birthday);
+    } else {
+        isChanged = !(*this->birthday == *birthday);
     }
 
-    Date update     = Date();
-    this->update_at = update;
+    if (isChanged) {
+        Date update     = Date();
+        this->update_at = update;
 
-    this->change_logs.emplace_back(std::make_shared<ChangeLog>(
-        changer,
-        PTR_TO_OPTIONAL(this->birthday),
-        PTR_TO_OPTIONAL(birthday),
-        PersonFields::Birthday,
-        this->birthday ? ChangeLog::FieldType::Date : ChangeLog::FieldType::null,
-        birthday ? ChangeLog::FieldType::Date : ChangeLog::FieldType::null,
-        ChangeLog::Action::Change,
-        update
-    ));
-    this->birthday = birthday;
+        this->change_logs.emplace_back(std::make_shared<ChangeLog>(
+            changer,
+            PTR_TO_OPTIONAL(this->birthday),
+            PTR_TO_OPTIONAL(birthday),
+            PersonFields::Birthday,
+            this->birthday ? ChangeLog::FieldType::Date : ChangeLog::FieldType::null,
+            birthday ? ChangeLog::FieldType::Date : ChangeLog::FieldType::null,
+            ChangeLog::Action::Change,
+            update
+        ));
+        this->birthday = birthday;
+        return true;
+    }
+    return false;
 }
 
-void Person::setPhoneNumber(const PhoneNumberPtr& number, const InternalEmployeePtr& changer)
+bool Person::setPhoneNumber(const PhoneNumberPtr& number, const InternalEmployeePtr& changer)
 {
     if (this->phone_number == nullptr || number == nullptr) {
         if (this->phone_number == number) {
-            return;
+            return false;
         }
     } else if (*this->phone_number == *number) {
-        return;
+        return false;
     }
 
     Date update     = Date();
@@ -234,16 +246,17 @@ void Person::setPhoneNumber(const PhoneNumberPtr& number, const InternalEmployee
         update
     ));
     this->phone_number = number;
+    return true;
 }
 
-void Person::setAddress(const AddressPtr& address, const InternalEmployeePtr& changer)
+bool Person::setAddress(const AddressPtr& address, const InternalEmployeePtr& changer)
 {
     if (this->address == nullptr || address == nullptr) {
         if (this->address == address) {
-            return;
+            return false;
         }
     } else if (*this->address == *address) {
-        return;
+        return false;
     }
 
     Date update     = Date();
@@ -260,9 +273,10 @@ void Person::setAddress(const AddressPtr& address, const InternalEmployeePtr& ch
         update
     ));
     this->address = address;
+    return true;
 }
 
-void Person::setEmail(const OptionalStr& email, const InternalEmployeePtr& changer)
+bool Person::setEmail(const OptionalStr& email, const InternalEmployeePtr& changer)
 {
     if (this->email != email) {
         Date update     = Date();
@@ -279,10 +293,12 @@ void Person::setEmail(const OptionalStr& email, const InternalEmployeePtr& chang
             update
         ));
         this->email = email;
+        return true;
     }
+    return false;
 }
 
-void Person::setGender(const Gender gender, const InternalEmployeePtr& changer)
+bool Person::setGender(const Gender gender, const InternalEmployeePtr& changer)
 {
     if (this->gender != gender) {
         Date update     = Date();
@@ -299,10 +315,12 @@ void Person::setGender(const Gender gender, const InternalEmployeePtr& changer)
             update
         ));
         this->gender = gender;
+        return true;
     }
+    return false;
 }
 
-void Person::addRelatedDeals(
+bool Person::addRelatedDeals(
     const DealPtr& deal, const InternalEmployeePtr& changer, const Date& change_date
 )
 {
@@ -321,10 +339,12 @@ void Person::addRelatedDeals(
             change_date
         ));
         this->related_deals.push_back(deal);
+        return true;
     }
+    return false;
 }
 
-void Person::delRelatedDeals(
+bool Person::delRelatedDeals(
     const DealPtr& deal, const InternalEmployeePtr& changer, const Date& change_date
 )
 {
@@ -342,10 +362,12 @@ void Person::delRelatedDeals(
             change_date
         ));
         this->related_deals.erase(del_deal);
+        return true;
     }
+    return false;
 }
 
-void Person::addMorePhoneNumber(const PhoneNumber& number, const InternalEmployeePtr& changer)
+bool Person::addMorePhoneNumber(const PhoneNumber& number, const InternalEmployeePtr& changer)
 {
     if (std::find(this->more_phone_numbers.begin(), this->more_phone_numbers.end(), number) ==
         this->more_phone_numbers.end()) {
@@ -362,10 +384,12 @@ void Person::addMorePhoneNumber(const PhoneNumber& number, const InternalEmploye
             update
         ));
         this->more_phone_numbers.push_back(number);
+        return true;
     }
+    return false;
 }
 
-void Person::delMorePhoneNumber(size_t index, const InternalEmployeePtr& changer)
+bool Person::delMorePhoneNumber(size_t index, const InternalEmployeePtr& changer)
 {
     if (this->more_phone_numbers.size() > index) {
         Date update     = Date();
@@ -381,10 +405,12 @@ void Person::delMorePhoneNumber(size_t index, const InternalEmployeePtr& changer
             update
         ));
         this->more_phone_numbers.erase(this->more_phone_numbers.begin() + index);
+        return true;
     }
+    return false;
 }
 
-void Person::addMoreAddress(const Address& address, const InternalEmployeePtr& changer)
+bool Person::addMoreAddress(const Address& address, const InternalEmployeePtr& changer)
 {
     if (std::find(this->more_addresses.begin(), this->more_addresses.end(), address) ==
         this->more_addresses.end()) {
@@ -401,10 +427,12 @@ void Person::addMoreAddress(const Address& address, const InternalEmployeePtr& c
             update
         ));
         this->more_addresses.push_back(address);
+        return true;
     }
+    return false;
 }
 
-void Person::delMoreAddress(size_t index, const InternalEmployeePtr& changer)
+bool Person::delMoreAddress(size_t index, const InternalEmployeePtr& changer)
 {
     if (this->more_addresses.size() > index) {
         Date update     = Date();
@@ -420,10 +448,12 @@ void Person::delMoreAddress(size_t index, const InternalEmployeePtr& changer)
             update
         ));
         this->more_addresses.erase(this->more_addresses.begin() + index);
+        return true;
     }
+    return false;
 }
 
-void Person::addMoreEmails(const std::string& email, const InternalEmployeePtr& changer)
+bool Person::addMoreEmails(const std::string& email, const InternalEmployeePtr& changer)
 {
     if (std::find(this->more_emails.begin(), this->more_emails.end(), email) ==
         this->more_emails.end()) {
@@ -440,10 +470,12 @@ void Person::addMoreEmails(const std::string& email, const InternalEmployeePtr& 
             update
         ));
         this->more_emails.push_back(email);
+        return true;
     }
+    return false;
 }
 
-void Person::delMoreEmails(size_t index, const InternalEmployeePtr& changer)
+bool Person::delMoreEmails(size_t index, const InternalEmployeePtr& changer)
 {
     if (this->more_emails.size() > index) {
         Date update     = Date();
@@ -459,9 +491,12 @@ void Person::delMoreEmails(size_t index, const InternalEmployeePtr& changer)
             update
         ));
         this->more_emails.erase(this->more_emails.begin() + index);
+        return true;
     }
+    return false;
 }
-void Person::addOtherDocument(const DocumentPtr& document, const InternalEmployeePtr& changer)
+
+bool Person::addOtherDocument(const DocumentPtr& document, const InternalEmployeePtr& changer)
 {
     if (std::find(this->other_documents.begin(), this->other_documents.end(), document) ==
         this->other_documents.end()) {
@@ -478,10 +513,12 @@ void Person::addOtherDocument(const DocumentPtr& document, const InternalEmploye
             update
         ));
         this->other_documents.push_back(document);
+        return true;
     }
+    return false;
 }
 
-void Person::delOtherDocument(size_t index, const InternalEmployeePtr& changer)
+bool Person::delOtherDocument(size_t index, const InternalEmployeePtr& changer)
 {
     if (index < this->other_documents.size()) {
         Date update     = Date();
@@ -497,10 +534,12 @@ void Person::delOtherDocument(size_t index, const InternalEmployeePtr& changer)
             update
         ));
         this->other_documents.erase(this->other_documents.begin() + index);
+        return true;
     }
+    return false;
 }
 
-void Person::addOtherFile(const FileMetadataPtr& file, const InternalEmployeePtr& changer)
+bool Person::addOtherFile(const FileMetadataPtr& file, const InternalEmployeePtr& changer)
 {
     if (std::find(this->other_files.begin(), this->other_files.end(), file) ==
         this->other_files.end()) {
@@ -517,10 +556,12 @@ void Person::addOtherFile(const FileMetadataPtr& file, const InternalEmployeePtr
             update
         ));
         this->other_files.push_back(file);
+        return true;
     }
+    return false;
 }
 
-void Person::delOtherFile(size_t index, const InternalEmployeePtr& changer)
+bool Person::delOtherFile(size_t index, const InternalEmployeePtr& changer)
 {
     if (index < this->other_files.size()) {
         Date update     = Date();
@@ -536,10 +577,12 @@ void Person::delOtherFile(size_t index, const InternalEmployeePtr& changer)
             update
         ));
         this->other_files.erase(this->other_files.begin() + index);
+        return true;
     }
+    return false;
 }
 
-void Person::addInteraction(const InteractionPtr& interaction, const InternalEmployeePtr& changer)
+bool Person::addInteraction(const InteractionPtr& interaction, const InternalEmployeePtr& changer)
 {
     if (std::find(
             this->interaction_history.begin(), this->interaction_history.end(), interaction
@@ -557,10 +600,12 @@ void Person::addInteraction(const InteractionPtr& interaction, const InternalEmp
             update
         ));
         this->interaction_history.push_back(interaction);
+        return true;
     }
+    return false;
 }
 
-void Person::delInteraction(size_t index, const InternalEmployeePtr& changer)
+bool Person::delInteraction(size_t index, const InternalEmployeePtr& changer)
 {
     if (index < this->interaction_history.size()) {
         Date update     = Date();
@@ -576,10 +621,12 @@ void Person::delInteraction(size_t index, const InternalEmployeePtr& changer)
             update
         ));
         this->interaction_history.erase(this->interaction_history.begin() + index);
+        return true;
     }
+    return false;
 }
 
-void Person::addTag(const std::string& tag, const InternalEmployeePtr& changer)
+bool Person::addTag(const std::string& tag, const InternalEmployeePtr& changer)
 {
     if (std::find(this->tags.begin(), this->tags.end(), tag) == this->tags.end()) {
         Date update     = Date();
@@ -595,10 +642,12 @@ void Person::addTag(const std::string& tag, const InternalEmployeePtr& changer)
             update
         ));
         this->tags.push_back(tag);
+        return true;
     }
+    return false;
 }
 
-void Person::delTag(size_t index, const InternalEmployeePtr& changer)
+bool Person::delTag(size_t index, const InternalEmployeePtr& changer)
 {
     if (index < this->tags.size()) {
         Date update     = Date();
@@ -614,10 +663,12 @@ void Person::delTag(size_t index, const InternalEmployeePtr& changer)
             update
         ));
         this->tags.erase(this->tags.begin() + index);
+        return true;
     }
+    return false;
 }
 
-void Person::addNote(const Note& note, const InternalEmployeePtr& changer)
+bool Person::addNote(const Note& note, const InternalEmployeePtr& changer)
 {
     if (std::find(this->notes.begin(), this->notes.end(), note) == this->notes.end()) {
         Date update     = Date();
@@ -633,10 +684,12 @@ void Person::addNote(const Note& note, const InternalEmployeePtr& changer)
             update
         ));
         this->notes.push_back(note);
+        return true;
     }
+    return false;
 }
 
-void Person::delNote(size_t index, const InternalEmployeePtr& changer)
+bool Person::delNote(size_t index, const InternalEmployeePtr& changer)
 {
     if (index < this->notes.size()) {
         Date update     = Date();
@@ -652,7 +705,9 @@ void Person::delNote(size_t index, const InternalEmployeePtr& changer)
             update
         ));
         this->notes.erase(this->notes.begin() + index);
+        return true;
     }
+    return false;
 }
 
 void Person::updateAt(const Date& date) { this->update_at = date; }

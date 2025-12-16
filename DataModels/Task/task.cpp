@@ -58,7 +58,7 @@ auto Task::getMoreData() const -> const std::vector<StringPair>& { return more_d
 auto Task::getTeem() const -> const std::vector<PersonPtr>& { return teem; }
 auto Task::getChangeLogs() const -> const std::vector<ChangeLogPtr>& { return this->change_logs; }
 
-void Task::setTitle(const std::string& title, const InternalEmployeePtr& changer)
+bool Task::setTitle(const std::string& title, const InternalEmployeePtr& changer)
 {
     if (this->title != title) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -71,10 +71,12 @@ void Task::setTitle(const std::string& title, const InternalEmployeePtr& changer
             ChangeLog::Action::Change
         ));
         this->title = title;
+        return true;
     }
+    return false;
 }
 
-void Task::setDescription(const OptionalStr& description, const InternalEmployeePtr& changer)
+bool Task::setDescription(const OptionalStr& description, const InternalEmployeePtr& changer)
 {
     if (this->description != description) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -87,10 +89,12 @@ void Task::setDescription(const OptionalStr& description, const InternalEmployee
             ChangeLog::Action::Change
         ));
         this->description = description;
+        return true;
     }
+    return false;
 }
 
-void Task::setSubject(const OptionalStr& subject, const InternalEmployeePtr& changer)
+bool Task::setSubject(const OptionalStr& subject, const InternalEmployeePtr& changer)
 {
     if (this->subject != subject) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -103,10 +107,12 @@ void Task::setSubject(const OptionalStr& subject, const InternalEmployeePtr& cha
             ChangeLog::Action::Change
         ));
         this->subject = subject;
+        return true;
     }
+    return false;
 }
 
-void Task::setStatus(const Status& status, const InternalEmployeePtr& changer)
+bool Task::setStatus(const Status& status, const InternalEmployeePtr& changer)
 {
     if (this->status != status) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -119,10 +125,12 @@ void Task::setStatus(const Status& status, const InternalEmployeePtr& changer)
             ChangeLog::Action::Change
         ));
         this->status = status;
+        return true;
     }
+    return false;
 }
 
-void Task::setPriority(const Priority& priority, const InternalEmployeePtr& changer)
+bool Task::setPriority(const Priority& priority, const InternalEmployeePtr& changer)
 {
     if (this->priority != priority) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -135,18 +143,21 @@ void Task::setPriority(const Priority& priority, const InternalEmployeePtr& chan
             ChangeLog::Action::Change
         ));
         this->priority = priority;
+        return true;
     }
+    return false;
 }
 
-void Task::setDeadline(const DatePtr& deadline, const InternalEmployeePtr& changer)
+bool Task::setDeadline(const DatePtr& deadline, const InternalEmployeePtr& changer)
 {
+    bool changed = true;
     if (this->deadline == nullptr || deadline == nullptr) {
-        if (this->deadline == deadline) {
-            return;
-        }
+        if (this->deadline == deadline) changed = false;
     } else if (*this->deadline == *deadline) {
-        return;
+        changed = false;
     }
+
+    if (!changed) return false;
 
     this->change_logs.emplace_back(std::make_shared<ChangeLog>(
         changer,
@@ -158,17 +169,19 @@ void Task::setDeadline(const DatePtr& deadline, const InternalEmployeePtr& chang
         ChangeLog::Action::Change
     ));
     this->deadline = deadline;
+    return true;
 }
 
-void Task::setStartDate(const DatePtr& start_date, const InternalEmployeePtr& changer)
+bool Task::setStartDate(const DatePtr& start_date, const InternalEmployeePtr& changer)
 {
+    bool changed = true;
     if (this->start_date == nullptr || start_date == nullptr) {
-        if (this->start_date == start_date) {
-            return;
-        }
+        if (this->start_date == start_date) changed = false;
     } else if (*this->start_date == *start_date) {
-        return;
+        changed = false;
     }
+
+    if (!changed) return false;
 
     this->change_logs.emplace_back(std::make_shared<ChangeLog>(
         changer,
@@ -180,17 +193,19 @@ void Task::setStartDate(const DatePtr& start_date, const InternalEmployeePtr& ch
         ChangeLog::Action::Change
     ));
     this->start_date = start_date;
+    return true;
 }
 
-void Task::setETC(const DurationPtr& ETC, const InternalEmployeePtr& changer)
+bool Task::setETC(const DurationPtr& ETC, const InternalEmployeePtr& changer)
 {
+    bool changed = true;
     if (this->ETC == nullptr || ETC == nullptr) {
-        if (this->ETC == ETC) {
-            return;
-        }
+        if (this->ETC == ETC) changed = false;
     } else if (*this->ETC == *ETC) {
-        return;
+        changed = false;
     }
+
+    if (!changed) return false;
 
     this->change_logs.emplace_back(std::make_shared<ChangeLog>(
         changer,
@@ -202,17 +217,19 @@ void Task::setETC(const DurationPtr& ETC, const InternalEmployeePtr& changer)
         ChangeLog::Action::Change
     ));
     this->ETC = ETC;
+    return true;
 }
 
-void Task::setATS(const DurationPtr& ATS, const InternalEmployeePtr& changer)
+bool Task::setATS(const DurationPtr& ATS, const InternalEmployeePtr& changer)
 {
+    bool changed = true;
     if (this->ATS == nullptr || ATS == nullptr) {
-        if (this->ATS == ATS) {
-            return;
-        }
+        if (this->ATS == ATS) changed = false;
     } else if (*this->ATS == *ATS) {
-        return;
+        changed = false;
     }
+
+    if (!changed) return false;
 
     this->change_logs.emplace_back(std::make_shared<ChangeLog>(
         changer,
@@ -224,9 +241,10 @@ void Task::setATS(const DurationPtr& ATS, const InternalEmployeePtr& changer)
         ChangeLog::Action::Change
     ));
     this->ATS = ATS;
+    return true;
 }
 
-void Task::setManager(const InternalEmployeePtr& manager, const InternalEmployeePtr& changer)
+bool Task::setManager(const InternalEmployeePtr& manager, const InternalEmployeePtr& changer)
 {
     if (this->manager != manager) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -239,9 +257,12 @@ void Task::setManager(const InternalEmployeePtr& manager, const InternalEmployee
             ChangeLog::Action::Change
         ));
         this->manager = manager;
+        return true;
     }
+    return false;
 }
-void Task::addTask(const TaskPtr& task, const InternalEmployeePtr& changer)
+
+bool Task::addTask(const TaskPtr& task, const InternalEmployeePtr& changer)
 {
     if (std::find(this->attachment_tasks.begin(), this->attachment_tasks.end(), task) ==
         this->attachment_tasks.end()) {
@@ -255,10 +276,12 @@ void Task::addTask(const TaskPtr& task, const InternalEmployeePtr& changer)
             ChangeLog::Action::Add
         ));
         this->attachment_tasks.push_back(task);
+        return true;
     }
+    return false;
 }
 
-void Task::delTask(size_t index, const InternalEmployeePtr& changer)
+bool Task::delTask(size_t index, const InternalEmployeePtr& changer)
 {
     if (this->attachment_tasks.size() > index) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -271,10 +294,12 @@ void Task::delTask(size_t index, const InternalEmployeePtr& changer)
             ChangeLog::Action::Remove
         ));
         this->attachment_tasks.erase(this->attachment_tasks.begin() + index);
+        return true;
     }
+    return false;
 }
 
-void Task::addFile(const FilePtr& file, const InternalEmployeePtr& changer)
+bool Task::addFile(const FilePtr& file, const InternalEmployeePtr& changer)
 {
     if (std::find(this->attachment_files.begin(), this->attachment_files.end(), file) ==
         this->attachment_files.end()) {
@@ -288,9 +313,12 @@ void Task::addFile(const FilePtr& file, const InternalEmployeePtr& changer)
             ChangeLog::Action::Add
         ));
         this->attachment_files.push_back(file);
+        return true;
     }
+    return false;
 }
-void Task::delFile(size_t index, const InternalEmployeePtr& changer)
+
+bool Task::delFile(size_t index, const InternalEmployeePtr& changer)
 {
     if (this->attachment_files.size() > index) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -303,10 +331,12 @@ void Task::delFile(size_t index, const InternalEmployeePtr& changer)
             ChangeLog::Action::Remove
         ));
         this->attachment_files.erase(this->attachment_files.begin() + index);
+        return true;
     }
+    return false;
 }
 
-void Task::addNote(const std::string& note, const InternalEmployeePtr& changer)
+bool Task::addNote(const std::string& note, const InternalEmployeePtr& changer)
 {
     if (std::find(this->notes.begin(), this->notes.end(), note) == this->notes.end()) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -319,10 +349,12 @@ void Task::addNote(const std::string& note, const InternalEmployeePtr& changer)
             ChangeLog::Action::Add
         ));
         this->notes.push_back(note);
+        return true;
     }
+    return false;
 }
 
-void Task::delNote(size_t index, const InternalEmployeePtr& changer)
+bool Task::delNote(size_t index, const InternalEmployeePtr& changer)
 {
     if (this->notes.size() > index) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -335,15 +367,16 @@ void Task::delNote(size_t index, const InternalEmployeePtr& changer)
             ChangeLog::Action::Remove
         ));
         this->notes.erase(this->notes.begin() + index);
+        return true;
     }
+    return false;
 }
 
-void Task::addMoreData(
+bool Task::addMoreData(
     const std::string& title, const std::string& data, const InternalEmployeePtr& changer
 )
 {
     auto pair = std::make_pair(title, data);
-
     if (std::find(this->more_data.begin(), this->more_data.end(), pair) == this->more_data.end()) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
@@ -357,10 +390,12 @@ void Task::addMoreData(
             ChangeLog::Action::Add
         ));
         this->more_data.push_back(pair);
+        return true;
     }
+    return false;
 }
 
-void Task::delMoreData(size_t index, const InternalEmployeePtr& changer)
+bool Task::delMoreData(size_t index, const InternalEmployeePtr& changer)
 {
     if (this->more_data.size() > index) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -375,10 +410,12 @@ void Task::delMoreData(size_t index, const InternalEmployeePtr& changer)
             ChangeLog::Action::Remove
         ));
         this->more_data.erase(this->more_data.begin() + index);
+        return true;
     }
+    return false;
 }
 
-void Task::addTeemMember(const PersonPtr& member, const InternalEmployeePtr& changer)
+bool Task::addTeemMember(const PersonPtr& member, const InternalEmployeePtr& changer)
 {
     if (std::find(this->teem.begin(), this->teem.end(), member) == this->teem.end()) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -391,10 +428,12 @@ void Task::addTeemMember(const PersonPtr& member, const InternalEmployeePtr& cha
             ChangeLog::Action::Add
         ));
         this->teem.push_back(member);
+        return true;
     }
+    return false;
 }
 
-void Task::delTeemMember(size_t index, const InternalEmployeePtr& changer)
+bool Task::delTeemMember(size_t index, const InternalEmployeePtr& changer)
 {
     if (this->teem.size() > index) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -407,5 +446,7 @@ void Task::delTeemMember(size_t index, const InternalEmployeePtr& changer)
             ChangeLog::Action::Remove
         ));
         this->teem.erase(this->teem.begin() + index);
+        return true;
     }
+    return false;
 }

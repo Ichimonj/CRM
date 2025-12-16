@@ -76,37 +76,39 @@ auto Payment::getChangeLogs() const -> const std::vector<ChangeLogPtr>&
     return this->change_logs;
 }
 
-void Payment::setRequestedAmount(
+bool Payment::setRequestedAmount(
     const MoneyPtr& requested_amount, const InternalEmployeePtr& changer
 )
 {
     if (this->requested_amount == nullptr || requested_amount == nullptr) {
         if (this->requested_amount == requested_amount) {
-            return;
+            return false;
         }
     } else if (*this->requested_amount == *requested_amount) {
-        return;
+        return false;
     }
 
     this->change_logs.emplace_back(std::make_shared<ChangeLog>(
         changer,
-        PTR_TO_OPTIONAL(this->received_amount),
-        PTR_TO_OPTIONAL(received_amount),
-        PaymentFields::ReceivedAmount,
-        this->received_amount ? ChangeLog::FieldType::Money : ChangeLog::FieldType::null,
-        received_amount ? ChangeLog::FieldType::Money : ChangeLog::FieldType::null,
+        PTR_TO_OPTIONAL(this->requested_amount),
+        PTR_TO_OPTIONAL(requested_amount),
+        PaymentFields::RequestedAmount,
+        this->requested_amount ? ChangeLog::FieldType::Money : ChangeLog::FieldType::null,
+        requested_amount ? ChangeLog::FieldType::Money : ChangeLog::FieldType::null,
         ChangeLog::Action::Change
     ));
-    this->received_amount = requested_amount;
+    this->requested_amount = requested_amount;
+    return true;
 }
-void Payment::setSendingAmount(const MoneyPtr& sending_amount, const InternalEmployeePtr& changer)
+
+bool Payment::setSendingAmount(const MoneyPtr& sending_amount, const InternalEmployeePtr& changer)
 {
     if (this->sending_amount == nullptr || sending_amount == nullptr) {
         if (this->sending_amount == sending_amount) {
-            return;
+            return false;
         }
     } else if (*this->sending_amount == *sending_amount) {
-        return;
+        return false;
     }
 
     this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -119,16 +121,17 @@ void Payment::setSendingAmount(const MoneyPtr& sending_amount, const InternalEmp
         ChangeLog::Action::Change
     ));
     this->sending_amount = sending_amount;
+    return true;
 }
 
-void Payment::setReceivedAmount(const MoneyPtr& received_amount, const InternalEmployeePtr& changer)
+bool Payment::setReceivedAmount(const MoneyPtr& received_amount, const InternalEmployeePtr& changer)
 {
     if (this->received_amount == nullptr || received_amount == nullptr) {
         if (this->received_amount == received_amount) {
-            return;
+            return false;
         }
     } else if (*this->received_amount == *received_amount) {
-        return;
+        return false;
     }
 
     this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -141,16 +144,17 @@ void Payment::setReceivedAmount(const MoneyPtr& received_amount, const InternalE
         ChangeLog::Action::Change
     ));
     this->received_amount = received_amount;
+    return true;
 }
 
-void Payment::setTaxAmount(const MoneyPtr& tax_amount, const InternalEmployeePtr& changer)
+bool Payment::setTaxAmount(const MoneyPtr& tax_amount, const InternalEmployeePtr& changer)
 {
     if (this->tax_amount == nullptr || tax_amount == nullptr) {
         if (this->tax_amount == tax_amount) {
-            return;
+            return false;
         }
     } else if (*this->tax_amount == *tax_amount) {
-        return;
+        return false;
     }
 
     this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -163,54 +167,58 @@ void Payment::setTaxAmount(const MoneyPtr& tax_amount, const InternalEmployeePtr
         ChangeLog::Action::Change
     ));
     this->tax_amount = tax_amount;
+    return true;
 }
 
-void Payment::setCurrency(const Currencies& currency, const InternalEmployeePtr& changer)
+bool Payment::setCurrency(const Currencies& currency, const InternalEmployeePtr& changer)
 {
     if (this->currency != currency) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
-            std::make_optional(this->currency),
-            std::make_optional(currency),
+            std::make_optional<ChangeLog::ValueVariant>(this->currency),
+            std::make_optional<ChangeLog::ValueVariant>(currency),
             PaymentFields::Currencies,
             ChangeLog::FieldType::Currencies,
             ChangeLog::FieldType::Currencies,
             ChangeLog::Action::Change
         ));
         this->currency = currency;
+        return true;
     }
+    return false;
 }
 
-void Payment::setSendingDate(const DatePtr& sending_date, const InternalEmployeePtr& changer)
+bool Payment::setSendingDate(const DatePtr& sending_date, const InternalEmployeePtr& changer)
 {
     if (this->sending_date == nullptr || sending_date == nullptr) {
         if (this->sending_date == sending_date) {
-            return;
+            return false;
         }
     } else if (*this->sending_date == *sending_date) {
-        return;
+        return false;
     }
 
     this->change_logs.emplace_back(std::make_shared<ChangeLog>(
         changer,
-        PTR_TO_OPTIONAL(this->sending_amount),
-        PTR_TO_OPTIONAL(sending_amount),
+        PTR_TO_OPTIONAL(this->sending_date),
+        PTR_TO_OPTIONAL(sending_date),
         PaymentFields::SendingDate,
-        this->sending_amount ? ChangeLog::FieldType::Date : ChangeLog::FieldType::null,
-        sending_amount ? ChangeLog::FieldType::Date : ChangeLog::FieldType::null,
+        this->sending_date ? ChangeLog::FieldType::Date : ChangeLog::FieldType::null,
+        sending_date ? ChangeLog::FieldType::Date : ChangeLog::FieldType::null,
         ChangeLog::Action::Change
     ));
     this->sending_date = sending_date;
+    return true;
 }
 
-void Payment::setReceivedDate(const DatePtr& received_date, const InternalEmployeePtr& changer)
+bool Payment::setReceivedDate(const DatePtr& received_date, const InternalEmployeePtr& changer)
 {
     if (this->received_date == nullptr || received_date == nullptr) {
         if (this->received_date == received_date) {
-            return;
+            return false;
         }
     } else if (*this->received_date == *received_date) {
-        return;
+        return false;
     }
 
     this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -223,16 +231,17 @@ void Payment::setReceivedDate(const DatePtr& received_date, const InternalEmploy
         ChangeLog::Action::Change
     ));
     this->received_date = received_date;
+    return true;
 }
 
-void Payment::setCreationDate(const DatePtr& creation_date, const InternalEmployeePtr& changer)
+bool Payment::setCreationDate(const DatePtr& creation_date, const InternalEmployeePtr& changer)
 {
     if (this->creation_date == nullptr || creation_date == nullptr) {
         if (this->creation_date == creation_date) {
-            return;
+            return false;
         }
     } else if (*this->creation_date == *creation_date) {
-        return;
+        return false;
     }
 
     this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -245,25 +254,28 @@ void Payment::setCreationDate(const DatePtr& creation_date, const InternalEmploy
         ChangeLog::Action::Change
     ));
     this->creation_date = creation_date;
+    return true;
 }
 
-void Payment::setPaymentStatus(const PaymentStatus status, const InternalEmployeePtr& changer)
+bool Payment::setPaymentStatus(const PaymentStatus status, const InternalEmployeePtr& changer)
 {
     if (this->status != status) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
-            std::make_optional(this->status),
-            std::make_optional(status),
+            std::make_optional<ChangeLog::ValueVariant>(this->status),
+            std::make_optional<ChangeLog::ValueVariant>(status),
             PaymentFields::PaymentStatus,
             ChangeLog::FieldType::PaymentStatus,
             ChangeLog::FieldType::PaymentStatus,
             ChangeLog::Action::Change
         ));
         this->status = status;
+        return true;
     }
+    return false;
 }
 
-void Payment::setPaymentMethod(
+bool Payment::setPaymentMethod(
     const OptionalStr& payment_method, const InternalEmployeePtr& changer
 )
 {
@@ -278,10 +290,12 @@ void Payment::setPaymentMethod(
             ChangeLog::Action::Change
         ));
         this->payment_method = payment_method;
+        return true;
     }
+    return false;
 }
 
-void Payment::setDeal(const WDealPtr& deal, const InternalEmployeePtr& changer)
+bool Payment::setDeal(const WDealPtr& deal, const InternalEmployeePtr& changer)
 {
     if (this->deal.lock() != deal.lock()) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -294,10 +308,12 @@ void Payment::setDeal(const WDealPtr& deal, const InternalEmployeePtr& changer)
             ChangeLog::Action::Change
         ));
         this->deal = deal;
+        return true;
     }
+    return false;
 }
 
-void Payment::setPayer(const PersonPtr& payer, const InternalEmployeePtr& changer)
+bool Payment::setPayer(const PersonPtr& payer, const InternalEmployeePtr& changer)
 {
     if (this->payer != payer) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -310,10 +326,12 @@ void Payment::setPayer(const PersonPtr& payer, const InternalEmployeePtr& change
             ChangeLog::Action::Change
         ));
         this->payer = payer;
+        return true;
     }
+    return false;
 }
 
-void Payment::setPayerCompany(const CompanyPtr& payer_company, const InternalEmployeePtr& changer)
+bool Payment::setPayerCompany(const CompanyPtr& payer_company, const InternalEmployeePtr& changer)
 {
     if (this->payer_company != payer_company) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -326,10 +344,12 @@ void Payment::setPayerCompany(const CompanyPtr& payer_company, const InternalEmp
             ChangeLog::Action::Change
         ));
         this->payer_company = payer_company;
+        return true;
     }
+    return false;
 }
 
-void Payment::setInvoiceNumber(
+bool Payment::setInvoiceNumber(
     const OptionalStr& invoice_number, const InternalEmployeePtr& changer
 )
 {
@@ -338,16 +358,18 @@ void Payment::setInvoiceNumber(
             changer,
             OPTIONAL_STR_TO_VALUE(this->invoice_number),
             OPTIONAL_STR_TO_VALUE(invoice_number),
-            PaymentFields::PaymentMethod,
+            PaymentFields::InvoiceNumber,
             this->invoice_number ? ChangeLog::FieldType::String : ChangeLog::FieldType::null,
             invoice_number ? ChangeLog::FieldType::String : ChangeLog::FieldType::null,
             ChangeLog::Action::Change
         ));
         this->invoice_number = invoice_number;
+        return true;
     }
+    return false;
 }
 
-void Payment::setTransactionId(
+bool Payment::setTransactionId(
     const OptionalStr& transaction_id, const InternalEmployeePtr& changer
 )
 {
@@ -356,39 +378,42 @@ void Payment::setTransactionId(
             changer,
             OPTIONAL_STR_TO_VALUE(this->transaction_id),
             OPTIONAL_STR_TO_VALUE(transaction_id),
-            PaymentFields::PaymentMethod,
+            PaymentFields::TransactionId,
             this->transaction_id ? ChangeLog::FieldType::String : ChangeLog::FieldType::null,
             transaction_id ? ChangeLog::FieldType::String : ChangeLog::FieldType::null,
             ChangeLog::Action::Change
         ));
         this->transaction_id = transaction_id;
+        return true;
     }
+    return false;
 }
 
-void Payment::addDocument(const DocumentPtr& document, const InternalEmployeePtr& changer)
+bool Payment::addDocument(const DocumentPtr& document, const InternalEmployeePtr& changer)
 {
     if (std::find(this->documents.begin(), this->documents.end(), document) ==
         this->documents.end()) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
             std::nullopt,
-            std::make_optional(document),
+            std::make_optional<ChangeLog::ValueVariant>(document),
             PaymentFields::Documents,
             ChangeLog::FieldType::null,
             ChangeLog::FieldType::Document,
             ChangeLog::Action::Add
         ));
         this->documents.push_back(document);
+        return true;
     }
+    return false;
 }
 
-void Payment::delDocument(size_t index, const InternalEmployeePtr& changer)
+bool Payment::delDocument(size_t index, const InternalEmployeePtr& changer)
 {
     if (index < this->documents.size()) {
-        DocumentPtr removed = this->documents[index];
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
-            std::make_optional(removed),
+            std::make_optional<ChangeLog::ValueVariant>(this->documents[index]),
             std::nullopt,
             PaymentFields::Documents,
             ChangeLog::FieldType::Document,
@@ -396,32 +421,37 @@ void Payment::delDocument(size_t index, const InternalEmployeePtr& changer)
             ChangeLog::Action::Remove
         ));
         this->documents.erase(this->documents.begin() + index);
+        return true;
     }
+    return false;
 }
 
-void Payment::addComment(const std::string& comment, const InternalEmployeePtr& changer)
+bool Payment::addComment(const std::string& comment, const InternalEmployeePtr& changer)
 {
     if (std::find(this->comments.begin(), this->comments.end(), comment) == this->comments.end()) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
             std::nullopt,
-            std::make_optional(std::make_shared<std::string>(comment)),
+            std::make_optional<ChangeLog::ValueVariant>(std::make_shared<std::string>(comment)),
             PaymentFields::Comments,
             ChangeLog::FieldType::null,
             ChangeLog::FieldType::String,
             ChangeLog::Action::Add
         ));
         this->comments.push_back(comment);
+        return true;
     }
+    return false;
 }
 
-void Payment::delComment(size_t index, const InternalEmployeePtr& changer)
+bool Payment::delComment(size_t index, const InternalEmployeePtr& changer)
 {
     if (index < this->comments.size()) {
-        std::string removed_comment = this->comments[index];
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
-            std::make_optional(std::make_shared<std::string>(removed_comment)),
+            std::make_optional<ChangeLog::ValueVariant>(
+                std::make_shared<std::string>(this->comments[index])
+            ),
             std::nullopt,
             PaymentFields::Comments,
             ChangeLog::FieldType::String,
@@ -429,10 +459,12 @@ void Payment::delComment(size_t index, const InternalEmployeePtr& changer)
             ChangeLog::Action::Remove
         ));
         this->comments.erase(this->comments.begin() + index);
+        return true;
     }
+    return false;
 }
 
-void Payment::setPaymentPurpose(
+bool Payment::setPaymentPurpose(
     const OptionalStr& payment_purpose, const InternalEmployeePtr& changer
 )
 {
@@ -441,16 +473,18 @@ void Payment::setPaymentPurpose(
             changer,
             OPTIONAL_STR_TO_VALUE(this->payment_purpose),
             OPTIONAL_STR_TO_VALUE(payment_purpose),
-            PaymentFields::PaymentMethod,
+            PaymentFields::PaymentPurpose,
             this->payment_purpose ? ChangeLog::FieldType::String : ChangeLog::FieldType::null,
             payment_purpose ? ChangeLog::FieldType::String : ChangeLog::FieldType::null,
             ChangeLog::Action::Change
         ));
         this->payment_purpose = payment_purpose;
+        return true;
     }
+    return false;
 }
 
-void Payment::setCreatedBy(
+bool Payment::setCreatedBy(
     const InternalEmployeePtr& created_by, const InternalEmployeePtr& changer
 )
 {
@@ -465,5 +499,7 @@ void Payment::setCreatedBy(
             ChangeLog::Action::Change
         ));
         this->created_by = created_by;
+        return true;
     }
+    return false;
 }

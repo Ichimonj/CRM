@@ -65,25 +65,25 @@ public:
 
     /// @name Setters
     /// @{
-    void setName(const std::string& name, const InternalEmployeePtr& changer);
-    void setType(CampaignType type, const InternalEmployeePtr& changer);
-    void setOtherType(const OptionalStr& other_type, const InternalEmployeePtr& changer);
-    void setStartDate(const DatePtr& start_date, const InternalEmployeePtr& changer);
-    void setEndDate(const DatePtr& end_date, const InternalEmployeePtr& changer);
-    void setBudget(const MoneyPtr& budget, const InternalEmployeePtr& changer);
-    void setBudgetSpent(const MoneyPtr& budget_spent, const InternalEmployeePtr& changer);
-    void setTotalJoined(uint32_t total_joined, const InternalEmployeePtr& changer);
-    void setTotalConverted(uint32_t total_converted, const InternalEmployeePtr& changer);
-    void setCreator(const InternalEmployeePtr& creator, const InternalEmployeePtr& changer);
-    void setConversionRate(
+    bool setName(const std::string& name, const InternalEmployeePtr& changer);
+    bool setType(CampaignType type, const InternalEmployeePtr& changer);
+    bool setOtherType(const OptionalStr& other_type, const InternalEmployeePtr& changer);
+    bool setStartDate(const DatePtr& start_date, const InternalEmployeePtr& changer);
+    bool setEndDate(const DatePtr& end_date, const InternalEmployeePtr& changer);
+    bool setBudget(const MoneyPtr& budget, const InternalEmployeePtr& changer);
+    bool setBudgetSpent(const MoneyPtr& budget_spent, const InternalEmployeePtr& changer);
+    bool setTotalJoined(uint32_t total_joined, const InternalEmployeePtr& changer);
+    bool setTotalConverted(uint32_t total_converted, const InternalEmployeePtr& changer);
+    bool setCreator(const InternalEmployeePtr& creator, const InternalEmployeePtr& changer);
+    bool setConversionRate(
         const std::optional<double>& conversion_rate, const InternalEmployeePtr& changer
     );
 
-    void addNote(const Note& note, const InternalEmployeePtr& changer);
-    void delNote(size_t index, const InternalEmployeePtr& changer);
+    bool addNote(const Note& note, const InternalEmployeePtr& changer);
+    bool delNote(size_t index, const InternalEmployeePtr& changer);
 
-    void addTargetLeads(const CampaignLeadPtr& target_lead, const InternalEmployeePtr& changer);
-    void delTargetLeads(size_t index, const InternalEmployeePtr& changer);
+    bool addTargetLeads(const CampaignLeadPtr& target_lead, const InternalEmployeePtr& changer);
+    bool delTargetLeads(size_t index, const InternalEmployeePtr& changer);
     /// @}
 
 private:

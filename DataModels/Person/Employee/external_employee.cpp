@@ -154,7 +154,7 @@ auto ExternalEmployee::getCompletedTasks() const -> const std::vector<TaskPtr>&
     return this->completed_tasks;
 }
 
-void ExternalEmployee::setCompany(
+bool ExternalEmployee::setCompany(
     const ExternalCompanyPtr& company, const InternalEmployeePtr& changer
 )
 {
@@ -172,10 +172,12 @@ void ExternalEmployee::setCompany(
         ));
         this->updateAt(update);
         this->company = company;
+        return true;
     }
+    return false;
 }
 
-void ExternalEmployee::setJobTitle(const OptionalStr& title, const InternalEmployeePtr& changer)
+bool ExternalEmployee::setJobTitle(const OptionalStr& title, const InternalEmployeePtr& changer)
 {
     if (this->job_title != title) {
         Date update = Date();
@@ -192,10 +194,12 @@ void ExternalEmployee::setJobTitle(const OptionalStr& title, const InternalEmplo
         ));
         this->updateAt(update);
         this->job_title = title;
+        return true;
     }
+    return false;
 }
 
-void ExternalEmployee::setDepartment(
+bool ExternalEmployee::setDepartment(
     const OptionalStr& department, const InternalEmployeePtr& changer
 )
 {
@@ -214,10 +218,12 @@ void ExternalEmployee::setDepartment(
         ));
         this->updateAt(update);
         this->department = department;
+        return true;
     }
+    return false;
 }
 
-void ExternalEmployee::setStatus(const EmployeeStatus status, const InternalEmployeePtr& changer)
+bool ExternalEmployee::setStatus(const EmployeeStatus status, const InternalEmployeePtr& changer)
 {
     if (this->status != status) {
         Date update = Date();
@@ -227,8 +233,8 @@ void ExternalEmployee::setStatus(const EmployeeStatus status, const InternalEmpl
             this->other_status ? std::make_optional<ChangeLog::ValueVariant>(
                                      std::make_shared<std::string>(this->other_status.value())
                                  )
-                               : std::make_optional(this->status),
-            std::make_optional(status),
+                               : std::make_optional<ChangeLog::ValueVariant>(this->status),
+            std::make_optional<ChangeLog::ValueVariant>(status),
             ExternalEmployeeFields::Status,
             this->other_status ? ChangeLog::FieldType::String
                                : ChangeLog::FieldType::EmployeeStatus,
@@ -239,10 +245,12 @@ void ExternalEmployee::setStatus(const EmployeeStatus status, const InternalEmpl
         this->updateAt(update);
         this->status       = status;
         this->other_status = std::nullopt;
+        return true;
     }
+    return false;
 }
 
-void ExternalEmployee::setOtherStatus(const OptionalStr& status, const InternalEmployeePtr& changer)
+bool ExternalEmployee::setOtherStatus(const OptionalStr& status, const InternalEmployeePtr& changer)
 {
     if (this->other_status != status) {
         Date update = Date();
@@ -252,22 +260,24 @@ void ExternalEmployee::setOtherStatus(const OptionalStr& status, const InternalE
             this->other_status ? std::make_optional<ChangeLog::ValueVariant>(
                                      std::make_shared<std::string>(this->other_status.value())
                                  )
-                               : std::make_optional(this->status),
+                               : std::make_optional<ChangeLog::ValueVariant>(this->status),
             OPTIONAL_STR_TO_VALUE(status),
             ExternalEmployeeFields::Status,
             this->other_status ? ChangeLog::FieldType::String
                                : ChangeLog::FieldType::EmployeeStatus,
-            ChangeLog::FieldType::String,
+            status ? ChangeLog::FieldType::String : ChangeLog::FieldType::EmployeeStatus,
             ChangeLog::Action::Change,
             update
         ));
         this->updateAt(update);
         this->other_status = status;
         this->status       = EmployeeStatus::other;
+        return true;
     }
+    return false;
 }
 
-void ExternalEmployee::setAccessRole(
+bool ExternalEmployee::setAccessRole(
     const AccessLevel access_role, const InternalEmployeePtr& changer
 )
 {
@@ -279,8 +289,8 @@ void ExternalEmployee::setAccessRole(
             this->other_role ? std::make_optional<ChangeLog::ValueVariant>(
                                    std::make_shared<std::string>(this->other_role.value())
                                )
-                             : std::make_optional(this->access_role),
-            std::make_optional(access_role),
+                             : std::make_optional<ChangeLog::ValueVariant>(this->access_role),
+            std::make_optional<ChangeLog::ValueVariant>(access_role),
             ExternalEmployeeFields::Role,
             this->other_role ? ChangeLog::FieldType::String : ChangeLog::FieldType::AccessLevel,
             ChangeLog::FieldType::AccessLevel,
@@ -290,10 +300,12 @@ void ExternalEmployee::setAccessRole(
         this->updateAt(update);
         this->access_role = access_role;
         this->other_role  = std::nullopt;
+        return true;
     }
+    return false;
 }
 
-void ExternalEmployee::setOtherRole(
+bool ExternalEmployee::setOtherRole(
     const OptionalStr& other_role, const InternalEmployeePtr& changer
 )
 {
@@ -305,21 +317,23 @@ void ExternalEmployee::setOtherRole(
             this->other_role ? std::make_optional<ChangeLog::ValueVariant>(
                                    std::make_shared<std::string>(this->other_role.value())
                                )
-                             : std::make_optional(this->access_role),
+                             : std::make_optional<ChangeLog::ValueVariant>(this->access_role),
             OPTIONAL_STR_TO_VALUE(other_role),
-            ExternalEmployeeFields::OtherRole,
+            ExternalEmployeeFields::Role,
             this->other_role ? ChangeLog::FieldType::String : ChangeLog::FieldType::AccessLevel,
-            ChangeLog::FieldType::String,
+            other_role ? ChangeLog::FieldType::String : ChangeLog::FieldType::AccessLevel,
             ChangeLog::Action::Change,
             update
         ));
         this->updateAt(update);
         this->access_role = AccessLevel::other;
         this->other_role  = other_role;
+        return true;
     }
+    return false;
 }
 
-void ExternalEmployee::setCurrentInteraction(
+bool ExternalEmployee::setCurrentInteraction(
     const InteractionPtr& current_interaction, const InternalEmployeePtr& changer
 )
 {
@@ -340,17 +354,19 @@ void ExternalEmployee::setCurrentInteraction(
         ));
         this->updateAt(update);
         this->current_interaction = current_interaction;
+        return true;
     }
+    return false;
 }
 
-void ExternalEmployee::setLastContactDate(
+bool ExternalEmployee::setLastContactDate(
     const DatePtr& last_contact_date, const InternalEmployeePtr& changer
 )
 {
     if (this->last_contact_date == nullptr || last_contact_date == nullptr) {
-        if (this->last_contact_date == last_contact_date) return;
+        if (this->last_contact_date == last_contact_date) return false;
     } else if (*this->last_contact_date == *last_contact_date) {
-        return;
+        return false;
     }
     Date update = Date();
 
@@ -366,17 +382,18 @@ void ExternalEmployee::setLastContactDate(
     ));
     this->updateAt(update);
     this->last_contact_date = last_contact_date;
+    return true;
 }
 
-void ExternalEmployee::setTimeZone(const int time_zone, const InternalEmployeePtr& changer)
+bool ExternalEmployee::setTimeZone(const int time_zone, const InternalEmployeePtr& changer)
 {
     if (this->time_zone != time_zone) {
         Date update = Date();
 
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
-            std::make_optional(this->time_zone),
-            std::make_optional(time_zone),
+            std::make_optional<ChangeLog::ValueVariant>(this->time_zone),
+            std::make_optional<ChangeLog::ValueVariant>(time_zone),
             ExternalEmployeeFields::TimeZone,
             ChangeLog::FieldType::Int,
             ChangeLog::FieldType::Int,
@@ -385,10 +402,12 @@ void ExternalEmployee::setTimeZone(const int time_zone, const InternalEmployeePt
         ));
         this->updateAt(update);
         this->time_zone = time_zone;
+        return true;
     }
+    return false;
 }
 
-void ExternalEmployee::setPreferredContactTime(
+bool ExternalEmployee::setPreferredContactTime(
     const OptionalStr& preferred_contact_time, const InternalEmployeePtr& changer
 )
 {
@@ -408,21 +427,26 @@ void ExternalEmployee::setPreferredContactTime(
         ));
         this->updateAt(update);
         this->preferred_contact_time = preferred_contact_time;
+        return true;
     }
+    return false;
 }
 
-void ExternalEmployee::setDecisionInfluence(
+bool ExternalEmployee::setDecisionInfluence(
     const std::optional<InfluenceLevel>& decision_influence, const InternalEmployeePtr& changer
 )
 {
     if (this->decision_influence != decision_influence) {
-        Date          update    = Date();
-        std::optional old_value = this->decision_influence
-                                    ? std::make_optional(this->decision_influence.value())
-                                    : std::nullopt;
+        Date                                   update = Date();
+        std::optional<ChangeLog::ValueVariant> old_value =
+            this->decision_influence
+                ? std::make_optional<ChangeLog::ValueVariant>(this->decision_influence.value())
+                : std::nullopt;
 
-        std::optional new_value =
-            decision_influence ? std::make_optional(decision_influence.value()) : std::nullopt;
+        std::optional<ChangeLog::ValueVariant> new_value =
+            decision_influence
+                ? std::make_optional<ChangeLog::ValueVariant>(decision_influence.value())
+                : std::nullopt;
 
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
@@ -436,21 +460,25 @@ void ExternalEmployee::setDecisionInfluence(
         ));
         this->updateAt(update);
         this->decision_influence = decision_influence;
+        return true;
     }
+    return false;
 }
 
-void ExternalEmployee::setInfluenceScore(
+bool ExternalEmployee::setInfluenceScore(
     const std::optional<double>& influence_score, const InternalEmployeePtr& changer
 )
 {
     if (this->influence_score != influence_score) {
-        Date          update = Date();
+        Date                                   update = Date();
 
-        std::optional old_value = this->influence_score
-                                    ? std::make_optional(this->influence_score.value())
-                                    : std::nullopt;
-        std::optional new_value =
-            influence_score ? std::make_optional(influence_score.value()) : std::nullopt;
+        std::optional<ChangeLog::ValueVariant> old_value =
+            this->influence_score
+                ? std::make_optional<ChangeLog::ValueVariant>(this->influence_score.value())
+                : std::nullopt;
+        std::optional<ChangeLog::ValueVariant> new_value =
+            influence_score ? std::make_optional<ChangeLog::ValueVariant>(influence_score.value())
+                            : std::nullopt;
 
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
@@ -464,17 +492,19 @@ void ExternalEmployee::setInfluenceScore(
         ));
         this->updateAt(update);
         this->influence_score = influence_score;
+        return true;
     }
+    return false;
 }
 
-void ExternalEmployee::setBudgetAuthority(
+bool ExternalEmployee::setBudgetAuthority(
     const MoneyPtr& budget_authority, const InternalEmployeePtr& changer
 )
 {
     if (this->budget_authority == nullptr || budget_authority == nullptr) {
-        if (this->budget_authority == budget_authority) return;
+        if (this->budget_authority == budget_authority) return false;
     } else if (*this->budget_authority == *budget_authority) {
-        return;
+        return false;
     }
     Date update = Date();
 
@@ -490,35 +520,34 @@ void ExternalEmployee::setBudgetAuthority(
     ));
     this->updateAt(update);
     this->budget_authority = budget_authority;
+    return true;
 }
 
-void ExternalEmployee::setSalary(const MoneyPtr& salary, const InternalEmployeePtr& changer)
+bool ExternalEmployee::setSalary(const MoneyPtr& salary, const InternalEmployeePtr& changer)
 {
     if (this->salary == nullptr || salary == nullptr) {
-        if (this->salary == salary) return;
+        if (this->salary == salary) return false;
     } else if (*this->salary == *salary) {
-        return;
+        return false;
     }
-    Date          update = Date();
-
-    std::optional old_value = this->salary ? std::make_optional(this->salary) : std::nullopt;
-    std::optional new_value = salary ? std::make_optional(salary) : std::nullopt;
+    Date update = Date();
 
     this->change_logs.emplace_back(std::make_shared<ChangeLog>(
         changer,
-        std::move(old_value),
-        std::move(new_value),
+        PTR_TO_OPTIONAL(this->salary),
+        PTR_TO_OPTIONAL(salary),
         ExternalEmployeeFields::Salary,
-        old_value ? ChangeLog::FieldType::Money : ChangeLog::FieldType::null,
-        new_value ? ChangeLog::FieldType::Money : ChangeLog::FieldType::null,
+        this->salary ? ChangeLog::FieldType::Money : ChangeLog::FieldType::null,
+        salary ? ChangeLog::FieldType::Money : ChangeLog::FieldType::null,
         ChangeLog::Action::Change,
         update
     ));
     this->updateAt(update);
     this->salary = salary;
+    return true;
 }
 
-void ExternalEmployee::addPainPoint(
+bool ExternalEmployee::addPainPoint(
     const std::string& pain_point, const InternalEmployeePtr& changer
 )
 {
@@ -529,7 +558,7 @@ void ExternalEmployee::addPainPoint(
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
             std::nullopt,
-            std::make_optional(std::make_shared<std::string>(pain_point)),
+            std::make_optional<ChangeLog::ValueVariant>(std::make_shared<std::string>(pain_point)),
             ExternalEmployeeFields::PainPoints,
             ChangeLog::FieldType::null,
             ChangeLog::FieldType::String,
@@ -538,17 +567,20 @@ void ExternalEmployee::addPainPoint(
         ));
         this->updateAt(update);
         this->pain_points.push_back(pain_point);
+        return true;
     }
+    return false;
 }
 
-void ExternalEmployee::delPainPoint(size_t index, const InternalEmployeePtr& changer)
+bool ExternalEmployee::delPainPoint(size_t index, const InternalEmployeePtr& changer)
 {
     if (index < this->pain_points.size()) {
-        Date        update             = Date();
-        std::string removed_pain_point = this->pain_points[index];
+        Date update = Date();
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
-            std::make_optional(std::make_shared<std::string>(removed_pain_point)),
+            std::make_optional<ChangeLog::ValueVariant>(
+                std::make_shared<std::string>(this->pain_points[index])
+            ),
             std::nullopt,
             ExternalEmployeeFields::PainPoints,
             ChangeLog::FieldType::String,
@@ -558,10 +590,12 @@ void ExternalEmployee::delPainPoint(size_t index, const InternalEmployeePtr& cha
         ));
         this->updateAt(update);
         this->pain_points.erase(this->pain_points.begin() + index);
+        return true;
     }
+    return false;
 }
 
-void ExternalEmployee::addAssignedDeal(
+bool ExternalEmployee::addAssignedDeal(
     const DealPtr& assigned_deal, const InternalEmployeePtr& changer
 )
 {
@@ -572,7 +606,7 @@ void ExternalEmployee::addAssignedDeal(
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
             std::nullopt,
-            std::make_optional(assigned_deal),
+            std::make_optional<ChangeLog::ValueVariant>(assigned_deal),
             ExternalEmployeeFields::AssignedDeals,
             ChangeLog::FieldType::null,
             ChangeLog::FieldType::Deal,
@@ -582,17 +616,19 @@ void ExternalEmployee::addAssignedDeal(
         this->updateAt(update);
         this->addRelatedDeals(assigned_deal, changer, update);
         this->assigned_deals.push_back(assigned_deal);
+        return true;
     }
+    return false;
 }
 
-void ExternalEmployee::delAssignedDeal(size_t index, const InternalEmployeePtr& changer)
+bool ExternalEmployee::delAssignedDeal(size_t index, const InternalEmployeePtr& changer)
 {
     if (index < this->assigned_deals.size()) {
         Date update = Date();
 
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
-            std::make_optional(this->assigned_deals[index]),
+            std::make_optional<ChangeLog::ValueVariant>(this->assigned_deals[index]),
             std::nullopt,
             ExternalEmployeeFields::AssignedDeals,
             ChangeLog::FieldType::Deal,
@@ -603,10 +639,12 @@ void ExternalEmployee::delAssignedDeal(size_t index, const InternalEmployeePtr& 
         this->updateAt(update);
         this->delRelatedDeals(this->assigned_deals[index], changer, update);
         this->assigned_deals.erase(this->assigned_deals.begin() + index);
+        return true;
     }
+    return false;
 }
 
-void ExternalEmployee::addCompletedDeal(
+bool ExternalEmployee::addCompletedDeal(
     const DealPtr& completed_deal, const InternalEmployeePtr& changer
 )
 {
@@ -617,7 +655,7 @@ void ExternalEmployee::addCompletedDeal(
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
             std::nullopt,
-            std::make_optional(completed_deal),
+            std::make_optional<ChangeLog::ValueVariant>(completed_deal),
             ExternalEmployeeFields::CompletedDeals,
             ChangeLog::FieldType::null,
             ChangeLog::FieldType::Deal,
@@ -627,17 +665,19 @@ void ExternalEmployee::addCompletedDeal(
         this->updateAt(update);
         this->addRelatedDeals(completed_deal, changer, update);
         this->completed_deals.push_back(completed_deal);
+        return true;
     }
+    return false;
 }
 
-void ExternalEmployee::delCompletedDeal(size_t index, const InternalEmployeePtr& changer)
+bool ExternalEmployee::delCompletedDeal(size_t index, const InternalEmployeePtr& changer)
 {
     if (index < this->completed_deals.size()) {
         Date update = Date();
 
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
-            std::make_optional(this->completed_deals[index]),
+            std::make_optional<ChangeLog::ValueVariant>(this->completed_deals[index]),
             std::nullopt,
             ExternalEmployeeFields::CompletedDeals,
             ChangeLog::FieldType::Deal,
@@ -648,10 +688,12 @@ void ExternalEmployee::delCompletedDeal(size_t index, const InternalEmployeePtr&
         this->updateAt(update);
         this->delRelatedDeals(this->completed_deals[index], changer, update);
         this->completed_deals.erase(this->completed_deals.begin() + index);
+        return true;
     }
+    return false;
 }
 
-void ExternalEmployee::addAssignedTask(
+bool ExternalEmployee::addAssignedTask(
     const TaskPtr& assigned_task, const InternalEmployeePtr& changer
 )
 {
@@ -662,7 +704,7 @@ void ExternalEmployee::addAssignedTask(
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
             std::nullopt,
-            std::make_optional(assigned_task),
+            std::make_optional<ChangeLog::ValueVariant>(assigned_task),
             ExternalEmployeeFields::AssignedTasks,
             ChangeLog::FieldType::null,
             ChangeLog::FieldType::Task,
@@ -671,17 +713,19 @@ void ExternalEmployee::addAssignedTask(
         ));
         this->updateAt(update);
         this->assigned_tasks.push_back(assigned_task);
+        return true;
     }
+    return false;
 }
 
-void ExternalEmployee::delAssignedTask(size_t index, const InternalEmployeePtr& changer)
+bool ExternalEmployee::delAssignedTask(size_t index, const InternalEmployeePtr& changer)
 {
     if (index < this->assigned_tasks.size()) {
         Date update = Date();
 
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
-            std::make_optional(this->assigned_tasks[index]),
+            std::make_optional<ChangeLog::ValueVariant>(this->assigned_tasks[index]),
             std::nullopt,
             ExternalEmployeeFields::AssignedTasks,
             ChangeLog::FieldType::Task,
@@ -691,10 +735,12 @@ void ExternalEmployee::delAssignedTask(size_t index, const InternalEmployeePtr& 
         ));
         this->updateAt(update);
         this->assigned_tasks.erase(this->assigned_tasks.begin() + index);
+        return true;
     }
+    return false;
 }
 
-void ExternalEmployee::addCompletedTask(
+bool ExternalEmployee::addCompletedTask(
     const TaskPtr& completed_task, const InternalEmployeePtr& changer
 )
 {
@@ -705,7 +751,7 @@ void ExternalEmployee::addCompletedTask(
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
             std::nullopt,
-            std::make_optional(completed_task),
+            std::make_optional<ChangeLog::ValueVariant>(completed_task),
             ExternalEmployeeFields::CompletedTasks,
             ChangeLog::FieldType::null,
             ChangeLog::FieldType::Task,
@@ -714,17 +760,19 @@ void ExternalEmployee::addCompletedTask(
         ));
         this->updateAt(update);
         this->completed_tasks.push_back(completed_task);
+        return true;
     }
+    return false;
 }
 
-void ExternalEmployee::delCompletedTask(size_t index, const InternalEmployeePtr& changer)
+bool ExternalEmployee::delCompletedTask(size_t index, const InternalEmployeePtr& changer)
 {
     if (index < this->completed_tasks.size()) {
         Date update = Date();
 
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
-            std::make_optional(this->completed_tasks[index]),
+            std::make_optional<ChangeLog::ValueVariant>(this->completed_tasks[index]),
             std::nullopt,
             ExternalEmployeeFields::CompletedTasks,
             ChangeLog::FieldType::Task,
@@ -734,5 +782,7 @@ void ExternalEmployee::delCompletedTask(size_t index, const InternalEmployeePtr&
         ));
         this->updateAt(update);
         this->completed_tasks.erase(this->completed_tasks.begin() + index);
+        return true;
     }
+    return false;
 }

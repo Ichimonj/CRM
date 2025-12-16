@@ -57,19 +57,19 @@ public:
 
     /// @name Change functions
     /// @{
-    void setTitle(const std::string& title, const InternalEmployeePtr& changer);
-    void setDescription(const OptionalStr& description, const InternalEmployeePtr& changer);
-    void setStatus(const CaseStatus& status, const InternalEmployeePtr& changer);
-    void setPriority(const Priority& priority, const InternalEmployeePtr& changer);
-    void setResolvedDate(const DatePtr& resolved_date, const InternalEmployeePtr& changer);
-    void setAssignedTo(const InternalEmployeePtr& assigned_to, const InternalEmployeePtr& changer);
-    void setRelatedClient(const ClientPtr& related_client, const InternalEmployeePtr& changer);
-    void addNote(const Note& note, const InternalEmployeePtr& changer);
-    void delNote(size_t index, const InternalEmployeePtr& changer);
-    void addRelatedInteraction(
+    bool setTitle(const std::string& title, const InternalEmployeePtr& changer);
+    bool setDescription(const OptionalStr& description, const InternalEmployeePtr& changer);
+    bool setStatus(const CaseStatus& status, const InternalEmployeePtr& changer);
+    bool setPriority(const Priority& priority, const InternalEmployeePtr& changer);
+    bool setResolvedDate(const DatePtr& resolved_date, const InternalEmployeePtr& changer);
+    bool setAssignedTo(const InternalEmployeePtr& assigned_to, const InternalEmployeePtr& changer);
+    bool setRelatedClient(const ClientPtr& related_client, const InternalEmployeePtr& changer);
+    bool addNote(const Note& note, const InternalEmployeePtr& changer);
+    bool delNote(size_t index, const InternalEmployeePtr& changer);
+    bool addRelatedInteraction(
         const BaseInteractionPtr& interaction, const InternalEmployeePtr& changer
     );
-    void delRelatedInteraction(size_t index, const InternalEmployeePtr& changer);
+    bool delRelatedInteraction(size_t index, const InternalEmployeePtr& changer);
     /// @}
 private:
     BigUint             id;

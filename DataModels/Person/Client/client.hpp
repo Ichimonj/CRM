@@ -37,7 +37,12 @@ public:
         COUNT
     };
     enum class LeadSource { Website, Referral, EmailCampaing, SocialMedia, other, COUNT };
-    Client(const BigUint& id, const std::string& name, const std::string& surname, const OptionalStr& patronymic);
+    Client(
+        const BigUint&     id,
+        const std::string& name,
+        const std::string& surname,
+        const OptionalStr& patronymic
+    );
     Client(
         const BigUint&                   id,
         const std::string&               name,
@@ -96,35 +101,35 @@ public:
 
     /// @name Change functions
     /// @{
-    void setOwner(const InternalEmployeePtr& owner, const InternalEmployeePtr& changer);
-    void setType(const ClientType type, const InternalEmployeePtr& changer);
-    void setOtherType(const std::string& other_type, const InternalEmployeePtr& changer);
-    void setLeadSource(const LeadSource lead_source, const InternalEmployeePtr& changer);
-    void setOtherLeadSource(
+    bool setOwner(const InternalEmployeePtr& owner, const InternalEmployeePtr& changer);
+    bool setType(const ClientType type, const InternalEmployeePtr& changer);
+    bool setOtherType(const std::string& other_type, const InternalEmployeePtr& changer);
+    bool setLeadSource(const LeadSource lead_source, const InternalEmployeePtr& changer);
+    bool setOtherLeadSource(
         const std::string& other_lead_source, const InternalEmployeePtr& changer
     );
-    void setMarketingConsent(const bool marketing_consent, const InternalEmployeePtr& changer);
-    void setCommunicationChannel(const OptionalStr& channel, const InternalEmployeePtr& changer);
-    void setReferralCode(const OptionalStr& code, const InternalEmployeePtr& changer);
-    void setCustomerAcquisitionCost(
+    bool setMarketingConsent(const bool marketing_consent, const InternalEmployeePtr& changer);
+    bool setCommunicationChannel(const OptionalStr& channel, const InternalEmployeePtr& changer);
+    bool setReferralCode(const OptionalStr& code, const InternalEmployeePtr& changer);
+    bool setCustomerAcquisitionCost(
         const std::optional<Money>& money, const InternalEmployeePtr& changer
     );
-    void setLeadStatus(
+    bool setLeadStatus(
         const std::optional<LeadStatus>& lead_status, const InternalEmployeePtr& changer
     );
-    void setLeadScore(const std::optional<double>& lead_score, const InternalEmployeePtr& changer);
-    void setAnnualRevenue(
+    bool setLeadScore(const std::optional<double>& lead_score, const InternalEmployeePtr& changer);
+    bool setAnnualRevenue(
         const std::optional<Money>& annual_revenue, const InternalEmployeePtr& changer
     );
-    void setLifetimeValue(
+    bool setLifetimeValue(
         const std::optional<Money>& lifetime_value, const InternalEmployeePtr& changer
     );
 
-    void addOwnedDeal(const DealPtr& deal, const InternalEmployeePtr& changer);
-    void delOwnedDeal(size_t index, const InternalEmployeePtr& changer);
+    bool addOwnedDeal(const DealPtr& deal, const InternalEmployeePtr& changer);
+    bool delOwnedDeal(size_t index, const InternalEmployeePtr& changer);
 
-    void addInterestedOffer(const OfferPtr& interested_offer, const InternalEmployeePtr& changer);
-    void delInterestedOffer(size_t index, const InternalEmployeePtr& changer);
+    bool addInterestedOffer(const OfferPtr& interested_offer, const InternalEmployeePtr& changer);
+    bool delInterestedOffer(size_t index, const InternalEmployeePtr& changer);
     /// @}
 
 private:

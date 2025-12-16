@@ -60,10 +60,7 @@ bool Address::operator==(const Address& other) const
            is_validated == other.is_validated;
 }
 
-bool Address::operator!=(const Address& other) const
-{
-    return !(*this == other);
-}
+bool Address::operator!=(const Address& other) const { return !(*this == other); }
 
 auto Address::getCountry() const -> const std::string& { return country; }
 auto Address::getCountryCode() const -> const std::string& { return country_code; }

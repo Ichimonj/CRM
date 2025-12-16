@@ -54,20 +54,20 @@ public:
 
     /// @name Change functions
     /// @{
-    void setDocumentTitle(const std::string& title, const InternalEmployeePtr& changer);
-    void setDocumentName(const std::string& name, const InternalEmployeePtr& changer);
-    void setDocumentNumber(const std::string& number, const InternalEmployeePtr& changer);
-    void setDocumentPath(const std::string& path, const InternalEmployeePtr& changer);
-    void setEnteredForce(const DatePtr& date, const InternalEmployeePtr& changer);
-    void setStoppedWorking(const DatePtr& date, const InternalEmployeePtr& changer);
-    void setStatus(const DocumentStatus& status, const InternalEmployeePtr& changer);
-    void setCreatedBy(const InternalEmployeePtr& creator, const InternalEmployeePtr& changer);
+    bool setDocumentTitle(const std::string& title, const InternalEmployeePtr& changer);
+    bool setDocumentName(const std::string& name, const InternalEmployeePtr& changer);
+    bool setDocumentNumber(const std::string& number, const InternalEmployeePtr& changer);
+    bool setDocumentPath(const std::string& path, const InternalEmployeePtr& changer);
+    bool setEnteredForce(const DatePtr& date, const InternalEmployeePtr& changer);
+    bool setStoppedWorking(const DatePtr& date, const InternalEmployeePtr& changer);
+    bool setStatus(const DocumentStatus& status, const InternalEmployeePtr& changer);
+    bool setCreatedBy(const InternalEmployeePtr& creator, const InternalEmployeePtr& changer);
 
-    void addPartner(const PersonPtr& partner, const InternalEmployeePtr& changer);
-    void delPartner(const size_t id, const InternalEmployeePtr& changer);
+    bool addPartner(const PersonPtr& partner, const InternalEmployeePtr& changer);
+    bool delPartner(const size_t id, const InternalEmployeePtr& changer);
 
-    void addFile(const FilePtr& file, const InternalEmployeePtr& changer);
-    void delFile(const size_t id, const InternalEmployeePtr& changer);
+    bool addFile(const FilePtr& file, const InternalEmployeePtr& changer);
+    bool delFile(const size_t id, const InternalEmployeePtr& changer);
     /// @}
 
 public:

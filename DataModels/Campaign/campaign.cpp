@@ -57,7 +57,7 @@ auto Campaign::getTargetLeads() const -> const std::vector<CampaignLeadPtr>&
 }
 auto Campaign::getChangeLogs() const -> const std::vector<ChangeLogPtr>& { return change_logs; }
 
-void Campaign::setName(const std::string& name, const InternalEmployeePtr& changer)
+bool Campaign::setName(const std::string& name, const InternalEmployeePtr& changer)
 {
     if (this->name != name) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -70,10 +70,12 @@ void Campaign::setName(const std::string& name, const InternalEmployeePtr& chang
             ChangeLog::Action::Change
         ));
         this->name = name;
+        return true;
     }
+    return false;
 }
 
-void Campaign::setType(CampaignType type, const InternalEmployeePtr& changer)
+bool Campaign::setType(CampaignType type, const InternalEmployeePtr& changer)
 {
     if (this->type != type) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -89,10 +91,12 @@ void Campaign::setType(CampaignType type, const InternalEmployeePtr& changer)
         ));
         this->type       = type;
         this->other_type = std::nullopt;
+        return true;
     }
+    return false;
 }
 
-void Campaign::setOtherType(const OptionalStr& other_type, const InternalEmployeePtr& changer)
+bool Campaign::setOtherType(const OptionalStr& other_type, const InternalEmployeePtr& changer)
 {
     if (this->other_type != other_type) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -108,18 +112,21 @@ void Campaign::setOtherType(const OptionalStr& other_type, const InternalEmploye
         ));
         this->other_type = other_type;
         this->type       = CampaignType::other;
+        return true;
     }
+    return false;
 }
 
-void Campaign::setStartDate(const DatePtr& start_date, const InternalEmployeePtr& changer)
+bool Campaign::setStartDate(const DatePtr& start_date, const InternalEmployeePtr& changer)
 {
     if (this->start_date == nullptr || start_date == nullptr) {
         if (this->start_date == start_date) {
-            return;
+            return false;
         }
     } else if (*this->start_date == *start_date) {
-        return;
+        return false;
     }
+
     this->change_logs.emplace_back(std::make_shared<ChangeLog>(
         changer,
         PTR_TO_OPTIONAL(this->start_date),
@@ -130,72 +137,79 @@ void Campaign::setStartDate(const DatePtr& start_date, const InternalEmployeePtr
         ChangeLog::Action::Change
     ));
     this->start_date = start_date;
+    return true;
 }
 
-void Campaign::setEndDate(const DatePtr& end_date, const InternalEmployeePtr& changer)
+bool Campaign::setEndDate(const DatePtr& end_date, const InternalEmployeePtr& changer)
 {
     if (this->end_date == nullptr || end_date == nullptr) {
         if (this->end_date == end_date) {
-            return;
+            return false;
         }
     } else if (*this->end_date == *end_date) {
-        return;
+        return false;
     }
+
     this->change_logs.emplace_back(std::make_shared<ChangeLog>(
         changer,
         PTR_TO_OPTIONAL(this->end_date),
         PTR_TO_OPTIONAL(end_date),
-        CampaignFields::StartDate,
+        CampaignFields::EndDate,
         this->end_date ? ChangeLog::FieldType::Date : ChangeLog::FieldType::null,
         end_date ? ChangeLog::FieldType::Date : ChangeLog::FieldType::null,
         ChangeLog::Action::Change
     ));
     this->end_date = end_date;
+    return true;
 }
 
-void Campaign::setBudget(const MoneyPtr& budget, const InternalEmployeePtr& changer)
+bool Campaign::setBudget(const MoneyPtr& budget, const InternalEmployeePtr& changer)
 {
     if (this->budget == nullptr || budget == nullptr) {
         if (this->budget == budget) {
-            return;
+            return false;
         }
     } else if (*this->budget == *budget) {
-        return;
+        return false;
     }
+
     this->change_logs.emplace_back(std::make_shared<ChangeLog>(
         changer,
         PTR_TO_OPTIONAL(this->budget),
         PTR_TO_OPTIONAL(budget),
-        CampaignFields::StartDate,
-        this->budget ? ChangeLog::FieldType::Date : ChangeLog::FieldType::null,
-        budget ? ChangeLog::FieldType::Date : ChangeLog::FieldType::null,
+        CampaignFields::Budget,
+        this->budget ? ChangeLog::FieldType::Money : ChangeLog::FieldType::null,
+        budget ? ChangeLog::FieldType::Money : ChangeLog::FieldType::null,
         ChangeLog::Action::Change
     ));
     this->budget = budget;
+    return true;
 }
 
-void Campaign::setBudgetSpent(const MoneyPtr& budget_spent, const InternalEmployeePtr& changer)
+bool Campaign::setBudgetSpent(const MoneyPtr& budget_spent, const InternalEmployeePtr& changer)
 {
     if (this->budget_spent == nullptr || budget_spent == nullptr) {
         if (this->budget_spent == budget_spent) {
-            return;
+            return false;
         }
     } else if (*this->budget_spent == *budget_spent) {
-        return;
+        return false;
     }
+
     this->change_logs.emplace_back(std::make_shared<ChangeLog>(
         changer,
         PTR_TO_OPTIONAL(this->budget_spent),
         PTR_TO_OPTIONAL(budget_spent),
-        CampaignFields::StartDate,
-        this->budget_spent ? ChangeLog::FieldType::Date : ChangeLog::FieldType::null,
-        budget_spent ? ChangeLog::FieldType::Date : ChangeLog::FieldType::null,
+        CampaignFields::BudgetSpent,
+        this->budget_spent ? ChangeLog::FieldType::Money : ChangeLog::FieldType::null,
+        budget_spent ? ChangeLog::FieldType::Money : ChangeLog::FieldType::null,
         ChangeLog::Action::Change
     ));
     this->budget_spent = budget_spent;
+    return true;
 }
 
-void Campaign::setTotalJoined(uint32_t total_joined, const InternalEmployeePtr& changer)
+bool Campaign::setTotalJoined(uint32_t total_joined, const InternalEmployeePtr& changer)
 {
     if (this->total_joined != total_joined) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -208,10 +222,12 @@ void Campaign::setTotalJoined(uint32_t total_joined, const InternalEmployeePtr& 
             ChangeLog::Action::Change
         ));
         this->total_joined = total_joined;
+        return true;
     }
+    return false;
 }
 
-void Campaign::setTotalConverted(uint32_t total_converted, const InternalEmployeePtr& changer)
+bool Campaign::setTotalConverted(uint32_t total_converted, const InternalEmployeePtr& changer)
 {
     if (this->total_converted != total_converted) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -224,44 +240,51 @@ void Campaign::setTotalConverted(uint32_t total_converted, const InternalEmploye
             ChangeLog::Action::Change
         ));
         this->total_converted = total_converted;
+        return true;
     }
+    return false;
 }
 
-void Campaign::setCreator(const InternalEmployeePtr& creator, const InternalEmployeePtr& changer)
+bool Campaign::setCreator(const InternalEmployeePtr& creator, const InternalEmployeePtr& changer)
 {
     if (this->creator != creator) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
-            std::make_optional(this->creator),
-            std::make_optional(creator),
+            PTR_TO_OPTIONAL(this->creator),
+            PTR_TO_OPTIONAL(creator),
             CampaignFields::Creator,
-            ChangeLog::FieldType::InternalEmployee,
-            ChangeLog::FieldType::InternalEmployee,
+            this->creator ? ChangeLog::FieldType::InternalEmployee : ChangeLog::FieldType::null,
+            creator ? ChangeLog::FieldType::InternalEmployee : ChangeLog::FieldType::null,
             ChangeLog::Action::Change
         ));
         this->creator = creator;
+        return true;
     }
+    return false;
 }
 
-void Campaign::setConversionRate(
+bool Campaign::setConversionRate(
     const std::optional<double>& conversion_rate, const InternalEmployeePtr& changer
 )
 {
     if (this->conversion_rate != conversion_rate) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
-            this->conversion_rate,
-            conversion_rate,
+            this->conversion_rate ? std::make_optional(this->conversion_rate.value())
+                                  : std::nullopt,
+            conversion_rate ? std::make_optional(conversion_rate.value()) : std::nullopt,
             CampaignFields::ConversionRate,
             this->conversion_rate ? ChangeLog::FieldType::Double : ChangeLog::FieldType::null,
             conversion_rate ? ChangeLog::FieldType::Double : ChangeLog::FieldType::null,
             ChangeLog::Action::Change
         ));
         this->conversion_rate = conversion_rate;
+        return true;
     }
+    return false;
 }
 
-void Campaign::addNote(const Note& note, const InternalEmployeePtr& changer)
+bool Campaign::addNote(const Note& note, const InternalEmployeePtr& changer)
 {
     if (std::find(this->notes.begin(), this->notes.end(), note) == this->notes.end()) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -274,10 +297,12 @@ void Campaign::addNote(const Note& note, const InternalEmployeePtr& changer)
             ChangeLog::Action::Add
         ));
         this->notes.push_back(note);
+        return true;
     }
+    return false;
 }
 
-void Campaign::delNote(size_t index, const InternalEmployeePtr& changer)
+bool Campaign::delNote(size_t index, const InternalEmployeePtr& changer)
 {
     if (this->notes.size() > index) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -290,10 +315,12 @@ void Campaign::delNote(size_t index, const InternalEmployeePtr& changer)
             ChangeLog::Action::Remove
         ));
         this->notes.erase(this->notes.begin() + index);
+        return true;
     }
+    return false;
 }
 
-void Campaign::addTargetLeads(
+bool Campaign::addTargetLeads(
     const CampaignLeadPtr& target_lead, const InternalEmployeePtr& changer
 )
 {
@@ -309,12 +336,14 @@ void Campaign::addTargetLeads(
             ChangeLog::Action::Add
         ));
         this->target_leads.push_back(target_lead);
+        return true;
     }
+    return false;
 }
 
-void Campaign::delTargetLeads(size_t index, const InternalEmployeePtr& changer)
+bool Campaign::delTargetLeads(size_t index, const InternalEmployeePtr& changer)
 {
-    if (this->notes.size() > index) {
+    if (this->target_leads.size() > index) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
             std::make_optional(this->target_leads[index]),
@@ -325,5 +354,7 @@ void Campaign::delTargetLeads(size_t index, const InternalEmployeePtr& changer)
             ChangeLog::Action::Remove
         ));
         this->target_leads.erase(this->target_leads.begin() + index);
+        return true;
     }
+    return false;
 }

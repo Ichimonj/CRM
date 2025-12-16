@@ -6,7 +6,7 @@ using PhoneNumberPtr = std::shared_ptr<PhoneNumber>;
 
 struct PhoneCallData : public BaseInteraction {
     enum class CallType : uint8_t { incoming, outgoing, missed, COUNT };
-    
+
     PhoneCallData(const BigUint& id);
 
     PhoneCallData(
@@ -49,13 +49,13 @@ struct PhoneCallData : public BaseInteraction {
 
     /// @name Change functions
     /// @{
-    void setFromNumber(const PhoneNumberPtr& number, const InternalEmployeePtr& changer);
-    void setToNumber(const PhoneNumberPtr& number, const InternalEmployeePtr& changer);
-    void setStartCall(const DatePtr& start, const InternalEmployeePtr& changer);
-    void setEndCall(const DatePtr& end, const InternalEmployeePtr& changer);
-    void setCallType(const std::optional<CallType>& type, const InternalEmployeePtr& changer);
-    void setCallCreator(const PersonPtr& creator, const InternalEmployeePtr& changer);
-    void setCallProvider(const std::string& provider, const InternalEmployeePtr& changer);
+    bool setFromNumber(const PhoneNumberPtr& number, const InternalEmployeePtr& changer);
+    bool setToNumber(const PhoneNumberPtr& number, const InternalEmployeePtr& changer);
+    bool setStartCall(const DatePtr& start, const InternalEmployeePtr& changer);
+    bool setEndCall(const DatePtr& end, const InternalEmployeePtr& changer);
+    bool setCallType(const std::optional<CallType>& type, const InternalEmployeePtr& changer);
+    bool setCallCreator(const PersonPtr& creator, const InternalEmployeePtr& changer);
+    bool setCallProvider(const std::string& provider, const InternalEmployeePtr& changer);
     /// @}
 
 private:

@@ -41,11 +41,11 @@ struct Message : public BaseInteraction {
 
     /// @name Change functions
     /// @{
-    void setNickname(const std::string& nickname, const InternalEmployeePtr& changer);
-    void setAuthor(const PersonPtr& author, const InternalEmployeePtr& changer);
-    void setMessage(const std::string& message, const InternalEmployeePtr& changer);
-    void setPlatform(const std::string& platform, const InternalEmployeePtr& changer);
-    void setDateSending(const Date& date, const InternalEmployeePtr& changer);
+    bool setNickname(const std::string& nickname, const InternalEmployeePtr& changer);
+    bool setAuthor(const PersonPtr& author, const InternalEmployeePtr& changer);
+    bool setMessage(const std::string& message, const InternalEmployeePtr& changer);
+    bool setPlatform(const std::string& platform, const InternalEmployeePtr& changer);
+    bool setDateSending(const Date& date, const InternalEmployeePtr& changer);
     /// @}
 
 private:

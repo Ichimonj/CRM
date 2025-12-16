@@ -66,7 +66,7 @@ auto InteractionResult::getChangeLogs() const -> const std::vector<ChangeLogPtr>
     return this->change_logs;
 }
 
-void InteractionResult::setInteractionResultTitle(
+bool InteractionResult::setInteractionResultTitle(
     const std::string& title, const InternalEmployeePtr& changer
 )
 {
@@ -84,10 +84,14 @@ void InteractionResult::setInteractionResultTitle(
         );
         this->change_logs.emplace_back(changeLog);
         this->interaction_result_title = title;
+        return true;
     }
+    return false;
 }
 
-void InteractionResult::setDescription(const std::string& description, const InternalEmployeePtr& changer)
+bool InteractionResult::setDescription(
+    const std::string& description, const InternalEmployeePtr& changer
+)
 {
     if (this->description != description) {
         auto changeLog = std::make_shared<ChangeLog>(
@@ -103,10 +107,12 @@ void InteractionResult::setDescription(const std::string& description, const Int
         );
         this->change_logs.emplace_back(changeLog);
         this->description = description;
+        return true;
     }
+    return false;
 }
 
-void InteractionResult::addDocument(const DocumentPtr& document, const InternalEmployeePtr& changer)
+bool InteractionResult::addDocument(const DocumentPtr& document, const InternalEmployeePtr& changer)
 {
     if (std::find(this->documents.begin(), this->documents.end(), document) ==
         this->documents.end()) {
@@ -121,10 +127,12 @@ void InteractionResult::addDocument(const DocumentPtr& document, const InternalE
         );
         this->change_logs.emplace_back(changeLog);
         this->documents.push_back(document);
+        return true;
     }
+    return false;
 }
 
-void InteractionResult::delDocument(const size_t id, const InternalEmployeePtr& changer)
+bool InteractionResult::delDocument(const size_t id, const InternalEmployeePtr& changer)
 {
     if (this->documents.size() > id) {
         auto changeLog = std::make_shared<ChangeLog>(
@@ -138,10 +146,12 @@ void InteractionResult::delDocument(const size_t id, const InternalEmployeePtr& 
         );
         this->change_logs.emplace_back(changeLog);
         this->documents.erase(this->documents.begin() + id);
+        return true;
     }
+    return false;
 }
 
-void InteractionResult::addDeal(const DealPtr& deal, const InternalEmployeePtr& changer)
+bool InteractionResult::addDeal(const DealPtr& deal, const InternalEmployeePtr& changer)
 {
     if (std::find(this->deals.begin(), this->deals.end(), deal) == this->deals.end()) {
         auto changeLog = std::make_shared<ChangeLog>(
@@ -155,10 +165,12 @@ void InteractionResult::addDeal(const DealPtr& deal, const InternalEmployeePtr& 
         );
         this->change_logs.emplace_back(changeLog);
         this->deals.push_back(deal);
+        return true;
     }
+    return false;
 }
 
-void InteractionResult::delDeal(const size_t id, const InternalEmployeePtr& changer)
+bool InteractionResult::delDeal(const size_t id, const InternalEmployeePtr& changer)
 {
     if (this->deals.size() > id) {
         auto changeLog = std::make_shared<ChangeLog>(
@@ -172,10 +184,12 @@ void InteractionResult::delDeal(const size_t id, const InternalEmployeePtr& chan
         );
         this->change_logs.emplace_back(changeLog);
         this->deals.erase(this->deals.begin() + id);
+        return true;
     }
+    return false;
 }
 
-void InteractionResult::addPlannedInteraction(
+bool InteractionResult::addPlannedInteraction(
     const InteractionPtr& interaction, const InternalEmployeePtr& changer
 )
 {
@@ -193,10 +207,12 @@ void InteractionResult::addPlannedInteraction(
         );
         this->change_logs.emplace_back(changeLog);
         this->planned_interactions.push_back(interaction);
+        return true;
     }
+    return false;
 }
 
-void InteractionResult::delPlannedInteraction(const size_t id, const InternalEmployeePtr& changer)
+bool InteractionResult::delPlannedInteraction(const size_t id, const InternalEmployeePtr& changer)
 {
     if (this->planned_interactions.size() > id) {
         auto changeLog = std::make_shared<ChangeLog>(
@@ -210,10 +226,12 @@ void InteractionResult::delPlannedInteraction(const size_t id, const InternalEmp
         );
         this->change_logs.emplace_back(changeLog);
         this->planned_interactions.erase(this->planned_interactions.begin() + id);
+        return true;
     }
+    return false;
 }
 
-void InteractionResult::addFile(const FilePtr& file, const InternalEmployeePtr& changer)
+bool InteractionResult::addFile(const FilePtr& file, const InternalEmployeePtr& changer)
 {
     if (std::find(this->files.begin(), this->files.end(), file) == this->files.end()) {
         auto changeLog = std::make_shared<ChangeLog>(
@@ -227,10 +245,12 @@ void InteractionResult::addFile(const FilePtr& file, const InternalEmployeePtr& 
         );
         this->change_logs.emplace_back(changeLog);
         this->files.push_back(file);
+        return true;
     }
+    return false;
 }
 
-void InteractionResult::delFile(const size_t id, const InternalEmployeePtr& changer)
+bool InteractionResult::delFile(const size_t id, const InternalEmployeePtr& changer)
 {
     if (this->files.size() > id) {
         auto changeLog = std::make_shared<ChangeLog>(
@@ -244,10 +264,12 @@ void InteractionResult::delFile(const size_t id, const InternalEmployeePtr& chan
         );
         this->change_logs.emplace_back(changeLog);
         this->files.erase(this->files.begin() + id);
+        return true;
     }
+    return false;
 }
 
-void InteractionResult::setResultStatus(
+bool InteractionResult::setResultStatus(
     const ResultStatus result_status, const InternalEmployeePtr& changer
 )
 {
@@ -269,10 +291,12 @@ void InteractionResult::setResultStatus(
         this->change_logs.emplace_back(changeLog);
         this->other_result_status.clear();
         this->result_status = result_status;
+        return true;
     }
+    return false;
 }
 
-void InteractionResult::setOtherResultStatus(
+bool InteractionResult::setOtherResultStatus(
     const std::string& other_result_status, const InternalEmployeePtr& changer
 )
 {
@@ -296,10 +320,14 @@ void InteractionResult::setOtherResultStatus(
         this->change_logs.emplace_back(changeLog);
         this->result_status       = ResultStatus::other;
         this->other_result_status = other_result_status;
+        return true;
     }
+    return false;
 }
 
-void InteractionResult::setIdentifiedIssue(const std::string& issue, const InternalEmployeePtr& changer)
+bool InteractionResult::setIdentifiedIssue(
+    const std::string& issue, const InternalEmployeePtr& changer
+)
 {
     if (this->identified_issue != issue) {
         auto changeLog = std::make_shared<ChangeLog>(
@@ -315,10 +343,12 @@ void InteractionResult::setIdentifiedIssue(const std::string& issue, const Inter
         );
         this->change_logs.emplace_back(changeLog);
         this->identified_issue = issue;
+        return true;
     }
+    return false;
 }
 
-void InteractionResult::addMoreData(
+bool InteractionResult::addMoreData(
     const std::string& title, const std::string& data, const InternalEmployeePtr& changer
 )
 {
@@ -337,10 +367,12 @@ void InteractionResult::addMoreData(
         );
         this->change_logs.emplace_back(changeLog);
         this->more_data.push_back(pair);
+        return true;
     }
+    return false;
 }
 
-void InteractionResult::delMoreData(const size_t id, const InternalEmployeePtr& changer)
+bool InteractionResult::delMoreData(const size_t id, const InternalEmployeePtr& changer)
 {
     if (this->more_data.size() > id) {
         auto changeLog = std::make_shared<ChangeLog>(
@@ -358,10 +390,12 @@ void InteractionResult::delMoreData(const size_t id, const InternalEmployeePtr& 
         );
         this->change_logs.emplace_back(changeLog);
         this->more_data.erase(this->more_data.begin() + id);
+        return true;
     }
+    return false;
 }
 
-void InteractionResult::addTag(const std::string& tag, const InternalEmployeePtr& changer)
+bool InteractionResult::addTag(const std::string& tag, const InternalEmployeePtr& changer)
 {
     if (std::find(this->tags.begin(), this->tags.end(), tag) == this->tags.end()) {
         auto changeLog = std::make_shared<ChangeLog>(
@@ -375,10 +409,12 @@ void InteractionResult::addTag(const std::string& tag, const InternalEmployeePtr
         );
         this->change_logs.emplace_back(changeLog);
         this->tags.push_back(tag);
+        return true;
     }
+    return false;
 }
 
-void InteractionResult::delTag(const size_t id, const InternalEmployeePtr& changer)
+bool InteractionResult::delTag(const size_t id, const InternalEmployeePtr& changer)
 {
     if (this->tags.size() > id) {
         auto changeLog = std::make_shared<ChangeLog>(
@@ -393,5 +429,7 @@ void InteractionResult::delTag(const size_t id, const InternalEmployeePtr& chang
         );
         this->change_logs.emplace_back(changeLog);
         this->tags.erase(this->tags.begin() + id);
+        return true;
     }
+    return false;
 }

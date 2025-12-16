@@ -59,7 +59,7 @@ auto CommentarySocialNetworksThread::getComments() const
     return this->comments;
 }
 
-void CommentarySocialNetworksThread::addComment(
+bool CommentarySocialNetworksThread::addComment(
     const CommentarySocialNetworksPtr& comment, const InternalEmployeePtr& changer
 )
 {
@@ -74,10 +74,12 @@ void CommentarySocialNetworksThread::addComment(
             ChangeLog::Action::Add
         ));
         this->comments.push_back(comment);
+        return true;
     }
+    return false;
 }
 
-void CommentarySocialNetworksThread::delComment(const size_t id, const InternalEmployeePtr& changer)
+bool CommentarySocialNetworksThread::delComment(const size_t id, const InternalEmployeePtr& changer)
 {
     if (this->comments.size() > id) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -90,5 +92,7 @@ void CommentarySocialNetworksThread::delComment(const size_t id, const InternalE
             ChangeLog::Action::Remove
         ));
         this->comments.erase(this->comments.begin() + id);
+        return true;
     }
+    return false;
 }
