@@ -8,8 +8,8 @@ class ExternalEmployeeDataBase {
 public:
     ExternalEmployeeDataBase() = default;
 
-    void addExternalEmployee(const ExternalEmployeePtr& person);
-    void delExternalEmployee(const BigUint& id);
+    void add(const ExternalEmployeePtr& person);
+    void remove(const BigUint& id);
 
     /// @name Getters
     /// @{

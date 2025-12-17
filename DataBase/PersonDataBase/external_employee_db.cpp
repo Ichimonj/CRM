@@ -2,7 +2,7 @@
 
 #include "external_company.hpp"
 #include "external_employee.hpp"
-void ExternalEmployeeDataBase::addExternalEmployee(const ExternalEmployeePtr& person)
+void ExternalEmployeeDataBase::add(const ExternalEmployeePtr& person)
 {
     if (person == nullptr) return;
 
@@ -31,7 +31,7 @@ void ExternalEmployeeDataBase::addExternalEmployee(const ExternalEmployeePtr& pe
     }
 }
 
-void ExternalEmployeeDataBase::delExternalEmployee(const BigUint& id)
+void ExternalEmployeeDataBase::remove(const BigUint& id)
 {
     auto person = this->by_id.find(id);
     if (person == this->by_id.end()) {
