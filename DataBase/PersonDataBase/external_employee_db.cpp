@@ -1,8 +1,8 @@
-#include "person_db.hpp"
+#include "external_employee_db.hpp"
 
 #include "external_company.hpp"
-
-void PersonDataBase::addPerson(const PersonPtr& person)
+#include "external_employee.hpp"
+void ExternalEmployeeDataBase::addExternalEmployee(const ExternalEmployeePtr& person)
 {
     if (person == nullptr) return;
 
@@ -26,14 +26,12 @@ void PersonDataBase::addPerson(const PersonPtr& person)
         this->by_phone.emplace(number.getNumber(), person);
     }
 
-    if (auto ext = std::dynamic_pointer_cast<ExternalEmployee>(person)) {
-        if (ext->getCompany()) {
-            this->by_company[ext->getCompany()->getId()].push_back(person);
-        }
+    if (person->getCompany()) {
+        this->by_company[person->getCompany()->getId()].push_back(person);
     }
 }
 
-void PersonDataBase::delPerson(const BigUint& id)
+void ExternalEmployeeDataBase::delExternalEmployee(const BigUint& id)
 {
     auto person = this->by_id.find(id);
     if (person == this->by_id.end()) {
@@ -90,18 +88,16 @@ void PersonDataBase::delPerson(const BigUint& id)
         }
     }
 
-    if (auto ext = std::dynamic_pointer_cast<ExternalEmployee>(person->second)) {
-        if (ext->getCompany()) {
-            CompanyId company_id = ext->getCompany()->getId();
+    if (person->second->getCompany()) {
+        CompanyId company_id = person->second->getCompany()->getId();
 
-            auto      company_it = this->by_company.find(company_id);
-            if (company_it != by_company.end()) {
-                auto& vec = company_it->second;
-                vec.erase(std::remove(vec.begin(), vec.end(), person->second), vec.end());
+        auto      company_it = this->by_company.find(company_id);
+        if (company_it != by_company.end()) {
+            auto& vec = company_it->second;
+            vec.erase(std::remove(vec.begin(), vec.end(), person->second), vec.end());
 
-                if (vec.empty()) {
-                    this->by_company.erase(company_it);
-                }
+            if (vec.empty()) {
+                this->by_company.erase(company_it);
             }
         }
     }
@@ -109,33 +105,37 @@ void PersonDataBase::delPerson(const BigUint& id)
     this->by_id.erase(person);
 }
 
-auto PersonDataBase::getById() const -> const std::unordered_map<BigUint, PersonPtr>&
+auto ExternalEmployeeDataBase::getById() const
+    -> const std::unordered_map<BigUint, ExternalEmployeePtr>&
 {
     return this->by_id;
 }
 
-auto PersonDataBase::getByName() const -> const std::unordered_multimap<std::string, PersonPtr>&
+auto ExternalEmployeeDataBase::getByName() const
+    -> const std::unordered_multimap<std::string, ExternalEmployeePtr>&
 {
     return this->by_name;
 }
 
-auto PersonDataBase::getByEmail() const -> const std::unordered_multimap<std::string, PersonPtr>&
+auto ExternalEmployeeDataBase::getByEmail() const
+    -> const std::unordered_multimap<std::string, ExternalEmployeePtr>&
 {
     return this->by_email;
 }
 
-auto PersonDataBase::getByPhone() const -> const std::unordered_multimap<std::string, PersonPtr>&
+auto ExternalEmployeeDataBase::getByPhone() const
+    -> const std::unordered_multimap<std::string, ExternalEmployeePtr>&
 {
     return this->by_phone;
 }
 
-auto PersonDataBase::getByCompany() const
-    -> const std::unordered_map<CompanyId, std::vector<PersonPtr>>&
+auto ExternalEmployeeDataBase::getByCompany() const
+    -> const std::unordered_map<CompanyId, std::vector<ExternalEmployeePtr>>&
 {
     return this->by_company;
 }
 
-auto PersonDataBase::findById(const BigUint& id) const -> const PersonPtr&
+auto ExternalEmployeeDataBase::findById(const BigUint& id) const -> const ExternalEmployeePtr&
 {
     auto person = this->by_id.find(id);
     if (person != this->by_id.end()) {
@@ -144,40 +144,43 @@ auto PersonDataBase::findById(const BigUint& id) const -> const PersonPtr&
     return nullptr;
 }
 
-auto PersonDataBase::findByName(const std::string& name) const -> const std::vector<PersonPtr>
+auto ExternalEmployeeDataBase::findByName(const std::string& name) const
+    -> const std::vector<ExternalEmployeePtr>
 {
     auto persons = this->by_name.equal_range(name);
     if (persons.first == persons.second) {
-        return std::vector<PersonPtr>{};
+        return std::vector<ExternalEmployeePtr>{};
     }
 
-    std::vector<PersonPtr> result;
+    std::vector<ExternalEmployeePtr> result;
     for (auto it = persons.first; it != persons.second; ++it) {
         result.push_back(it->second);
     }
     return result;
 }
 
-auto PersonDataBase::findByEmail(const std::string& email) const -> const std::vector<PersonPtr>
+auto ExternalEmployeeDataBase::findByEmail(const std::string& email) const
+    -> const std::vector<ExternalEmployeePtr>
 {
     auto persons = this->by_email.equal_range(email);
     if (persons.first == persons.second) {
-        return std::vector<PersonPtr>{};
+        return std::vector<ExternalEmployeePtr>{};
     }
-    std::vector<PersonPtr> result;
+    std::vector<ExternalEmployeePtr> result;
     for (auto it = persons.first; it != persons.second; ++it) {
         result.push_back(it->second);
     }
     return result;
 }
 
-auto PersonDataBase::findByPhone(const std::string& phone) const -> const std::vector<PersonPtr>
+auto ExternalEmployeeDataBase::findByPhone(const std::string& phone) const
+    -> const std::vector<ExternalEmployeePtr>
 {
     auto persons = this->by_phone.equal_range(phone);
     if (persons.first == persons.second) {
-        return std::vector<PersonPtr>{};
+        return std::vector<ExternalEmployeePtr>{};
     }
-    std::vector<PersonPtr> result;
+    std::vector<ExternalEmployeePtr> result;
     for (auto it = persons.first; it != persons.second; ++it) {
         result.push_back(it->second);
     }
@@ -185,16 +188,17 @@ auto PersonDataBase::findByPhone(const std::string& phone) const -> const std::v
     return result;
 }
 
-auto PersonDataBase::findByCompany(const CompanyId& id) const -> const std::vector<PersonPtr>
+auto ExternalEmployeeDataBase::findByCompany(const CompanyId& id) const
+    -> const std::vector<ExternalEmployeePtr>
 {
     auto persons = this->by_company.find(id);
     if (persons != this->by_company.end()) {
         return persons->second;
     }
-    return std::vector<PersonPtr>{};
+    return std::vector<ExternalEmployeePtr>{};
 }
 
-void PersonDataBase::changeName(
+void ExternalEmployeeDataBase::changeName(
     const BigUint& id, const std::string& name, const InternalEmployeePtr& changer
 )
 {
@@ -215,7 +219,7 @@ void PersonDataBase::changeName(
     }
 }
 
-void PersonDataBase::changeEmail(
+void ExternalEmployeeDataBase::changeEmail(
     const BigUint& id, const OptionalStr& email, const InternalEmployeePtr& changer
 )
 {
@@ -240,7 +244,7 @@ void PersonDataBase::changeEmail(
     }
 }
 
-void PersonDataBase::addMoreEmail(
+void ExternalEmployeeDataBase::addMoreEmail(
     const BigUint& id, const std::string& email, const InternalEmployeePtr& changer
 )
 {
@@ -252,7 +256,7 @@ void PersonDataBase::addMoreEmail(
     }
 }
 
-void PersonDataBase::delMoreEmail(
+void ExternalEmployeeDataBase::delMoreEmail(
     const BigUint& id, size_t index, const InternalEmployeePtr& changer
 )
 {
@@ -274,7 +278,7 @@ void PersonDataBase::delMoreEmail(
     }
 }
 
-void PersonDataBase::changePhone(
+void ExternalEmployeeDataBase::changePhone(
     const BigUint& id, const PhoneNumberPtr& number, const InternalEmployeePtr& changer
 )
 {
@@ -299,7 +303,7 @@ void PersonDataBase::changePhone(
     }
 }
 
-void PersonDataBase::addMorePhone(
+void ExternalEmployeeDataBase::addMorePhone(
     const BigUint& id, const PhoneNumber& number, const InternalEmployeePtr& changer
 )
 {
@@ -311,7 +315,7 @@ void PersonDataBase::addMorePhone(
     }
 }
 
-void PersonDataBase::delMorePhone(
+void ExternalEmployeeDataBase::delMorePhone(
     const BigUint& id, size_t index, const InternalEmployeePtr& changer
 )
 {
@@ -333,35 +337,33 @@ void PersonDataBase::delMorePhone(
     }
 }
 
-void PersonDataBase::changeCompany(
+void ExternalEmployeeDataBase::changeCompany(
     const BigUint& id, const ExternalCompanyPtr& company, const InternalEmployeePtr& changer
 )
 {
     auto person = this->by_id.find(id);
     if (person == this->by_id.end()) return;
 
-    if (auto ext = std::dynamic_pointer_cast<ExternalEmployee>(person->second)) {
-        auto old_company = ext->getCompany();
+    auto old_company = person->second->getCompany();
 
-        if (ext->setCompany(company, changer)) {
-            if (old_company) {
-                CompanyId company_id = old_company->getId();
+    if (person->second->setCompany(company, changer)) {
+        if (old_company) {
+            CompanyId company_id = old_company->getId();
 
-                auto      company_it = this->by_company.find(company_id);
-                if (company_it != this->by_company.end()) {
-                    auto& vec = company_it->second;
+            auto      company_it = this->by_company.find(company_id);
+            if (company_it != this->by_company.end()) {
+                auto& vec = company_it->second;
 
-                    vec.erase(std::remove(vec.begin(), vec.end(), person->second), vec.end());
+                vec.erase(std::remove(vec.begin(), vec.end(), person->second), vec.end());
 
-                    if (vec.empty()) {
-                        this->by_company.erase(company_id);
-                    }
+                if (vec.empty()) {
+                    this->by_company.erase(company_id);
                 }
             }
+        }
 
-            if (company) {
-                this->by_company[company->getId()].push_back(person->second);
-            }
+        if (company) {
+            this->by_company[company->getId()].push_back(person->second);
         }
     }
 }
