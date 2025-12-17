@@ -2,6 +2,7 @@
 
 #include "external_company.hpp"
 #include "external_employee.hpp"
+
 void ExternalEmployeeDataBase::add(const ExternalEmployeePtr& person)
 {
     if (person == nullptr) return;
