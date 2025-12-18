@@ -180,7 +180,7 @@ void ExternalEmployeeDataBase::remove(const BigUint& id)
 
 auto ExternalEmployeeDataBase::size() const -> const size_t { return this->by_id.size(); }
 
-auto ExternalEmployeeDataBase::getById() const
+auto ExternalEmployeeDataBase::getAll() const
     -> const std::unordered_map<BigUint, ExternalEmployeePtr>&
 {
     return this->by_id;

@@ -160,7 +160,7 @@ void ClientDataBase::remove(const BigUint& id)
 
 auto ClientDataBase::size() const -> const size_t { return this->by_id.size(); }
 
-auto ClientDataBase::getById() const -> const std::unordered_map<BigUint, ClientPtr>&
+auto ClientDataBase::getAll() const -> const std::unordered_map<BigUint, ClientPtr>&
 {
     return this->by_id;
 }

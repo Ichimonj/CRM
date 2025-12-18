@@ -161,7 +161,7 @@ void InternalEmployeeDataBase::remove(const BigUint& id)
 
 auto InternalEmployeeDataBase::size() const -> const size_t { return this->by_id.size(); }
 
-auto InternalEmployeeDataBase::getById() const
+auto InternalEmployeeDataBase::getAll() const
     -> const std::unordered_map<BigUint, InternalEmployeePtr>&
 {
     return this->by_id;
