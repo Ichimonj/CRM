@@ -14,6 +14,7 @@ public:
     /// @name Getters
     /// @{
     auto size() const -> const size_t;
+    bool empty() const;
     auto getAll() const -> const std::unordered_map<BigUint, ClientPtr>&;
     auto getByName() const -> const std::unordered_multimap<std::string, ClientPtr>&;
     auto getByEmail() const -> const std::unordered_multimap<std::string, ClientPtr>&;
