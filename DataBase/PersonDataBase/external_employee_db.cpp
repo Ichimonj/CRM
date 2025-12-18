@@ -1,5 +1,8 @@
 #include "external_employee_db.hpp"
 
+#include <algorithm>
+#include <string>
+
 #include "external_company.hpp"
 #include "external_employee.hpp"
 
@@ -13,18 +16,35 @@ void ExternalEmployeeDataBase::add(const ExternalEmployeePtr& person)
     this->by_id[person->getId()] = person;
     this->by_name.emplace(person->getName(), person);
 
+    std::string lower_name = person->getName();
+    std::transform(lower_name.begin(), lower_name.end(), lower_name.begin(), ::tolower);
+
+    this->by_name_substr_search.emplace(lower_name, person);
+
     if (person->getEmail()) {
         this->by_email.emplace(person->getEmail().value(), person);
+
+        std::string lower_email = person->getEmail().value();
+        std::transform(lower_email.begin(), lower_email.end(), lower_email.begin(), ::tolower);
+        this->by_email_substr_search.emplace(lower_email, person);
     }
     for (auto& email : person->getMoreEmails()) {
         this->by_email.emplace(email, person);
+
+        std::string lower_email = email;
+        std::transform(lower_email.begin(), lower_email.end(), lower_email.begin(), ::tolower);
+        this->by_email_substr_search.emplace(lower_email, person);
     }
 
     if (person->getPhoneNumber()) {
         this->by_phone.emplace(person->getPhoneNumber()->getNumber(), person);
+
+        this->by_phone_substr_search.emplace(person->getPhoneNumber()->getNumber(), person);
     }
     for (auto& number : person->getMorePhoneNumbers()) {
         this->by_phone.emplace(number.getNumber(), person);
+
+        this->by_phone_substr_search.emplace(number.getNumber(), person);
     }
 
     if (person->getCompany()) {
@@ -47,11 +67,33 @@ void ExternalEmployeeDataBase::remove(const BigUint& id)
         }
     }
 
+    std::string lower_name = person->second->getName();
+    std::transform(lower_name.begin(), lower_name.end(), lower_name.begin(), ::tolower);
+
+    auto name_substr_range = this->by_name_substr_search.equal_range(lower_name);
+    for (auto it = name_substr_range.first; it != name_substr_range.second; ++it) {
+        if (it->second->getId() == id) {
+            this->by_name_substr_search.erase(it);
+            break;
+        }
+    }
+
     if (person->second->getEmail().has_value()) {
         auto email_range = this->by_email.equal_range(person->second->getEmail().value());
         for (auto it = email_range.first; it != email_range.second; ++it) {
             if (it->second->getId() == id) {
                 this->by_email.erase(it);
+                break;
+            }
+        }
+
+        std::string lower_email = person->second->getEmail().value();
+        std::transform(lower_email.begin(), lower_email.end(), lower_email.begin(), ::tolower);
+
+        auto email_substr_range = this->by_email_substr_search.equal_range(lower_email);
+        for (auto it = email_substr_range.first; it != email_substr_range.second; ++it) {
+            if (it->second->getId() == id) {
+                this->by_email_substr_search.erase(it);
                 break;
             }
         }
@@ -65,14 +107,36 @@ void ExternalEmployeeDataBase::remove(const BigUint& id)
                 break;
             }
         }
+
+        std::string lower_email = email;
+        std::transform(lower_email.begin(), lower_email.end(), lower_email.begin(), ::tolower);
+
+        auto email_substr_range = this->by_email_substr_search.equal_range(lower_email);
+        for (auto it = email_substr_range.first; it != email_substr_range.second; ++it) {
+            if (it->second->getId() == id) {
+                this->by_email_substr_search.erase(it);
+                break;
+            }
+        }
     }
 
     if (person->second->getPhoneNumber()) {
-        auto persons = this->by_phone.equal_range(person->second->getPhoneNumber()->getNumber());
+        auto phone_range =
+            this->by_phone.equal_range(person->second->getPhoneNumber()->getNumber());
 
-        for (auto it = persons.first; it != persons.second; ++it) {
+        for (auto it = phone_range.first; it != phone_range.second; ++it) {
             if (it->second == person->second) {
                 this->by_phone.erase(it);
+                break;
+            }
+        }
+
+        auto phone_substr_range =
+            this->by_phone_substr_search.equal_range(person->second->getPhoneNumber()->getNumber());
+
+        for (auto it = phone_substr_range.first; it != phone_substr_range.second; ++it) {
+            if (it->second == person->second) {
+                this->by_phone_substr_search.erase(it);
                 break;
             }
         }
@@ -87,11 +151,20 @@ void ExternalEmployeeDataBase::remove(const BigUint& id)
                 break;
             }
         }
+
+        auto phone_substr_range =
+            this->by_phone_substr_search.equal_range(phone_number.getNumber());
+
+        for (auto it = phone_substr_range.first; it != phone_substr_range.second; ++it) {
+            if (it->second == person->second) {
+                this->by_phone_substr_search.erase(it);
+                break;
+            }
+        }
     }
 
     if (person->second->getCompany()) {
         CompanyId company_id = person->second->getCompany()->getId();
-
         auto      company_it = this->by_company.find(company_id);
         if (company_it != by_company.end()) {
             auto& vec = company_it->second;
@@ -102,7 +175,6 @@ void ExternalEmployeeDataBase::remove(const BigUint& id)
             }
         }
     }
-
     this->by_id.erase(person);
 }
 
@@ -160,6 +232,25 @@ auto ExternalEmployeeDataBase::findByName(const std::string& name) const
     return result;
 }
 
+auto ExternalEmployeeDataBase::findByNameSubstr(const std::string& substr) const
+    -> const std::vector<ExternalEmployeePtr>
+{
+    if (substr.empty()) return std::vector<ExternalEmployeePtr>{};
+    std::string key = substr;
+    std::transform(key.begin(), key.end(), key.begin(), ::tolower);
+
+    auto first = this->by_name_substr_search.lower_bound(key);
+    key.back()++;
+    auto second = this->by_name_substr_search.lower_bound(key);
+
+    if (first == second) return std::vector<ExternalEmployeePtr>{};
+    std::vector<ExternalEmployeePtr> result;
+    for (auto it = first; it != second; ++it) {
+        result.push_back(it->second);
+    }
+    return result;
+}
+
 auto ExternalEmployeeDataBase::findByEmail(const std::string& email) const
     -> const std::vector<ExternalEmployeePtr>
 {
@@ -169,6 +260,25 @@ auto ExternalEmployeeDataBase::findByEmail(const std::string& email) const
     }
     std::vector<ExternalEmployeePtr> result;
     for (auto it = persons.first; it != persons.second; ++it) {
+        result.push_back(it->second);
+    }
+    return result;
+}
+
+auto ExternalEmployeeDataBase::findByEmailSubstr(const std::string& substr) const
+    -> const std::vector<ExternalEmployeePtr>
+{
+    if (substr.empty()) return std::vector<ExternalEmployeePtr>{};
+    std::string key = substr;
+    std::transform(key.begin(), key.end(), key.begin(), ::tolower);
+
+    auto first = this->by_email_substr_search.lower_bound(key);
+    key.back()++;
+    auto second = this->by_email_substr_search.lower_bound(key);
+
+    if (first == second) return std::vector<ExternalEmployeePtr>{};
+    std::vector<ExternalEmployeePtr> result;
+    for (auto it = first; it != second; ++it) {
         result.push_back(it->second);
     }
     return result;
@@ -186,6 +296,24 @@ auto ExternalEmployeeDataBase::findByPhone(const std::string& phone) const
         result.push_back(it->second);
     }
 
+    return result;
+}
+
+auto ExternalEmployeeDataBase::findByPhoneSubstr(const std::string& substr) const
+    -> const std::vector<ExternalEmployeePtr>
+{
+    if (substr.empty()) return std::vector<ExternalEmployeePtr>{};
+    std::string key = substr;
+
+    auto        first = this->by_phone_substr_search.lower_bound(key);
+    key.back()++;
+    auto second = this->by_phone_substr_search.lower_bound(key);
+
+    if (first == second) return std::vector<ExternalEmployeePtr>{};
+    std::vector<ExternalEmployeePtr> result;
+    for (auto it = first; it != second; ++it) {
+        result.push_back(it->second);
+    }
     return result;
 }
 

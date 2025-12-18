@@ -1,4 +1,5 @@
 #pragma once
+#include <map>
 #include <unordered_map>
 
 #include "company.hpp"
@@ -25,8 +26,14 @@ public:
     /// @{
     auto findById(const BigUint& id) const -> const ExternalEmployeePtr&;
     auto findByName(const std::string& name) const -> const std::vector<ExternalEmployeePtr>;
+    auto findByNameSubstr(const std::string& substr) const
+        -> const std::vector<ExternalEmployeePtr>;
     auto findByEmail(const std::string& email) const -> const std::vector<ExternalEmployeePtr>;
+    auto findByEmailSubstr(const std::string& substr) const
+        -> const std::vector<ExternalEmployeePtr>;
     auto findByPhone(const std::string& phone) const -> const std::vector<ExternalEmployeePtr>;
+    auto findByPhoneSubstr(const std::string& substr) const
+        -> const std::vector<ExternalEmployeePtr>;
     auto findByCompany(const CompanyId& id) const -> const std::vector<ExternalEmployeePtr>;
     /// @}
 
@@ -58,7 +65,10 @@ public:
 private:
     std::unordered_map<BigUint, ExternalEmployeePtr>                by_id;
     std::unordered_multimap<std::string, ExternalEmployeePtr>       by_name;
+    std::multimap<std::string, ExternalEmployeePtr>                 by_name_substr_search;
     std::unordered_multimap<std::string, ExternalEmployeePtr>       by_email;
+    std::multimap<std::string, ExternalEmployeePtr>                 by_email_substr_search;
     std::unordered_multimap<std::string, ExternalEmployeePtr>       by_phone;
+    std::multimap<std::string, ExternalEmployeePtr>                 by_phone_substr_search;
     std::unordered_map<CompanyId, std::vector<ExternalEmployeePtr>> by_company;
 };

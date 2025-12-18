@@ -1,4 +1,5 @@
 #pragma once
+#include <map>
 #include <unordered_map>
 
 #include "client.hpp"
@@ -22,8 +23,11 @@ public:
     /// @{
     auto findById(const BigUint& id) const -> const ClientPtr&;
     auto findByName(const std::string& name) const -> const std::vector<ClientPtr>;
+    auto findByNameSubstr(const std::string& substr) const -> const std::vector<ClientPtr>;
     auto findByEmail(const std::string& email) const -> const std::vector<ClientPtr>;
+    auto findByEmailSubstr(const std::string& substr) const -> const std::vector<ClientPtr>;
     auto findByPhone(const std::string& phone) const -> const std::vector<ClientPtr>;
+    auto findByPhoneSubstr(const std::string& substr) const -> const std::vector<ClientPtr>;
     /// @}
 
     /// @name Change functions
@@ -50,6 +54,9 @@ public:
 private:
     std::unordered_map<BigUint, ClientPtr>          by_id;
     std::unordered_multimap<std::string, ClientPtr> by_name;
+    std::multimap<std::string, ClientPtr>           by_name_substr_search;
     std::unordered_multimap<std::string, ClientPtr> by_email;
+    std::multimap<std::string, ClientPtr>           by_email_substr_search;
     std::unordered_multimap<std::string, ClientPtr> by_phone;
+    std::multimap<std::string, ClientPtr>           by_phone_substr_search;
 };

@@ -1,5 +1,7 @@
 #include "client_db.hpp"
 
+#include <algorithm>
+#include <string>
 void ClientDataBase::add(const ClientPtr& client)
 {
     if (client == nullptr) return;
@@ -10,18 +12,35 @@ void ClientDataBase::add(const ClientPtr& client)
     this->by_id[client->getId()] = client;
     this->by_name.emplace(client->getName(), client);
 
+    std::string lower_name = client->getName();
+    std::transform(lower_name.begin(), lower_name.end(), lower_name.begin(), ::tolower);
+
+    this->by_name_substr_search.emplace(lower_name, client);
+
     if (client->getEmail()) {
         this->by_email.emplace(client->getEmail().value(), client);
+
+        std::string lower_email = client->getEmail().value();
+        std::transform(lower_email.begin(), lower_email.end(), lower_email.begin(), ::tolower);
+        this->by_email_substr_search.emplace(lower_email, client);
     }
     for (auto& email : client->getMoreEmails()) {
         this->by_email.emplace(email, client);
+
+        std::string lower_email = email;
+        std::transform(lower_email.begin(), lower_email.end(), lower_email.begin(), ::tolower);
+        this->by_email_substr_search.emplace(lower_email, client);
     }
 
     if (client->getPhoneNumber()) {
         this->by_phone.emplace(client->getPhoneNumber()->getNumber(), client);
+
+        this->by_phone_substr_search.emplace(client->getPhoneNumber()->getNumber(), client);
     }
     for (auto& number : client->getMorePhoneNumbers()) {
         this->by_phone.emplace(number.getNumber(), client);
+
+        this->by_phone_substr_search.emplace(number.getNumber(), client);
     }
 }
 
@@ -40,11 +59,33 @@ void ClientDataBase::remove(const BigUint& id)
         }
     }
 
+    std::string lower_name = client->second->getName();
+    std::transform(lower_name.begin(), lower_name.end(), lower_name.begin(), ::tolower);
+
+    auto name_substr_range = this->by_name_substr_search.equal_range(lower_name);
+    for (auto it = name_substr_range.first; it != name_substr_range.second; ++it) {
+        if (it->second->getId() == id) {
+            this->by_name_substr_search.erase(it);
+            break;
+        }
+    }
+
     if (client->second->getEmail().has_value()) {
         auto email_range = this->by_email.equal_range(client->second->getEmail().value());
         for (auto it = email_range.first; it != email_range.second; ++it) {
             if (it->second->getId() == id) {
                 this->by_email.erase(it);
+                break;
+            }
+        }
+
+        std::string lower_email = client->second->getEmail().value();
+        std::transform(lower_email.begin(), lower_email.end(), lower_email.begin(), ::tolower);
+
+        auto email_substr_range = this->by_email_substr_search.equal_range(lower_email);
+        for (auto it = email_substr_range.first; it != email_substr_range.second; ++it) {
+            if (it->second->getId() == id) {
+                this->by_email_substr_search.erase(it);
                 break;
             }
         }
@@ -58,14 +99,36 @@ void ClientDataBase::remove(const BigUint& id)
                 break;
             }
         }
+
+        std::string lower_email = email;
+        std::transform(lower_email.begin(), lower_email.end(), lower_email.begin(), ::tolower);
+
+        auto email_substr_range = this->by_email_substr_search.equal_range(lower_email);
+        for (auto it = email_substr_range.first; it != email_substr_range.second; ++it) {
+            if (it->second->getId() == id) {
+                this->by_email_substr_search.erase(it);
+                break;
+            }
+        }
     }
 
     if (client->second->getPhoneNumber()) {
-        auto clients = this->by_phone.equal_range(client->second->getPhoneNumber()->getNumber());
+        auto phone_range =
+            this->by_phone.equal_range(client->second->getPhoneNumber()->getNumber());
 
-        for (auto it = clients.first; it != clients.second; ++it) {
+        for (auto it = phone_range.first; it != phone_range.second; ++it) {
             if (it->second == client->second) {
                 this->by_phone.erase(it);
+                break;
+            }
+        }
+
+        auto phone_substr_range =
+            this->by_phone_substr_search.equal_range(client->second->getPhoneNumber()->getNumber());
+
+        for (auto it = phone_substr_range.first; it != phone_substr_range.second; ++it) {
+            if (it->second == client->second) {
+                this->by_phone_substr_search.erase(it);
                 break;
             }
         }
@@ -77,6 +140,16 @@ void ClientDataBase::remove(const BigUint& id)
         for (auto it = clients.first; it != clients.second; ++it) {
             if (it->second == client->second) {
                 this->by_phone.erase(it);
+                break;
+            }
+        }
+
+        auto phone_substr_range =
+            this->by_phone_substr_search.equal_range(phone_number.getNumber());
+
+        for (auto it = phone_substr_range.first; it != phone_substr_range.second; ++it) {
+            if (it->second == client->second) {
+                this->by_phone_substr_search.erase(it);
                 break;
             }
         }
@@ -128,6 +201,25 @@ auto ClientDataBase::findByName(const std::string& name) const -> const std::vec
     return result;
 }
 
+auto ClientDataBase::findByNameSubstr(const std::string& substr) const
+    -> const std::vector<ClientPtr>
+{
+    if (substr.empty()) return std::vector<ClientPtr>{};
+    std::string key = substr;
+    std::transform(key.begin(), key.end(), key.begin(), ::tolower);
+
+    auto first = this->by_name_substr_search.lower_bound(key);
+    key.back()++;
+    auto second = this->by_name_substr_search.lower_bound(key);
+
+    if (first == second) return std::vector<ClientPtr>{};
+    std::vector<ClientPtr> result;
+    for (auto it = first; it != second; ++it) {
+        result.push_back(it->second);
+    }
+    return result;
+}
+
 auto ClientDataBase::findByEmail(const std::string& email) const -> const std::vector<ClientPtr>
 {
     auto clients = this->by_email.equal_range(email);
@@ -136,6 +228,25 @@ auto ClientDataBase::findByEmail(const std::string& email) const -> const std::v
     }
     std::vector<ClientPtr> result;
     for (auto it = clients.first; it != clients.second; ++it) {
+        result.push_back(it->second);
+    }
+    return result;
+}
+
+auto ClientDataBase::findByEmailSubstr(const std::string& substr) const
+    -> const std::vector<ClientPtr>
+{
+    if (substr.empty()) return std::vector<ClientPtr>{};
+    std::string key = substr;
+    std::transform(key.begin(), key.end(), key.begin(), ::tolower);
+
+    auto first = this->by_email_substr_search.lower_bound(key);
+    key.back()++;
+    auto second = this->by_email_substr_search.lower_bound(key);
+
+    if (first == second) return std::vector<ClientPtr>{};
+    std::vector<ClientPtr> result;
+    for (auto it = first; it != second; ++it) {
         result.push_back(it->second);
     }
     return result;
@@ -152,6 +263,24 @@ auto ClientDataBase::findByPhone(const std::string& phone) const -> const std::v
         result.push_back(it->second);
     }
 
+    return result;
+}
+
+auto ClientDataBase::findByPhoneSubstr(const std::string& substr) const
+    -> const std::vector<ClientPtr>
+{
+    if (substr.empty()) return std::vector<ClientPtr>{};
+    std::string key = substr;
+
+    auto        first = this->by_phone_substr_search.lower_bound(key);
+    key.back()++;
+    auto second = this->by_phone_substr_search.lower_bound(key);
+
+    if (first == second) return std::vector<ClientPtr>{};
+    std::vector<ClientPtr> result;
+    for (auto it = first; it != second; ++it) {
+        result.push_back(it->second);
+    }
     return result;
 }
 

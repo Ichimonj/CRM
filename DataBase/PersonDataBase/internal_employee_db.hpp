@@ -1,4 +1,5 @@
 #pragma once
+#include <map>
 #include <unordered_map>
 
 #include "internal_employee.hpp"
@@ -6,7 +7,7 @@ using InternalEmployeePtr = std::shared_ptr<InternalEmployee>;
 
 class InternalEmployeeDataBase {
 public:
-    void add(const InternalEmployeePtr& client);
+    void add(const InternalEmployeePtr& person);
     void remove(const BigUint& id);
 
     /// @name Getters
@@ -21,8 +22,14 @@ public:
     /// @{
     auto findById(const BigUint& id) const -> const InternalEmployeePtr&;
     auto findByName(const std::string& name) const -> const std::vector<InternalEmployeePtr>;
+    auto findByNameSubstr(const std::string& substr) const
+        -> const std::vector<InternalEmployeePtr>;
     auto findByEmail(const std::string& email) const -> const std::vector<InternalEmployeePtr>;
+    auto findByEmailSubstr(const std::string& substr) const
+        -> const std::vector<InternalEmployeePtr>;
     auto findByPhone(const std::string& phone) const -> const std::vector<InternalEmployeePtr>;
+    auto findByPhoneSubstr(const std::string& substr) const
+        -> const std::vector<InternalEmployeePtr>;
     /// @}
 
     /// @name Change functions
@@ -49,6 +56,9 @@ public:
 private:
     std::unordered_map<BigUint, InternalEmployeePtr>          by_id;
     std::unordered_multimap<std::string, InternalEmployeePtr> by_name;
+    std::multimap<std::string, InternalEmployeePtr>           by_name_substr_search;
     std::unordered_multimap<std::string, InternalEmployeePtr> by_email;
+    std::multimap<std::string, InternalEmployeePtr>           by_email_substr_search;
     std::unordered_multimap<std::string, InternalEmployeePtr> by_phone;
+    std::multimap<std::string, InternalEmployeePtr>           by_phone_substr_search;
 };
