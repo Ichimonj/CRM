@@ -12,6 +12,7 @@ public:
 
     /// @name Getters
     /// @{
+    auto size() const -> const size_t;
     auto getById() const -> const std::unordered_map<BigUint, InternalEmployeePtr>&;
     auto getByName() const -> const std::unordered_multimap<std::string, InternalEmployeePtr>&;
     auto getByEmail() const -> const std::unordered_multimap<std::string, InternalEmployeePtr>&;
