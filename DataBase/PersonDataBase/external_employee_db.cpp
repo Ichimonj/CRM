@@ -322,7 +322,7 @@ auto ExternalEmployeeDataBase::findByPhoneSubstr(const std::string& substr) cons
 }
 
 auto ExternalEmployeeDataBase::findByCompany(const CompanyId& id) const
-    -> const std::vector<ExternalEmployeePtr>
+    -> const std::vector<ExternalEmployeePtr>&
 {
     auto persons = this->by_company.find(id);
     if (persons != this->by_company.end()) {

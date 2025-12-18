@@ -36,7 +36,7 @@ public:
     auto findByPhone(const std::string& phone) const -> const std::vector<ExternalEmployeePtr>;
     auto findByPhoneSubstr(const std::string& substr) const
         -> const std::vector<ExternalEmployeePtr>;
-    auto findByCompany(const CompanyId& id) const -> const std::vector<ExternalEmployeePtr>;
+    auto findByCompany(const CompanyId& id) const -> const std::vector<ExternalEmployeePtr>&;
     /// @}
 
     /// @name Change functions
