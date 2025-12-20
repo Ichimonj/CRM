@@ -292,20 +292,24 @@ void ClientDataBase::changeName(
     const BigUint& id, const std::string& name, const InternalEmployeePtr& changer
 )
 {
-    auto client = this->by_id.find(id);
-    if (client == this->by_id.end()) return;
+    auto id_it = this->by_id.find(id);
+    if (id_it == this->by_id.end()) return;
 
-    auto old_name = client->second->getName();
+    ClientPtr   client   = id_it->second;
+    std::string old_name = client->getName();
 
-    if (client->second->setName(name, changer)) {
-        auto clients = this->by_name.equal_range(old_name);
-        for (auto it = clients.first; it != clients.second; ++it) {
-            if (it->second == client->second) {
-                this->by_name.erase(it);
-                break;
-            }
-        }
-        this->by_name.emplace(name, client->second);
+    if (client->setName(name, changer)) {
+        // by_name
+        removeFromMultimap(this->by_name, old_name, client);
+        this->by_name.emplace(name, client);
+
+        // by_name_substr_search
+        std::transform(old_name.begin(), old_name.end(), old_name.begin(), ::tolower);
+        std::string new_name = name;
+        std::transform(new_name.begin(), new_name.end(), new_name.begin(), ::tolower);
+
+        removeFromMultimap(this->by_name_substr_search, old_name, client);
+        this->by_name_substr_search.emplace(new_name, client);
     }
 }
 
@@ -313,23 +317,26 @@ void ClientDataBase::changeEmail(
     const BigUint& id, const OptionalStr& email, const InternalEmployeePtr& changer
 )
 {
-    auto client = this->by_id.find(id);
-    if (client == this->by_id.end()) return;
+    auto id_it = this->by_id.find(id);
+    if (id_it == this->by_id.end()) return;
+    ClientPtr client    = id_it->second;
+    auto      old_email = client->getEmail();
 
-    auto old_email = client->second->getEmail();
-
-    if (client->second->setEmail(email, changer)) {
+    if (client->setEmail(email, changer)) {
         if (old_email.has_value()) {
-            auto clients = this->by_email.equal_range(old_email.value());
-            for (auto it = clients.first; it != clients.second; ++it) {
-                if (it->second == client->second) {
-                    this->by_email.erase(it);
-                    break;
-                }
-            }
+            std::string old_email_str = old_email.value();
+
+            removeFromMultimap(this->by_email, old_email_str, client);
+            std::transform(
+                old_email_str.begin(), old_email_str.end(), old_email_str.begin(), ::tolower
+            );
+            removeFromMultimap(this->by_email_substr_search, old_email_str, client);
         }
         if (email.has_value()) {
-            this->by_email.emplace(email.value(), client->second);
+            std::string new_email = email.value();
+            this->by_email.emplace(new_email, client);
+            std::transform(new_email.begin(), new_email.end(), new_email.begin(), ::tolower);
+            this->by_email_substr_search.emplace(new_email, client);
         }
     }
 }
@@ -343,6 +350,10 @@ void ClientDataBase::addMoreEmail(
 
     if (client->second->addMoreEmails(email, changer)) {
         this->by_email.emplace(email, client->second);
+
+        std::string lower_email = email;
+        std::transform(lower_email.begin(), lower_email.end(), lower_email.begin(), ::tolower);
+        this->by_email_substr_search.emplace(lower_email, client->second);
     }
 }
 
@@ -350,21 +361,18 @@ void ClientDataBase::delMoreEmail(
     const BigUint& id, size_t index, const InternalEmployeePtr& changer
 )
 {
-    auto client = this->by_id.find(id);
-    if (client == this->by_id.end()) return;
+    auto id_it = this->by_id.find(id);
+    if (id_it == this->by_id.end()) return;
 
-    if (client->second->getMoreEmails().size() <= index) return;
+    ClientPtr client = id_it->second;
+    if (client->getMoreEmails().size() <= index) return;
 
-    auto old_email = client->second->getMoreEmails()[index];
+    std::string old_email = client->getMoreEmails()[index];
 
-    if (client->second->delMoreEmails(index, changer)) {
-        auto clients = this->by_email.equal_range(old_email);
-        for (auto it = clients.first; it != clients.second; ++it) {
-            if (it->second == client->second) {
-                this->by_email.erase(it);
-                break;
-            }
-        }
+    if (client->delMoreEmails(index, changer)) {
+        removeFromMultimap(this->by_email, old_email, client);
+        std::transform(old_email.begin(), old_email.end(), old_email.begin(), ::tolower);
+        removeFromMultimap(this->by_email_substr_search, old_email, client);
     }
 }
 
@@ -372,23 +380,21 @@ void ClientDataBase::changePhone(
     const BigUint& id, const PhoneNumberPtr& number, const InternalEmployeePtr& changer
 )
 {
-    auto client = this->by_id.find(id);
-    if (client == this->by_id.end()) return;
+    auto id_it = this->by_id.find(id);
+    if (id_it == this->by_id.end()) return;
 
-    auto old_number = client->second->getPhoneNumber();
+    ClientPtr client = id_it->second;
 
-    if (client->second->setPhoneNumber(number, changer)) {
+    auto      old_number = client->getPhoneNumber();
+
+    if (client->setPhoneNumber(number, changer)) {
         if (old_number) {
-            auto clients = this->by_phone.equal_range(old_number->getNumber());
-            for (auto it = clients.first; it != clients.second; ++it) {
-                if (it->second == client->second) {
-                    this->by_phone.erase(it);
-                    break;
-                }
-            }
+            removeFromMultimap(this->by_phone, old_number->getNumber(), client);
+            removeFromMultimap(this->by_phone_substr_search, old_number->getNumber(), client);
         }
         if (number) {
-            this->by_phone.emplace(number->getNumber(), client->second);
+            this->by_phone.emplace(number->getNumber(), client);
+            this->by_phone_substr_search.emplace(number->getNumber(), client);
         }
     }
 }
@@ -397,11 +403,13 @@ void ClientDataBase::addMorePhone(
     const BigUint& id, const PhoneNumber& number, const InternalEmployeePtr& changer
 )
 {
-    auto client = this->by_id.find(id);
-    if (client == this->by_id.end()) return;
+    auto id_it = this->by_id.find(id);
+    if (id_it == this->by_id.end()) return;
 
-    if (client->second->addMorePhoneNumber(number, changer)) {
-        this->by_phone.emplace(number.getNumber(), client->second);
+    ClientPtr client = id_it->second;
+    if (client->addMorePhoneNumber(number, changer)) {
+        this->by_phone.emplace(number.getNumber(), client);
+        this->by_phone_substr_search.emplace(number.getNumber(), client);
     }
 }
 
@@ -409,20 +417,29 @@ void ClientDataBase::delMorePhone(
     const BigUint& id, size_t index, const InternalEmployeePtr& changer
 )
 {
-    auto client = this->by_id.find(id);
-    if (client == this->by_id.end()) return;
+    auto id_it = this->by_id.find(id);
+    if (id_it == this->by_id.end()) return;
 
-    if (client->second->getMorePhoneNumbers().size() <= index) return;
+    ClientPtr client = id_it->second;
+    if (client->getMorePhoneNumbers().size() <= index) return;
 
-    auto old_number = client->second->getMorePhoneNumbers()[index];
+    auto old_number = client->getMorePhoneNumbers()[index];
 
-    if (client->second->delMorePhoneNumber(index, changer)) {
-        auto clients = this->by_phone.equal_range(old_number.getNumber());
-        for (auto it = clients.first; it != clients.second; ++it) {
-            if (it->second == client->second) {
-                this->by_phone.erase(it);
-                break;
-            }
+    if (client->delMorePhoneNumber(index, changer)) {
+        std::string old_number_str = old_number.getNumber();
+
+        removeFromMultimap(this->by_phone, old_number_str, client);
+        removeFromMultimap(this->by_phone_substr_search, old_number_str, client);
+    }
+}
+
+void ClientDataBase::removeFromMultimap(auto& map, const auto& key, const ClientPtr& client)
+{
+    auto range = map.equal_range(key);
+    for (auto it = range.first; it != range.second; ++it) {
+        if (it->second == client) {
+            map.erase(it);
+            return;
         }
     }
 }

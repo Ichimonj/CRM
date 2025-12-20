@@ -300,20 +300,24 @@ void InternalEmployeeDataBase::changeName(
     const BigUint& id, const std::string& name, const InternalEmployeePtr& changer
 )
 {
-    auto person = this->by_id.find(id);
-    if (person == this->by_id.end()) return;
+    auto id_it = this->by_id.find(id);
+    if (id_it == this->by_id.end()) return;
 
-    auto old_name = person->second->getName();
+    InternalEmployeePtr   person = id_it->second;
+    std::string old_name = person->getName();
 
-    if (person->second->setName(name, changer)) {
-        auto persons = this->by_name.equal_range(old_name);
-        for (auto it = persons.first; it != persons.second; ++it) {
-            if (it->second == person->second) {
-                this->by_name.erase(it);
-                break;
-            }
-        }
-        this->by_name.emplace(name, person->second);
+    if (person->setName(name, changer)) {
+        // by_name
+        removeFromMultimap(this->by_name, old_name, person);
+        this->by_name.emplace(name, person);
+
+        // by_name_substr_search
+        std::transform(old_name.begin(), old_name.end(), old_name.begin(), ::tolower);
+        std::string new_name = name;
+        std::transform(new_name.begin(), new_name.end(), new_name.begin(), ::tolower);
+
+        removeFromMultimap(this->by_name_substr_search, old_name, person);
+        this->by_name_substr_search.emplace(new_name, person);
     }
 }
 
@@ -321,23 +325,26 @@ void InternalEmployeeDataBase::changeEmail(
     const BigUint& id, const OptionalStr& email, const InternalEmployeePtr& changer
 )
 {
-    auto person = this->by_id.find(id);
-    if (person == this->by_id.end()) return;
+    auto id_it = this->by_id.find(id);
+    if (id_it == this->by_id.end()) return;
+    InternalEmployeePtr person = id_it->second;
+    auto      old_email = person->getEmail();
 
-    auto old_email = person->second->getEmail();
-
-    if (person->second->setEmail(email, changer)) {
+    if (person->setEmail(email, changer)) {
         if (old_email.has_value()) {
-            auto persons = this->by_email.equal_range(old_email.value());
-            for (auto it = persons.first; it != persons.second; ++it) {
-                if (it->second == person->second) {
-                    this->by_email.erase(it);
-                    break;
-                }
-            }
+            std::string old_email_str = old_email.value();
+
+            removeFromMultimap(this->by_email, old_email_str, person);
+            std::transform(
+                old_email_str.begin(), old_email_str.end(), old_email_str.begin(), ::tolower
+            );
+            removeFromMultimap(this->by_email_substr_search, old_email_str, person);
         }
         if (email.has_value()) {
-            this->by_email.emplace(email.value(), person->second);
+            std::string new_email = email.value();
+            this->by_email.emplace(new_email, person);
+            std::transform(new_email.begin(), new_email.end(), new_email.begin(), ::tolower);
+            this->by_email_substr_search.emplace(new_email, person);
         }
     }
 }
@@ -351,6 +358,10 @@ void InternalEmployeeDataBase::addMoreEmail(
 
     if (person->second->addMoreEmails(email, changer)) {
         this->by_email.emplace(email, person->second);
+
+        std::string lower_email = email;
+        std::transform(lower_email.begin(), lower_email.end(), lower_email.begin(), ::tolower);
+        this->by_email_substr_search.emplace(lower_email, person->second);
     }
 }
 
@@ -358,21 +369,18 @@ void InternalEmployeeDataBase::delMoreEmail(
     const BigUint& id, size_t index, const InternalEmployeePtr& changer
 )
 {
-    auto person = this->by_id.find(id);
-    if (person == this->by_id.end()) return;
+    auto id_it = this->by_id.find(id);
+    if (id_it == this->by_id.end()) return;
 
-    if (person->second->getMoreEmails().size() <= index) return;
+    InternalEmployeePtr person = id_it->second;
+    if (person->getMoreEmails().size() <= index) return;
 
-    auto old_email = person->second->getMoreEmails()[index];
+    std::string old_email = person->getMoreEmails()[index];
 
-    if (person->second->delMoreEmails(index, changer)) {
-        auto persons = this->by_email.equal_range(old_email);
-        for (auto it = persons.first; it != persons.second; ++it) {
-            if (it->second == person->second) {
-                this->by_email.erase(it);
-                break;
-            }
-        }
+    if (person->delMoreEmails(index, changer)) {
+        removeFromMultimap(this->by_email, old_email, person);
+        std::transform(old_email.begin(), old_email.end(), old_email.begin(), ::tolower);
+        removeFromMultimap(this->by_email_substr_search, old_email, person);
     }
 }
 
@@ -380,23 +388,21 @@ void InternalEmployeeDataBase::changePhone(
     const BigUint& id, const PhoneNumberPtr& number, const InternalEmployeePtr& changer
 )
 {
-    auto person = this->by_id.find(id);
-    if (person == this->by_id.end()) return;
+    auto id_it = this->by_id.find(id);
+    if (id_it == this->by_id.end()) return;
 
-    auto old_number = person->second->getPhoneNumber();
+    InternalEmployeePtr person = id_it->second;
 
-    if (person->second->setPhoneNumber(number, changer)) {
+    auto      old_number = person->getPhoneNumber();
+
+    if (person->setPhoneNumber(number, changer)) {
         if (old_number) {
-            auto persons = this->by_phone.equal_range(old_number->getNumber());
-            for (auto it = persons.first; it != persons.second; ++it) {
-                if (it->second == person->second) {
-                    this->by_phone.erase(it);
-                    break;
-                }
-            }
+            removeFromMultimap(this->by_phone, old_number->getNumber(), person);
+            removeFromMultimap(this->by_phone_substr_search, old_number->getNumber(), person);
         }
         if (number) {
-            this->by_phone.emplace(number->getNumber(), person->second);
+            this->by_phone.emplace(number->getNumber(), person);
+            this->by_phone_substr_search.emplace(number->getNumber(), person);
         }
     }
 }
@@ -405,11 +411,13 @@ void InternalEmployeeDataBase::addMorePhone(
     const BigUint& id, const PhoneNumber& number, const InternalEmployeePtr& changer
 )
 {
-    auto person = this->by_id.find(id);
-    if (person == this->by_id.end()) return;
+    auto id_it = this->by_id.find(id);
+    if (id_it == this->by_id.end()) return;
 
-    if (person->second->addMorePhoneNumber(number, changer)) {
-        this->by_phone.emplace(number.getNumber(), person->second);
+    InternalEmployeePtr person = id_it->second;
+    if (person->addMorePhoneNumber(number, changer)) {
+        this->by_phone.emplace(number.getNumber(), person);
+        this->by_phone_substr_search.emplace(number.getNumber(), person);
     }
 }
 
@@ -417,20 +425,31 @@ void InternalEmployeeDataBase::delMorePhone(
     const BigUint& id, size_t index, const InternalEmployeePtr& changer
 )
 {
-    auto person = this->by_id.find(id);
-    if (person == this->by_id.end()) return;
+    auto id_it = this->by_id.find(id);
+    if (id_it == this->by_id.end()) return;
 
-    if (person->second->getMorePhoneNumbers().size() <= index) return;
+    InternalEmployeePtr person = id_it->second;
+    if (person->getMorePhoneNumbers().size() <= index) return;
 
-    auto old_number = person->second->getMorePhoneNumbers()[index];
+    auto old_number = person->getMorePhoneNumbers()[index];
 
-    if (person->second->delMorePhoneNumber(index, changer)) {
-        auto persons = this->by_phone.equal_range(old_number.getNumber());
-        for (auto it = persons.first; it != persons.second; ++it) {
-            if (it->second == person->second) {
-                this->by_phone.erase(it);
-                break;
-            }
+    if (person->delMorePhoneNumber(index, changer)) {
+        std::string old_number_str = old_number.getNumber();
+
+        removeFromMultimap(this->by_phone, old_number_str, person);
+        removeFromMultimap(this->by_phone_substr_search, old_number_str, person);
+    }
+}
+
+void InternalEmployeeDataBase::removeFromMultimap(
+    auto& map, const auto& key, const InternalEmployeePtr& person
+)
+{
+    auto range = map.equal_range(key);
+    for (auto it = range.first; it != range.second; ++it) {
+        if (it->second == person) {
+            map.erase(it);
+            return;
         }
     }
 }

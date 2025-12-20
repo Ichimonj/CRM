@@ -61,4 +61,6 @@ private:
     std::multimap<std::string, ClientPtr>           by_email_substr_search;
     std::unordered_multimap<std::string, ClientPtr> by_phone;
     std::multimap<std::string, ClientPtr>           by_phone_substr_search;
+
+    void removeFromMultimap(auto& map, const auto& key, const ClientPtr& client);
 };

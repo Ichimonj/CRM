@@ -73,4 +73,6 @@ private:
     std::unordered_multimap<std::string, ExternalEmployeePtr>       by_phone;
     std::multimap<std::string, ExternalEmployeePtr>                 by_phone_substr_search;
     std::unordered_map<CompanyId, std::vector<ExternalEmployeePtr>> by_company;
+
+    void removeFromMultimap(auto& map, const auto& key, const ExternalEmployeePtr& person);
 };

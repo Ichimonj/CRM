@@ -63,4 +63,6 @@ private:
     std::multimap<std::string, InternalEmployeePtr>           by_email_substr_search;
     std::unordered_multimap<std::string, InternalEmployeePtr> by_phone;
     std::multimap<std::string, InternalEmployeePtr>           by_phone_substr_search;
+
+    void removeFromMultimap(auto& map, const auto& key, const InternalEmployeePtr& person);
 };
