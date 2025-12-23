@@ -14,7 +14,7 @@ public:
     void log(
         const LOG_LEVEL    level,
         const std::string& message_file,
-        const std::string& line,
+        const size_t&      line,
         const std::string& message
     );
     static EventLog& getInstance();
