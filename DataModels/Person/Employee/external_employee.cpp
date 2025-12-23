@@ -102,7 +102,7 @@ ExternalEmployee::ExternalEmployee(
 auto ExternalEmployee::getCompany() const -> const ExternalCompanyPtr& { return this->company; }
 auto ExternalEmployee::getJobTitle() const -> const OptionalStr& { return this->job_title; }
 auto ExternalEmployee::getDepartment() const -> const OptionalStr& { return this->department; }
-auto ExternalEmployee::getStatus() const -> const EmployeeStatus { return this->status; }
+auto ExternalEmployee::getStatus() const -> EmployeeStatus { return this->status; }
 auto ExternalEmployee::getOtherStatus() const -> const OptionalStr& { return this->other_status; }
 auto ExternalEmployee::getAccessLevel() const -> AccessLevel { return this->access_role; }
 auto ExternalEmployee::getOtherRole() const -> const OptionalStr& { return this->other_role; }
@@ -114,7 +114,7 @@ auto ExternalEmployee::getLastContactDate() const -> const DatePtr&
 {
     return this->last_contact_date;
 }
-auto ExternalEmployee::getTimeZone() const -> const int { return this->time_zone; }
+auto ExternalEmployee::getTimeZone() const -> int { return this->time_zone; }
 auto ExternalEmployee::getPreferredContactTime() const -> const OptionalStr&
 {
     return this->preferred_contact_time;

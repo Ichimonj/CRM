@@ -25,7 +25,7 @@ Report::Report(
 
 auto Report::getId() const -> const BigUint& { return this->id; }
 
-auto Report::getType() const -> const ReportType { return this->type; }
+auto Report::getType() const -> ReportType { return this->type; }
 
 auto Report::getOtherType() const -> const OptionalStr& { return this->other_type; }
 
@@ -37,7 +37,7 @@ auto Report::getParameters() const -> const std::vector<StringPair>& { return th
 
 auto Report::getCreator() const -> const InternalEmployeePtr& { return this->creator; }
 
-auto Report::getExportFormat() const -> const ExportFormat { return this->export_format; }
+auto Report::getExportFormat() const -> ExportFormat { return this->export_format; }
 
 bool Report::setType(ReportType type, const InternalEmployeePtr& changer)
 {

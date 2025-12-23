@@ -40,7 +40,7 @@ Campaign::Campaign(
 }
 auto Campaign::getId() const -> const BigUint& { return id; }
 auto Campaign::getName() const -> const std::string& { return name; }
-auto Campaign::getType() const -> const CampaignType { return type; }
+auto Campaign::getType() const -> CampaignType { return type; }
 auto Campaign::getOtherType() const -> const OptionalStr& { return other_type; }
 auto Campaign::getStartDate() const -> const DatePtr& { return start_date; }
 auto Campaign::getEndDate() const -> const DatePtr& { return end_date; }

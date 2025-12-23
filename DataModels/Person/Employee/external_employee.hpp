@@ -76,13 +76,13 @@ public:
     auto getCompany() const -> const ExternalCompanyPtr&;
     auto getJobTitle() const -> const OptionalStr&;
     auto getDepartment() const -> const OptionalStr&;
-    auto getStatus() const -> const EmployeeStatus;
+    auto getStatus() const -> EmployeeStatus;
     auto getOtherStatus() const -> const OptionalStr&;
     auto getAccessLevel() const -> AccessLevel;
     auto getOtherRole() const -> const OptionalStr&;
     auto getCurrentInteraction() const -> const InteractionPtr&;
     auto getLastContactDate() const -> const DatePtr&;
-    auto getTimeZone() const -> const int;
+    auto getTimeZone() const -> int;
     auto getPreferredContactTime() const -> const OptionalStr&;
 
     auto getDecisionInfluence() const -> const std::optional<InfluenceLevel>&;

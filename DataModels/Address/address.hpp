@@ -41,7 +41,7 @@ public:
     auto getLatitude() const -> const std::optional<double>;
     auto getLongitude() const -> const std::optional<double>;
     auto getAltitude() const -> const std::optional<double>;
-    auto getIsValidated() const -> const bool;
+    auto getIsValidated() const -> bool;
     auto getStandardFormat() const -> const std::string&;
     /// @}
 

@@ -243,9 +243,9 @@ public:
     auto getOldValue() const -> const std::optional<ValueVariant>&;
     auto getNewValue() const -> const std::optional<ValueVariant>&;
     auto getField() const -> const FieldVariant;
-    auto getOldValueFieldType() const -> const FieldType;
-    auto getNewValueFieldType() const -> const FieldType;
-    auto getAction() const -> const Action;
+    auto getOldValueFieldType() const -> FieldType;
+    auto getNewValueFieldType() const -> FieldType;
+    auto getAction() const -> Action;
     /// @}
 
 private:

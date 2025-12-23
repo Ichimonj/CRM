@@ -42,8 +42,8 @@ auto Task::getId() const -> const BigUint& { return id; }
 auto Task::getTitle() const -> const std::string& { return title; }
 auto Task::getDescription() const -> const OptionalStr& { return description; }
 auto Task::getSubject() const -> const OptionalStr& { return subject; }
-auto Task::getStatus() const -> const Status { return status; }
-auto Task::getPriority() const -> const Priority { return priority; }
+auto Task::getStatus() const -> Status { return status; }
+auto Task::getPriority() const -> Priority { return priority; }
 auto Task::getCreatedDate() const -> const Date& { return created_date; }
 auto Task::getDeadline() const -> const DatePtr& { return deadline; }
 auto Task::getStartDate() const -> const DatePtr& { return start_date; }

@@ -110,9 +110,9 @@ InternalEmployee::InternalEmployee(
 auto InternalEmployee::getManager() const -> const InternalEmployeePtr& { return this->manager; }
 auto InternalEmployee::getPosition() const -> const OptionalStr& { return this->position; }
 auto InternalEmployee::getDepartment() const -> const OptionalStr& { return this->department; }
-auto InternalEmployee::getRole() const -> const AccessLevel { return this->role; }
+auto InternalEmployee::getRole() const -> AccessLevel { return this->role; }
 auto InternalEmployee::getOtherRole() const -> const OptionalStr& { return this->other_role; }
-auto InternalEmployee::getStatus() const -> const EmployeeStatus { return this->status; }
+auto InternalEmployee::getStatus() const -> EmployeeStatus { return this->status; }
 auto InternalEmployee::getOtherStatus() const -> const OptionalStr& { return this->other_status; }
 auto InternalEmployee::getSalesTerritory() const -> const OptionalStr&
 {
@@ -123,7 +123,7 @@ auto InternalEmployee::getLastActionDate() const -> const DatePtr&
 {
     return this->last_action_date;
 }
-auto InternalEmployee::getTimeZone() const -> const int { return this->time_zone; }
+auto InternalEmployee::getTimeZone() const -> int { return this->time_zone; }
 auto InternalEmployee::getIsActive() const -> bool { return this->is_active; }
 auto InternalEmployee::getNextReviewDate() const -> const DatePtr&
 {

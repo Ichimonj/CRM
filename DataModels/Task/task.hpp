@@ -53,8 +53,8 @@ public:
     auto getTitle() const -> const std::string&;
     auto getDescription() const -> const OptionalStr&;
     auto getSubject() const -> const OptionalStr&;
-    auto getStatus() const -> const Status;
-    auto getPriority() const -> const Priority;
+    auto getStatus() const -> Status;
+    auto getPriority() const -> Priority;
     auto getCreatedDate() const -> const Date&;
     auto getDeadline() const -> const DatePtr&;
     auto getStartDate() const -> const DatePtr&;

@@ -44,10 +44,7 @@ auto InteractionResult::getPlannedInteractions() const -> const std::vector<Inte
     return this->planned_interactions;
 }
 auto InteractionResult::getFiles() const -> const std::vector<FilePtr>& { return this->files; }
-auto InteractionResult::getResultStatus() const -> const ResultStatus
-{
-    return this->result_status;
-}
+auto InteractionResult::getResultStatus() const -> ResultStatus { return this->result_status; }
 auto InteractionResult::getOtherResultStatus() const -> const std::string&
 {
     return this->other_result_status;

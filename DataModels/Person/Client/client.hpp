@@ -83,11 +83,11 @@ public:
     /// @name Getters
     /// @{
     auto getOwner() const -> const InternalEmployeePtr&;
-    auto getType() const -> const ClientType;
+    auto getType() const -> ClientType;
     auto getOtherType() const -> const OptionalStr&;
-    auto getLeadSource() const -> const LeadSource;
+    auto getLeadSource() const -> LeadSource;
     auto getOtherLeadSource() const -> const OptionalStr&;
-    auto getMarketingConsent() const -> const bool;
+    auto getMarketingConsent() const -> bool;
     auto getCommunicationChannel() const -> const OptionalStr&;
     auto getReferralCode() const -> const OptionalStr&;
     auto getCustomerAcquisitionCost() const -> const std::optional<Money>&;

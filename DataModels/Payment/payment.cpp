@@ -60,7 +60,7 @@ auto Payment::getCurrency() const -> const Currencies& { return this->currency; 
 auto Payment::getSendingDate() const -> const DatePtr& { return this->sending_date; }
 auto Payment::getReceivedDate() const -> const DatePtr& { return this->received_date; }
 auto Payment::getCreationDate() const -> const DatePtr& { return this->creation_date; }
-auto Payment::getPaymentStatus() const -> const PaymentStatus { return this->status; }
+auto Payment::getPaymentStatus() const -> PaymentStatus { return this->status; }
 auto Payment::getPaymentMethod() const -> const OptionalStr& { return this->payment_method; }
 auto Payment::getDeal() const -> const WDealPtr& { return this->deal; }
 auto Payment::getPayer() const -> const PersonPtr& { return this->payer; }

@@ -127,7 +127,7 @@ bool Date::operator==(const Date& other) const
     return true;
 }
 
-auto Date::julian_day() const -> const uint64_t
+auto Date::julian_day() const -> uint64_t
 {
     int y = d_year, m = d_month, d = d_day;
     if (m <= 2) {
@@ -141,18 +141,26 @@ auto Date::julian_day() const -> const uint64_t
 
 const std::string Date::getDateStr() const
 {
+    char min[2];
+    if (this->d_min <= 9) {
+        min[0] = '0';
+        min[1] = this->d_min + '0';
+    } else {
+        min[0] = '0' + (this->d_min / 10);
+        min[1] = '0' + (this->d_min % 10);
+    }
+
     return std::string(
         std::to_string(this->d_day) + ' ' + this->monthToStr() + ' ' +
-        std::to_string(this->d_year) + ' ' + std::to_string(this->d_hour) + ':' +
-        std::to_string(this->d_min)
+        std::to_string(this->d_year) + ' ' + std::to_string(this->d_hour) + ':' + min[0] + min[1]
     );
 }
 
-const uint16_t    Date::getYear() const { return this->d_year; }
-const uint8_t     Date::getMonth() const { return this->d_month; }
-const uint8_t     Date::getDay() const { return this->d_day; }
-const uint8_t     Date::getHour() const { return this->d_hour; }
-const uint8_t     Date::getMin() const { return this->d_min; }
+uint16_t          Date::getYear() const { return this->d_year; }
+uint8_t           Date::getMonth() const { return this->d_month; }
+uint8_t           Date::getDay() const { return this->d_day; }
+uint8_t           Date::getHour() const { return this->d_hour; }
+uint8_t           Date::getMin() const { return this->d_min; }
 
 const std::string Date::toJsonFormat() const
 {
@@ -163,7 +171,7 @@ const std::string Date::toJsonFormat() const
     return buffer;
 }
 
-const uint8_t Date::numberDaysInMonth(const uint8_t month) const
+uint8_t Date::numberDaysInMonth(const uint8_t month) const
 {
     switch (month) {
         case 1:   // January

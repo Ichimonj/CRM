@@ -61,7 +61,7 @@ struct Payment {
     auto getSendingDate() const -> const DatePtr&;
     auto getReceivedDate() const -> const DatePtr&;
     auto getCreationDate() const -> const DatePtr&;
-    auto getPaymentStatus() const -> const PaymentStatus;
+    auto getPaymentStatus() const -> PaymentStatus;
     auto getPaymentMethod() const -> const OptionalStr&;
     auto getDeal() const -> const WDealPtr&;
     auto getPayer() const -> const PersonPtr&;

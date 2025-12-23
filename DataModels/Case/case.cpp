@@ -33,8 +33,8 @@ Case::Case(
 auto Case::getId() const -> const BigUint& { return this->id; }
 auto Case::getTitle() const -> const std::string& { return this->title; }
 auto Case::getDescription() const -> const OptionalStr& { return this->description; }
-auto Case::getStatus() const -> const CaseStatus { return this->status; }
-auto Case::getPriority() const -> const Priority { return this->priority; }
+auto Case::getStatus() const -> CaseStatus { return this->status; }
+auto Case::getPriority() const -> Priority { return this->priority; }
 auto Case::getCreatedDate() const -> const Date& { return this->create_date; }
 auto Case::getResolvedDate() const -> const DatePtr& { return this->resolved_date; }
 auto Case::getAssignedTo() const -> const InternalEmployeePtr& { return this->assigned_to; }

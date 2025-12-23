@@ -57,7 +57,7 @@ public:
     auto getDeals() const -> const std::vector<DealPtr>&;
     auto getPlannedInteractions() const -> const std::vector<InteractionPtr>&;
     auto getFiles() const -> const std::vector<FilePtr>&;
-    auto getResultStatus() const -> const ResultStatus;
+    auto getResultStatus() const -> ResultStatus;
     auto getOtherResultStatus() const -> const std::string&;
     auto getIdentifiedIssue() const -> const std::string&;
     auto getMoreData() const -> const std::vector<StringPair>&;

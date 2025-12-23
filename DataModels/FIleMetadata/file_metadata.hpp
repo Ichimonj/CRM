@@ -27,7 +27,7 @@ public:
     auto getFileName() const -> const std::string&;
     auto getFileFormat() const -> const std::string&;
     auto getFilePath() const -> const std::string&;
-    auto getFileSize() const -> const bool;
+    auto getFileSize() const -> bool;
     auto getUploadDate() const -> const Date&;
     auto getChangeLogs() const -> const std::vector<ChangeLogPtr>&;
     auto getHach() const -> const std::string&;

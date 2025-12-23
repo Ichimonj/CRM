@@ -69,7 +69,7 @@ auto Person::getUpdateAt() const -> const Date& { return this->update_at; }
 auto Person::getPhoneNumber() const -> const PhoneNumberPtr { return this->phone_number; }
 auto Person::getAddress() const -> const AddressPtr { return this->address; }
 auto Person::getEmail() const -> const OptionalStr& { return this->email; }
-auto Person::getGender() const -> const Gender { return this->gender; }
+auto Person::getGender() const -> Gender { return this->gender; }
 
 auto Person::getRelatedDeals() const -> const std::vector<DealPtr>& { return this->related_deals; }
 

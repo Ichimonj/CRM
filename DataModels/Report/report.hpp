@@ -38,13 +38,13 @@ public:
     /// @name Getters
     /// @{
     auto getId() const -> const BigUint&;
-    auto getType() const -> const ReportType;
+    auto getType() const -> ReportType;
     auto getOtherType() const -> const OptionalStr&;
     auto getData() const -> const std::vector<std::string>&;
     auto getGeneratedDate() const -> const DatePtr&;
     auto getParameters() const -> const std::vector<StringPair>&;
     auto getCreator() const -> const InternalEmployeePtr&;
-    auto getExportFormat() const -> const ExportFormat;
+    auto getExportFormat() const -> ExportFormat;
     /// @}
 
     /// @name Setters

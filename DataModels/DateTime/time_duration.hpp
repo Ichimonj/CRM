@@ -35,18 +35,18 @@ public:
     auto          getDurationStr() -> const std::string&;
 
 private:
-    uint16_t    week = 0;
-    uint8_t     day  = 0;
-    uint8_t     hour = 0;
-    uint8_t     min  = 0;
-    uint8_t     sec  = 0;
-
     bool        week_on = true;
     bool        day_on  = true;
     bool        hour_on = true;
     bool        min_on  = true;
     bool        sec_on  = true;
 
-    void        makeDurationStr();
+    uint16_t    week = 0;
+    uint8_t     day  = 0;
+    uint8_t     hour = 0;
+    uint8_t     min  = 0;
+    uint8_t     sec  = 0;
+
     std::string duration_str;
+    void        makeDurationStr();
 };

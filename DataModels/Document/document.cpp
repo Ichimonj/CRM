@@ -42,7 +42,7 @@ auto Document::getNumber() const -> const std::string& { return this->number; }
 auto Document::getPath() const -> const std::string& { return this->path; }
 auto Document::getEnteredForce() const -> const DatePtr& { return this->entered_force; }
 auto Document::getStoppedWorking() const -> const DatePtr& { return this->stopped_working; }
-auto Document::getStatus() const -> const DocumentStatus { return this->status; }
+auto Document::getStatus() const -> DocumentStatus { return this->status; }
 auto Document::getCreatedBy() const -> const InternalEmployeePtr& { return this->created_by; }
 auto Document::getPartners() const -> const std::vector<PersonPtr>& { return this->partners; }
 auto Document::getFiles() const -> const std::vector<FilePtr>& { return this->attachment_files; }

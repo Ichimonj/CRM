@@ -48,7 +48,7 @@ public:
     /// @{
     auto getId() const -> const BigUint&;
     auto getName() const -> const std::string&;
-    auto getType() const -> const CampaignType;
+    auto getType() const -> CampaignType;
     auto getOtherType() const -> const OptionalStr&;
     auto getStartDate() const -> const DatePtr&;
     auto getEndDate() const -> const DatePtr&;

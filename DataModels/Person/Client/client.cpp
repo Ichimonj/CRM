@@ -86,11 +86,11 @@ Client::Client(
 }
 
 auto Client::getOwner() const -> const InternalEmployeePtr& { return this->owner; }
-auto Client::getType() const -> const ClientType { return this->type; }
+auto Client::getType() const -> ClientType { return this->type; }
 auto Client::getOtherType() const -> const OptionalStr& { return this->other_type; }
-auto Client::getLeadSource() const -> const LeadSource { return this->lead_source; }
+auto Client::getLeadSource() const -> LeadSource { return this->lead_source; }
 auto Client::getOtherLeadSource() const -> const OptionalStr& { return this->other_lead_source; }
-auto Client::getMarketingConsent() const -> const bool { return this->marketing_consent; }
+auto Client::getMarketingConsent() const -> bool { return this->marketing_consent; }
 auto Client::getCommunicationChannel() const -> const OptionalStr&
 {
     return this->preferred_communication_channel;

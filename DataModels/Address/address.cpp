@@ -84,7 +84,7 @@ auto Address::getStandardFormat() const -> const std::string& { return standard_
 auto Address::getLatitude() const -> const std::optional<double> { return latitude; }
 auto Address::getLongitude() const -> const std::optional<double> { return longitude; }
 auto Address::getAltitude() const -> const std::optional<double> { return altitude; }
-auto Address::getIsValidated() const -> const bool { return is_validated; }
+auto Address::getIsValidated() const -> bool { return is_validated; }
 
 void Address::setCountry(const std::string& value) { country = value; }
 void Address::setCountryCode(const std::string& value) { country_code = value; }

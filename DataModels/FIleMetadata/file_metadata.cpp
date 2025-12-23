@@ -25,7 +25,7 @@ auto FileMetadata::getId() const -> const BigUint& { return this->id; }
 auto FileMetadata::getFileName() const -> const std::string& { return this->name; }
 auto FileMetadata::getFileFormat() const -> const std::string& { return this->format; }
 auto FileMetadata::getFilePath() const -> const std::string& { return this->path; }
-auto FileMetadata::getFileSize() const -> const bool { return this->size; }
+auto FileMetadata::getFileSize() const -> bool { return this->size; }
 auto FileMetadata::getUploadDate() const -> const Date& { return this->upload_date; }
 auto FileMetadata::getChangeLogs() const -> const std::vector<ChangeLogPtr>&
 {

@@ -99,11 +99,11 @@ ExternalCompany::ExternalCompany(
 {
 }
 
-auto ExternalCompany::getType() const -> const CompanyType { return this->type; }
+auto ExternalCompany::getType() const -> CompanyType { return this->type; }
 auto ExternalCompany::getOtherType() const -> const OptionalStr& { return this->other_type; }
-auto ExternalCompany::getSize() const -> const CompanySize { return this->size; }
-auto ExternalCompany::getRating() const -> const Rating { return this->rating; }
-auto ExternalCompany::getRiskLevel() const -> const RiskLevel { return this->risk_level; }
+auto ExternalCompany::getSize() const -> CompanySize { return this->size; }
+auto ExternalCompany::getRating() const -> Rating { return this->rating; }
+auto ExternalCompany::getRiskLevel() const -> RiskLevel { return this->risk_level; }
 auto ExternalCompany::getAccountManager() const -> const InternalEmployeePtr&
 {
     return this->account_manager;

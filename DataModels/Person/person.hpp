@@ -70,7 +70,7 @@ public:
     auto getPhoneNumber() const -> const PhoneNumberPtr;
     auto getAddress() const -> const AddressPtr;
     auto getEmail() const -> const OptionalStr&;
-    auto getGender() const -> const Gender;
+    auto getGender() const -> Gender;
 
     auto getRelatedDeals() const -> const std::vector<DealPtr>&;
     auto getSocialNetworks() const -> const std::vector<SocialNetwork>&;

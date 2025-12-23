@@ -81,14 +81,14 @@ public:
     auto getManager() const -> const InternalEmployeePtr&;
     auto getPosition() const -> const OptionalStr&;
     auto getDepartment() const -> const OptionalStr&;
-    auto getRole() const -> const AccessLevel;
+    auto getRole() const -> AccessLevel;
     auto getOtherRole() const -> const OptionalStr&;
-    auto getStatus() const -> const EmployeeStatus;
+    auto getStatus() const -> EmployeeStatus;
     auto getOtherStatus() const -> const OptionalStr&;
     auto getSalesTerritory() const -> const OptionalStr&;
     auto getLastLoginDate() const -> const DatePtr&;
     auto getLastActionDate() const -> const DatePtr&;
-    auto getTimeZone() const -> const int;
+    auto getTimeZone() const -> int;
     auto getIsActive() const -> bool;
     auto getNextReviewDate() const -> const DatePtr&;
     auto getHireDate() const -> const DatePtr&;

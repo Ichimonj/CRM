@@ -44,8 +44,8 @@ public:
     auto getId() const -> const BigUint&;
     auto getTitle() const -> const std::string&;
     auto getDescription() const -> const OptionalStr&;
-    auto getStatus() const -> const CaseStatus;
-    auto getPriority() const -> const Priority;
+    auto getStatus() const -> CaseStatus;
+    auto getPriority() const -> Priority;
     auto getCreatedDate() const -> const Date&;
     auto getResolvedDate() const -> const DatePtr&;
     auto getAssignedTo() const -> const InternalEmployeePtr&;

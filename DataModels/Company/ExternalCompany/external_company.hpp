@@ -67,11 +67,11 @@ public:
     );
     /// @name Getters
     /// @{
-    auto getType() const -> const CompanyType;
+    auto getType() const -> CompanyType;
     auto getOtherType() const -> const OptionalStr&;
-    auto getSize() const -> const CompanySize;
-    auto getRating() const -> const Rating;
-    auto getRiskLevel() const -> const RiskLevel;
+    auto getSize() const -> CompanySize;
+    auto getRating() const -> Rating;
+    auto getRiskLevel() const -> RiskLevel;
     auto getAccountManager() const -> const InternalEmployeePtr&;
     auto getVatNumber() const -> const OptionalStr&;
     auto getLastInteractionDate() const -> const DatePtr&;

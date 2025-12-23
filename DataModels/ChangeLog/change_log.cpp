@@ -429,9 +429,9 @@ auto ChangeLog::getNewValue() const -> const std::optional<ValueVariant>&
     return this->new_value;
 }
 auto ChangeLog::getField() const -> const FieldVariant { return this->field; }
-auto ChangeLog::getOldValueFieldType() const -> const FieldType { return this->old_field_type; }
-auto ChangeLog::getNewValueFieldType() const -> const FieldType { return this->new_field_type; }
-auto ChangeLog::getAction() const -> const Action { return this->action; }
+auto ChangeLog::getOldValueFieldType() const -> FieldType { return this->old_field_type; }
+auto ChangeLog::getNewValueFieldType() const -> FieldType { return this->new_field_type; }
+auto ChangeLog::getAction() const -> Action { return this->action; }
 
 std::string ChangeLog::callTypeToStr(PhoneCallData::CallType type)
 {

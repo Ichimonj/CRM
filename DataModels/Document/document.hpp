@@ -45,7 +45,7 @@ public:
     auto getPath() const -> const std::string&;
     auto getEnteredForce() const -> const DatePtr&;
     auto getStoppedWorking() const -> const DatePtr&;
-    auto getStatus() const -> const DocumentStatus;
+    auto getStatus() const -> DocumentStatus;
     auto getCreatedBy() const -> const InternalEmployeePtr&;
     auto getPartners() const -> const std::vector<PersonPtr>&;
     auto getFiles() const -> const std::vector<FilePtr>&;
