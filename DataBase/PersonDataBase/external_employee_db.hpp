@@ -14,7 +14,7 @@ public:
 
     /// @name Getters
     /// @{
-    auto size() const -> const size_t;
+    auto size() const -> size_t;
     bool empty() const;
     auto getAll() const -> const std::unordered_map<BigUint, ExternalEmployeePtr>&;
     auto getByName() const -> const std::unordered_multimap<std::string, ExternalEmployeePtr>&;
@@ -26,7 +26,7 @@ public:
 
     /// @name Find functions
     /// @{
-    auto findById(const BigUint& id) const -> const ExternalEmployeePtr&;
+    auto findById(const BigUint& id) const -> const ExternalEmployeePtr;
     auto findByName(const std::string& name) const -> const std::vector<ExternalEmployeePtr>;
     auto findByNameSubstr(const std::string& substr) const
         -> const std::vector<ExternalEmployeePtr>;
@@ -36,7 +36,7 @@ public:
     auto findByPhone(const std::string& phone) const -> const std::vector<ExternalEmployeePtr>;
     auto findByPhoneSubstr(const std::string& substr) const
         -> const std::vector<ExternalEmployeePtr>;
-    auto findByCompany(const CompanyId& id) const -> const std::vector<ExternalEmployeePtr>&;
+    auto findByCompany(const CompanyId& id) const -> const std::vector<ExternalEmployeePtr>;
     /// @}
 
     /// @name Change functions

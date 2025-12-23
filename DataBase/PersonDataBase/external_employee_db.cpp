@@ -178,7 +178,7 @@ void ExternalEmployeeDataBase::remove(const BigUint& id)
     this->by_id.erase(person);
 }
 
-auto ExternalEmployeeDataBase::size() const -> const size_t { return this->by_id.size(); }
+auto ExternalEmployeeDataBase::size() const -> size_t { return this->by_id.size(); }
 
 bool ExternalEmployeeDataBase::empty() const { return this->by_id.empty(); }
 
@@ -212,7 +212,7 @@ auto ExternalEmployeeDataBase::getByCompany() const
     return this->by_company;
 }
 
-auto ExternalEmployeeDataBase::findById(const BigUint& id) const -> const ExternalEmployeePtr&
+auto ExternalEmployeeDataBase::findById(const BigUint& id) const -> const ExternalEmployeePtr
 {
     auto person = this->by_id.find(id);
     if (person != this->by_id.end()) {
@@ -322,7 +322,7 @@ auto ExternalEmployeeDataBase::findByPhoneSubstr(const std::string& substr) cons
 }
 
 auto ExternalEmployeeDataBase::findByCompany(const CompanyId& id) const
-    -> const std::vector<ExternalEmployeePtr>&
+    -> const std::vector<ExternalEmployeePtr>
 {
     auto persons = this->by_company.find(id);
     if (persons != this->by_company.end()) {

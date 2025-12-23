@@ -159,7 +159,7 @@ void InternalEmployeeDataBase::remove(const BigUint& id)
     this->by_id.erase(person);
 }
 
-auto InternalEmployeeDataBase::size() const -> const size_t { return this->by_id.size(); }
+auto InternalEmployeeDataBase::size() const -> size_t { return this->by_id.size(); }
 
 bool InternalEmployeeDataBase::empty() const { return this->by_id.empty(); }
 
@@ -187,7 +187,7 @@ auto InternalEmployeeDataBase::getByPhone() const
     return this->by_phone;
 }
 
-auto InternalEmployeeDataBase::findById(const BigUint& id) const -> const InternalEmployeePtr&
+auto InternalEmployeeDataBase::findById(const BigUint& id) const -> const InternalEmployeePtr
 {
     auto person = this->by_id.find(id);
     if (person != this->by_id.end()) {

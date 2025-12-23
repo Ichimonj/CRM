@@ -2,6 +2,10 @@
 
 #include <algorithm>
 #include <string>
+#include <vector>
+
+#include "events_log.hpp"
+#include "internal_employee.hpp"
 void ClientDataBase::add(const ClientPtr& client)
 {
     if (client == nullptr) return;
@@ -42,123 +46,144 @@ void ClientDataBase::add(const ClientPtr& client)
 
         this->by_phone_substr_search.emplace(number.getNumber(), client);
     }
+
+    if (client->getOwner()) {
+        this->by_owner[client->getOwner()->getId()].push_back(client);
+    }
+
+    if (client->getType() != Client::ClientType::other) {
+        this->by_type[client->getType()].push_back(client);
+    } else {
+        if (client->getOtherType().has_value()) {
+            this->by_other_type[client->getOtherType().value()].push_back(client);
+        }
+    }
+
+    if (client->getLeadSource() != Client::LeadSource::other) {
+        this->by_lead_source[client->getLeadSource()].push_back(client);
+    } else {
+        if (client->getOtherLeadSource().has_value()) {
+            this->by_other_lead_source[client->getOtherLeadSource().value()].push_back(client);
+        }
+    }
+
+    this->by_marketing_consent[client->getMarketingConsent()].push_back(client);
+
+    if (client->getLeadStatus().has_value()) {
+        this->by_lead_status.emplace(client->getLeadStatus().value(), client);
+    }
 }
 
 void ClientDataBase::remove(const BigUint& id)
 {
-    auto client = this->by_id.find(id);
-    if (client == this->by_id.end()) {
+    auto id_it = this->by_id.find(id);
+    if (id_it == this->by_id.end()) {
         return;
     }
+    ClientPtr client = id_it->second;
 
-    auto name_range = this->by_name.equal_range(client->second->getName());
-    for (auto it = name_range.first; it != name_range.second; ++it) {
-        if (it->second->getId() == id) {
-            this->by_name.erase(it);
-            break;
-        }
-    }
+    removeFromMultimap(this->by_name, client->getName(), client);
 
-    std::string lower_name = client->second->getName();
+    std::string lower_name = client->getName();
     std::transform(lower_name.begin(), lower_name.end(), lower_name.begin(), ::tolower);
 
-    auto name_substr_range = this->by_name_substr_search.equal_range(lower_name);
-    for (auto it = name_substr_range.first; it != name_substr_range.second; ++it) {
-        if (it->second->getId() == id) {
-            this->by_name_substr_search.erase(it);
-            break;
-        }
-    }
+    removeFromMultimap(this->by_name_substr_search, lower_name, client);
 
-    if (client->second->getEmail().has_value()) {
-        auto email_range = this->by_email.equal_range(client->second->getEmail().value());
-        for (auto it = email_range.first; it != email_range.second; ++it) {
-            if (it->second->getId() == id) {
-                this->by_email.erase(it);
-                break;
-            }
-        }
+    if (client->getEmail().has_value()) {
+        removeFromMultimap(this->by_email, client->getEmail().value(), client);
 
-        std::string lower_email = client->second->getEmail().value();
+        std::string lower_email = client->getEmail().value();
         std::transform(lower_email.begin(), lower_email.end(), lower_email.begin(), ::tolower);
 
-        auto email_substr_range = this->by_email_substr_search.equal_range(lower_email);
-        for (auto it = email_substr_range.first; it != email_substr_range.second; ++it) {
-            if (it->second->getId() == id) {
-                this->by_email_substr_search.erase(it);
-                break;
-            }
-        }
+        removeFromMultimap(this->by_email_substr_search, lower_email, client);
     }
 
-    for (auto& email : client->second->getMoreEmails()) {
-        auto email_range = this->by_email.equal_range(email);
-        for (auto it = email_range.first; it != email_range.second; ++it) {
-            if (it->second->getId() == id) {
-                this->by_email.erase(it);
-                break;
-            }
-        }
+    for (auto& email : client->getMoreEmails()) {
+        removeFromMultimap(this->by_email, email, client);
 
         std::string lower_email = email;
         std::transform(lower_email.begin(), lower_email.end(), lower_email.begin(), ::tolower);
 
-        auto email_substr_range = this->by_email_substr_search.equal_range(lower_email);
-        for (auto it = email_substr_range.first; it != email_substr_range.second; ++it) {
-            if (it->second->getId() == id) {
-                this->by_email_substr_search.erase(it);
-                break;
+        removeFromMultimap(this->by_email_substr_search, lower_email, client);
+    }
+
+    if (client->getPhoneNumber()) {
+        removeFromMultimap(this->by_phone, client->getPhoneNumber()->getNumber(), client);
+        removeFromMultimap(
+            this->by_phone_substr_search, client->getPhoneNumber()->getNumber(), client
+        );
+    }
+
+    for (auto& phone_number : client->getMorePhoneNumbers()) {
+        removeFromMultimap(this->by_phone, phone_number.getNumber(), client);
+        removeFromMultimap(this->by_phone_substr_search, phone_number.getNumber(), client);
+    }
+
+    if (client->getOwner()) {
+        auto& vec = this->by_owner[client->getOwner()->getId()];
+        if (vec.empty()) {
+            EventLog::getInstance().log(
+                LOG_LEVEL::ERROR,
+                __FILE__,
+                __LINE__,
+                "Data inconsistency in by_owner index\nClient id: " + client->getId().num +
+                    "\n\tOwner id:" + client->getOwner()->getId().num +
+                    "\n\tThe client has an owner but there is no entry in the database"
+            );
+        } else {
+            vec.erase(std::remove(vec.begin(), vec.end(), client), vec.end());
+            if (vec.empty()) {
+                this->by_owner.erase(client->getOwner()->getId());
             }
         }
     }
 
-    if (client->second->getPhoneNumber()) {
-        auto phone_range =
-            this->by_phone.equal_range(client->second->getPhoneNumber()->getNumber());
-
-        for (auto it = phone_range.first; it != phone_range.second; ++it) {
-            if (it->second == client->second) {
-                this->by_phone.erase(it);
-                break;
-            }
+    if (client->getType() != Client::ClientType::other) {
+        auto& vec = this->by_type.find(client->getType())->second;
+        vec.erase(std::remove(vec.begin(), vec.end(), client), vec.end());
+        if (vec.empty()) {
+            this->by_type.erase(client->getType());
         }
-
-        auto phone_substr_range =
-            this->by_phone_substr_search.equal_range(client->second->getPhoneNumber()->getNumber());
-
-        for (auto it = phone_substr_range.first; it != phone_substr_range.second; ++it) {
-            if (it->second == client->second) {
-                this->by_phone_substr_search.erase(it);
-                break;
+    } else {
+        if (client->getOtherType().has_value()) {
+            auto& vec = this->by_other_type.find(client->getOtherType().value())->second;
+            vec.erase(std::remove(vec.begin(), vec.end(), client), vec.end());
+            if (vec.empty()) {
+                this->by_other_type.erase(client->getOtherType().value());
             }
         }
     }
 
-    for (auto& phone_number : client->second->getMorePhoneNumbers()) {
-        auto clients = this->by_phone.equal_range(phone_number.getNumber());
-
-        for (auto it = clients.first; it != clients.second; ++it) {
-            if (it->second == client->second) {
-                this->by_phone.erase(it);
-                break;
-            }
+    if (client->getLeadSource() != Client::LeadSource::other) {
+        auto& vec = this->by_lead_source.find(client->getLeadSource())->second;
+        vec.erase(std::remove(vec.begin(), vec.end(), client), vec.end());
+        if (vec.empty()) {
+            this->by_lead_source.erase(client->getLeadSource());
         }
-
-        auto phone_substr_range =
-            this->by_phone_substr_search.equal_range(phone_number.getNumber());
-
-        for (auto it = phone_substr_range.first; it != phone_substr_range.second; ++it) {
-            if (it->second == client->second) {
-                this->by_phone_substr_search.erase(it);
-                break;
+    } else {
+        if (client->getOtherLeadSource().has_value()) {
+            auto& vec =
+                this->by_other_lead_source.find(client->getOtherLeadSource().value())->second;
+            vec.erase(std::remove(vec.begin(), vec.end(), client), vec.end());
+            if (vec.empty()) {
+                this->by_other_lead_source.erase(client->getOtherLeadSource().value());
             }
         }
     }
 
-    this->by_id.erase(client);
+    auto& vec = this->by_marketing_consent.find(client->getMarketingConsent())->second;
+    vec.erase(std::remove(vec.begin(), vec.end(), client), vec.end());
+    if (vec.empty()) {
+        this->by_marketing_consent.erase(client->getMarketingConsent());
+    }
+
+    if (client->getLeadStatus().has_value()) {
+        removeFromMultimap(this->by_lead_status, client->getLeadStatus().value(), client);
+    }
+    this->by_id.erase(id_it);
 }
 
-auto ClientDataBase::size() const -> const size_t { return this->by_id.size(); }
+auto ClientDataBase::size() const -> size_t { return this->by_id.size(); }
 
 bool ClientDataBase::empty() const { return this->by_id.empty(); }
 
@@ -182,7 +207,7 @@ auto ClientDataBase::getByPhone() const -> const std::unordered_multimap<std::st
     return this->by_phone;
 }
 
-auto ClientDataBase::findById(const BigUint& id) const -> const ClientPtr&
+auto ClientDataBase::findById(const BigUint& id) const -> const ClientPtr
 {
     auto client = this->by_id.find(id);
     if (client != this->by_id.end()) {
@@ -283,6 +308,77 @@ auto ClientDataBase::findByPhoneSubstr(const std::string& substr) const
     if (first == second) return std::vector<ClientPtr>{};
     std::vector<ClientPtr> result;
     for (auto it = first; it != second; ++it) {
+        result.push_back(it->second);
+    }
+    return result;
+}
+
+auto ClientDataBase::findByOwner(const BigUint& id) const -> const std::vector<ClientPtr>
+{
+    auto clients = this->by_owner.find(id);
+    if (clients != this->by_owner.end()) {
+        return clients->second;
+    }
+    return std::vector<ClientPtr>{};
+}
+
+auto ClientDataBase::findByType(const Client::ClientType type) const
+    -> const std::vector<ClientPtr>
+{
+    auto clients = this->by_type.find(type);
+    if (clients != this->by_type.end()) {
+        return clients->second;
+    }
+    return std::vector<ClientPtr>{};
+}
+
+auto ClientDataBase::findByOtherType(const std::string& type) const -> const std::vector<ClientPtr>
+{
+    auto clients = this->by_other_type.find(type);
+    if (clients != this->by_other_type.end()) {
+        return clients->second;
+    }
+    return std::vector<ClientPtr>{};
+}
+
+auto ClientDataBase::findByLeadSource(const Client::LeadSource source) const
+    -> const std::vector<ClientPtr>
+{
+    auto clients = this->by_lead_source.find(source);
+    if (clients != this->by_lead_source.end()) {
+        return clients->second;
+    }
+    return std::vector<ClientPtr>{};
+}
+
+auto ClientDataBase::findByOtherLeadSource(const std::string& source) const
+    -> const std::vector<ClientPtr>
+{
+    auto clients = this->by_other_lead_source.find(source);
+    if (clients != this->by_other_lead_source.end()) {
+        return clients->second;
+    }
+    return std::vector<ClientPtr>{};
+}
+
+auto ClientDataBase::findByMarketingConsent(const bool consent) const
+    -> const std::vector<ClientPtr>
+{
+    auto clients = this->by_marketing_consent.find(consent);
+    if (clients != this->by_marketing_consent.end()) {
+        return clients->second;
+    }
+    return std::vector<ClientPtr>{};
+}
+
+auto ClientDataBase::findByLeadStatus(const Client::LeadStatus status) const
+    -> const std::vector<ClientPtr>
+{
+    auto clients = this->by_lead_status.equal_range(status);
+    if (clients.first == clients.second) return std::vector<ClientPtr>{};
+
+    std::vector<ClientPtr> result;
+    for (auto it = clients.first; it != clients.second; ++it) {
         result.push_back(it->second);
     }
     return result;
@@ -443,3 +539,5 @@ void ClientDataBase::removeFromMultimap(auto& map, const auto& key, const Client
         }
     }
 }
+
+void ClientDataBase::removeFromMultimapVect(auto& map, const auto& key, const ClientPtr& client) {}

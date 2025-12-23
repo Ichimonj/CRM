@@ -12,7 +12,7 @@ public:
 
     /// @name Getters
     /// @{
-    auto size() const -> const size_t;
+    auto size() const -> size_t;
     bool empty() const;
     auto getAll() const -> const std::unordered_map<BigUint, InternalEmployeePtr>&;
     auto getByName() const -> const std::unordered_multimap<std::string, InternalEmployeePtr>&;
@@ -22,7 +22,7 @@ public:
 
     /// @name Find functions
     /// @{
-    auto findById(const BigUint& id) const -> const InternalEmployeePtr&;
+    auto findById(const BigUint& id) const -> const InternalEmployeePtr;
     auto findByName(const std::string& name) const -> const std::vector<InternalEmployeePtr>;
     auto findByNameSubstr(const std::string& substr) const
         -> const std::vector<InternalEmployeePtr>;
