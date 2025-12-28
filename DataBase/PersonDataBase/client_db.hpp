@@ -19,6 +19,13 @@ public:
     auto getByName() const -> const std::unordered_multimap<std::string, ClientPtr>&;
     auto getByEmail() const -> const std::unordered_multimap<std::string, ClientPtr>&;
     auto getByPhone() const -> const std::unordered_multimap<std::string, ClientPtr>&;
+    auto getByOwner() const -> const std::unordered_map<BigUint, std::vector<ClientPtr>>&;
+    auto getByType() const -> const std::unordered_map<Client::ClientType, std::vector<ClientPtr>>&;
+    auto getByOtherType() const -> const std::unordered_map<std::string, std::vector<ClientPtr>>&;
+    auto getByLeadSource() const
+        -> const std::unordered_map<Client::LeadSource, std::vector<ClientPtr>>&;
+    auto getByMarketingConsent() const -> const std::unordered_map<bool, std::vector<ClientPtr>>&;
+    auto getByLeadStatus() const -> const std::unordered_multimap<Client::LeadStatus, ClientPtr>&;
     /// @}
 
     /// @name Find functions
@@ -58,6 +65,30 @@ public:
         const BigUint& id, const PhoneNumber& number, const InternalEmployeePtr& changer
     );
     void delMorePhone(const BigUint& id, size_t index, const InternalEmployeePtr& changer);
+
+    void changeOwner(
+        const BigUint& id, const InternalEmployeePtr& owner, const InternalEmployeePtr& changer
+    );
+    void changeType(
+        const BigUint& id, const Client::ClientType type, const InternalEmployeePtr& changer
+    );
+    void changeOtherType(
+        const BigUint& id, const std::string& type, const InternalEmployeePtr& changer
+    );
+    void changeLeadSource(
+        const BigUint& id, const Client::LeadSource source, const InternalEmployeePtr& changer
+    );
+    void changeOtherLeadSource(
+        const BigUint& id, const std::string& source, const InternalEmployeePtr& changer
+    );
+    void changeMarketingConsent(
+        const BigUint& id, const bool consent, const InternalEmployeePtr& changer
+    );
+    void changeLeadStatus(
+        const BigUint&                          id,
+        const std::optional<Client::LeadStatus> status,
+        const InternalEmployeePtr&              changer
+    );
     /// @}
 
 private:
@@ -77,7 +108,26 @@ private:
     std::unordered_map<std::string, std::vector<ClientPtr>>        by_other_lead_source;
     std::unordered_map<bool, std::vector<ClientPtr>>               by_marketing_consent;
     std::unordered_multimap<Client::LeadStatus, ClientPtr>         by_lead_status;
+    //
+    void safeRemoveFromMultimap(
+        auto&              map,
+        const auto&        key,
+        const ClientPtr&   client,
+        const size_t       line,
+        const std::string& index_name
+    );
+    void safeRemoveFromVector(
+        auto&              map,
+        const auto&        key,
+        const ClientPtr&   client,
+        const size_t       line,
+        const std::string& index_name
+    );
 
-    void removeFromMultimap(auto& map, const auto& key, const ClientPtr& client);
-    void removeFromMultimapVect(auto& map, const auto& key, const ClientPtr& client);
+    void logEmptyContainer(
+        const std::string& file,
+        const size_t       line,
+        const std::string& client_id,
+        const std::string& index_name
+    );
 };

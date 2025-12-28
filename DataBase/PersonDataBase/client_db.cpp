@@ -82,103 +82,117 @@ void ClientDataBase::remove(const BigUint& id)
     }
     ClientPtr client = id_it->second;
 
-    removeFromMultimap(this->by_name, client->getName(), client);
+    safeRemoveFromMultimap(this->by_name, client->getName(), client, __LINE__, "by_name");
 
     std::string lower_name = client->getName();
     std::transform(lower_name.begin(), lower_name.end(), lower_name.begin(), ::tolower);
 
-    removeFromMultimap(this->by_name_substr_search, lower_name, client);
+    safeRemoveFromMultimap(
+        this->by_name_substr_search, lower_name, client, __LINE__, "by_name_substr_search"
+    );
 
     if (client->getEmail().has_value()) {
-        removeFromMultimap(this->by_email, client->getEmail().value(), client);
+        safeRemoveFromMultimap(
+            this->by_email, client->getEmail().value(), client, __LINE__, "by_email"
+        );
 
         std::string lower_email = client->getEmail().value();
         std::transform(lower_email.begin(), lower_email.end(), lower_email.begin(), ::tolower);
 
-        removeFromMultimap(this->by_email_substr_search, lower_email, client);
+        safeRemoveFromMultimap(
+            this->by_email_substr_search, lower_email, client, __LINE__, "by_email_substr_search"
+        );
     }
 
     for (auto& email : client->getMoreEmails()) {
-        removeFromMultimap(this->by_email, email, client);
+        safeRemoveFromMultimap(this->by_email, email, client, __LINE__, "by_email");
 
         std::string lower_email = email;
         std::transform(lower_email.begin(), lower_email.end(), lower_email.begin(), ::tolower);
 
-        removeFromMultimap(this->by_email_substr_search, lower_email, client);
+        safeRemoveFromMultimap(
+            this->by_email_substr_search, lower_email, client, __LINE__, "by_email_substr_search"
+        );
     }
 
     if (client->getPhoneNumber()) {
-        removeFromMultimap(this->by_phone, client->getPhoneNumber()->getNumber(), client);
-        removeFromMultimap(
-            this->by_phone_substr_search, client->getPhoneNumber()->getNumber(), client
+        safeRemoveFromMultimap(
+            this->by_phone, client->getPhoneNumber()->getNumber(), client, __LINE__, "by_phone"
+        );
+        safeRemoveFromMultimap(
+            this->by_phone_substr_search,
+            client->getPhoneNumber()->getNumber(),
+            client,
+            __LINE__,
+            "by_phone_substr_search"
         );
     }
 
     for (auto& phone_number : client->getMorePhoneNumbers()) {
-        removeFromMultimap(this->by_phone, phone_number.getNumber(), client);
-        removeFromMultimap(this->by_phone_substr_search, phone_number.getNumber(), client);
+        safeRemoveFromMultimap(
+            this->by_phone, phone_number.getNumber(), client, __LINE__, "by_phone"
+        );
+        safeRemoveFromMultimap(
+            this->by_phone_substr_search,
+            phone_number.getNumber(),
+            client,
+            __LINE__,
+            "by_phone_substr_search"
+        );
     }
 
     if (client->getOwner()) {
-        auto& vec = this->by_owner[client->getOwner()->getId()];
-        if (vec.empty()) {
-            EventLog::getInstance().log(
-                LOG_LEVEL::ERROR,
-                __FILE__,
-                __LINE__,
-                "Data inconsistency in by_owner index\nClient id: " + client->getId().num +
-                    "\n\tOwner id:" + client->getOwner()->getId().num +
-                    "\n\tThe client has an owner but there is no entry in the database"
-            );
-        } else {
-            vec.erase(std::remove(vec.begin(), vec.end(), client), vec.end());
-            if (vec.empty()) {
-                this->by_owner.erase(client->getOwner()->getId());
-            }
-        }
+        safeRemoveFromVector(
+            this->by_owner, client->getOwner()->getId(), client, __LINE__, "by_owner"
+        );
     }
 
     if (client->getType() != Client::ClientType::other) {
-        auto& vec = this->by_type.find(client->getType())->second;
-        vec.erase(std::remove(vec.begin(), vec.end(), client), vec.end());
-        if (vec.empty()) {
-            this->by_type.erase(client->getType());
-        }
+        safeRemoveFromVector(this->by_type, client->getType(), client, __LINE__, "by_type");
     } else {
         if (client->getOtherType().has_value()) {
-            auto& vec = this->by_other_type.find(client->getOtherType().value())->second;
-            vec.erase(std::remove(vec.begin(), vec.end(), client), vec.end());
-            if (vec.empty()) {
-                this->by_other_type.erase(client->getOtherType().value());
-            }
+            safeRemoveFromVector(
+                this->by_other_type,
+                client->getOtherType().value(),
+                client,
+                __LINE__,
+                "by_other_type"
+            );
         }
     }
 
     if (client->getLeadSource() != Client::LeadSource::other) {
-        auto& vec = this->by_lead_source.find(client->getLeadSource())->second;
-        vec.erase(std::remove(vec.begin(), vec.end(), client), vec.end());
-        if (vec.empty()) {
-            this->by_lead_source.erase(client->getLeadSource());
-        }
+        safeRemoveFromVector(
+            this->by_lead_source, client->getLeadSource(), client, __LINE__, "by_lead_source"
+        );
     } else {
         if (client->getOtherLeadSource().has_value()) {
-            auto& vec =
-                this->by_other_lead_source.find(client->getOtherLeadSource().value())->second;
-            vec.erase(std::remove(vec.begin(), vec.end(), client), vec.end());
-            if (vec.empty()) {
-                this->by_other_lead_source.erase(client->getOtherLeadSource().value());
-            }
+            safeRemoveFromVector(
+                this->by_other_lead_source,
+                client->getOtherLeadSource().value(),
+                client,
+                __LINE__,
+                "by_other_lead_source"
+            );
         }
     }
 
-    auto& vec = this->by_marketing_consent.find(client->getMarketingConsent())->second;
-    vec.erase(std::remove(vec.begin(), vec.end(), client), vec.end());
-    if (vec.empty()) {
-        this->by_marketing_consent.erase(client->getMarketingConsent());
-    }
+    safeRemoveFromVector(
+        this->by_marketing_consent,
+        client->getMarketingConsent(),
+        client,
+        __LINE__,
+        "by_marketing_consent"
+    );
 
     if (client->getLeadStatus().has_value()) {
-        removeFromMultimap(this->by_lead_status, client->getLeadStatus().value(), client);
+        safeRemoveFromMultimap(
+            this->by_lead_status,
+            client->getLeadStatus().value(),
+            client,
+            __LINE__,
+            "by_lead_status"
+        );
     }
     this->by_id.erase(id_it);
 }
@@ -205,6 +219,42 @@ auto ClientDataBase::getByEmail() const -> const std::unordered_multimap<std::st
 auto ClientDataBase::getByPhone() const -> const std::unordered_multimap<std::string, ClientPtr>&
 {
     return this->by_phone;
+}
+
+auto ClientDataBase::getByOwner() const
+    -> const std::unordered_map<BigUint, std::vector<ClientPtr>>&
+{
+    return this->by_owner;
+}
+
+auto ClientDataBase::getByType() const
+    -> const std::unordered_map<Client::ClientType, std::vector<ClientPtr>>&
+{
+    return this->by_type;
+}
+
+auto ClientDataBase::getByOtherType() const
+    -> const std::unordered_map<std::string, std::vector<ClientPtr>>&
+{
+    return this->by_other_type;
+}
+
+auto ClientDataBase::getByLeadSource() const
+    -> const std::unordered_map<Client::LeadSource, std::vector<ClientPtr>>&
+{
+    return this->by_lead_source;
+}
+
+auto ClientDataBase::getByMarketingConsent() const
+    -> const std::unordered_map<bool, std::vector<ClientPtr>>&
+{
+    return this->by_marketing_consent;
+}
+
+auto ClientDataBase::getByLeadStatus() const
+    -> const std::unordered_multimap<Client::LeadStatus, ClientPtr>&
+{
+    return this->by_lead_status;
 }
 
 auto ClientDataBase::findById(const BigUint& id) const -> const ClientPtr
@@ -322,8 +372,7 @@ auto ClientDataBase::findByOwner(const BigUint& id) const -> const std::vector<C
     return std::vector<ClientPtr>{};
 }
 
-auto ClientDataBase::findByType(const Client::ClientType type) const
-    -> const std::vector<ClientPtr>
+auto ClientDataBase::findByType(const Client::ClientType type) const -> const std::vector<ClientPtr>
 {
     auto clients = this->by_type.find(type);
     if (clients != this->by_type.end()) {
@@ -396,7 +445,7 @@ void ClientDataBase::changeName(
 
     if (client->setName(name, changer)) {
         // by_name
-        removeFromMultimap(this->by_name, old_name, client);
+        safeRemoveFromMultimap(this->by_name, old_name, client, __LINE__, "by_name");
         this->by_name.emplace(name, client);
 
         // by_name_substr_search
@@ -404,7 +453,9 @@ void ClientDataBase::changeName(
         std::string new_name = name;
         std::transform(new_name.begin(), new_name.end(), new_name.begin(), ::tolower);
 
-        removeFromMultimap(this->by_name_substr_search, old_name, client);
+        safeRemoveFromMultimap(
+            this->by_name_substr_search, old_name, client, __LINE__, "by_name_substr_search"
+        );
         this->by_name_substr_search.emplace(new_name, client);
     }
 }
@@ -421,12 +472,17 @@ void ClientDataBase::changeEmail(
     if (client->setEmail(email, changer)) {
         if (old_email.has_value()) {
             std::string old_email_str = old_email.value();
-
-            removeFromMultimap(this->by_email, old_email_str, client);
+            safeRemoveFromMultimap(this->by_email, old_email_str, client, __LINE__, "by_email");
             std::transform(
                 old_email_str.begin(), old_email_str.end(), old_email_str.begin(), ::tolower
             );
-            removeFromMultimap(this->by_email_substr_search, old_email_str, client);
+            safeRemoveFromMultimap(
+                this->by_email_substr_search,
+                old_email_str,
+                client,
+                __LINE__,
+                "by_email_substr_search"
+            );
         }
         if (email.has_value()) {
             std::string new_email = email.value();
@@ -466,9 +522,11 @@ void ClientDataBase::delMoreEmail(
     std::string old_email = client->getMoreEmails()[index];
 
     if (client->delMoreEmails(index, changer)) {
-        removeFromMultimap(this->by_email, old_email, client);
+        safeRemoveFromMultimap(this->by_email, old_email, client, __LINE__, "by_email");
         std::transform(old_email.begin(), old_email.end(), old_email.begin(), ::tolower);
-        removeFromMultimap(this->by_email_substr_search, old_email, client);
+        safeRemoveFromMultimap(
+            this->by_email_substr_search, old_email, client, __LINE__, "by_email_substr_search"
+        );
     }
 }
 
@@ -485,8 +543,16 @@ void ClientDataBase::changePhone(
 
     if (client->setPhoneNumber(number, changer)) {
         if (old_number) {
-            removeFromMultimap(this->by_phone, old_number->getNumber(), client);
-            removeFromMultimap(this->by_phone_substr_search, old_number->getNumber(), client);
+            safeRemoveFromMultimap(
+                this->by_phone, old_number->getNumber(), client, __LINE__, "by_phone"
+            );
+            safeRemoveFromMultimap(
+                this->by_phone_substr_search,
+                old_number->getNumber(),
+                client,
+                __LINE__,
+                "by_phone_substr_search"
+            );
         }
         if (number) {
             this->by_phone.emplace(number->getNumber(), client);
@@ -524,12 +590,201 @@ void ClientDataBase::delMorePhone(
     if (client->delMorePhoneNumber(index, changer)) {
         std::string old_number_str = old_number.getNumber();
 
-        removeFromMultimap(this->by_phone, old_number_str, client);
-        removeFromMultimap(this->by_phone_substr_search, old_number_str, client);
+        safeRemoveFromMultimap(this->by_phone, old_number_str, client, __LINE__, "by_phone");
+        safeRemoveFromMultimap(
+            this->by_phone_substr_search, old_number_str, client, __LINE__, "by_phone_substr_search"
+        );
     }
 }
 
-void ClientDataBase::removeFromMultimap(auto& map, const auto& key, const ClientPtr& client)
+void ClientDataBase::changeOwner(
+    const BigUint& id, const InternalEmployeePtr& owner, const InternalEmployeePtr& changer
+)
+{
+    auto id_it = this->by_id.find(id);
+    if (id_it == this->by_id.end()) return;
+
+    ClientPtr client = id_it->second;
+
+    auto      old_owner = client->getOwner();
+
+    if (client->setOwner(owner, changer)) {
+        if (old_owner) {
+            safeRemoveFromVector(this->by_owner, old_owner->getId(), client, __LINE__, "by_owner");
+        }
+        if (owner) {
+            this->by_owner[owner->getId()].push_back(client);
+        }
+    }
+}
+
+void ClientDataBase::changeType(
+    const BigUint& id, const Client::ClientType type, const InternalEmployeePtr& changer
+)
+{
+    auto id_it = this->by_id.find(id);
+    if (id_it == this->by_id.end()) return;
+
+    ClientPtr client = id_it->second;
+
+    auto      old_type = client->getType();
+
+    if (client->setType(type, changer)) {
+        if (old_type != Client::ClientType::other) {
+            safeRemoveFromVector(this->by_type, old_type, client, __LINE__, "by_type");
+        } else if (client->getOtherType()) {
+            safeRemoveFromVector(
+                this->by_other_type,
+                client->getOtherType().value(),
+                client,
+                __LINE__,
+                "by_other_type"
+            );
+        }
+        if (type != Client::ClientType::other) {
+            this->by_type[type].push_back(client);
+        }
+    }
+}
+
+void ClientDataBase::changeOtherType(
+    const BigUint& id, const std::string& type, const InternalEmployeePtr& changer
+)
+{
+    auto id_it = this->by_id.find(id);
+    if (id_it == this->by_id.end()) return;
+
+    ClientPtr client = id_it->second;
+
+    auto      old_other_type = client->getOtherType();
+
+    if (client->setOtherType(type, changer)) {
+        if (client->getType() != Client::ClientType::other) {
+            safeRemoveFromVector(this->by_type, client->getType(), client, __LINE__, "by_type");
+        } else if (old_other_type) {
+            safeRemoveFromVector(
+                this->by_other_type, old_other_type.value(), client, __LINE__, "by_other_type"
+            );
+        }
+        this->by_other_type[type].push_back(client);
+    }
+}
+
+void ClientDataBase::changeLeadSource(
+    const BigUint& id, const Client::LeadSource source, const InternalEmployeePtr& changer
+)
+{
+    auto id_it = this->by_id.find(id);
+    if (id_it == this->by_id.end()) return;
+
+    ClientPtr client = id_it->second;
+
+    auto      old_lead_source = client->getLeadSource();
+
+    if (client->setLeadSource(source, changer)) {
+        if (old_lead_source != Client::LeadSource::other) {
+            safeRemoveFromVector(
+                this->by_lead_source, old_lead_source, client, __LINE__, "by_lead_source"
+            );
+        } else if (client->getOtherLeadSource()) {
+            safeRemoveFromVector(
+                this->by_other_lead_source,
+                client->getOtherLeadSource().value(),
+                client,
+                __LINE__,
+                "by_other_lead_source"
+            );
+        }
+        if (source != Client::LeadSource::other) {
+            this->by_lead_source[source].push_back(client);
+        }
+    }
+}
+
+void ClientDataBase::changeOtherLeadSource(
+    const BigUint& id, const std::string& source, const InternalEmployeePtr& changer
+)
+{
+    auto id_it = this->by_id.find(id);
+    if (id_it == this->by_id.end()) return;
+
+    ClientPtr client = id_it->second;
+
+    auto      old_other_lead_source = client->getOtherLeadSource();
+
+    if (client->setOtherLeadSource(source, changer)) {
+        if (client->getLeadSource() != Client::LeadSource::other) {
+            safeRemoveFromVector(
+                this->by_lead_source, client->getLeadSource(), client, __LINE__, "by_lead_source"
+            );
+        } else if (old_other_lead_source) {
+            safeRemoveFromVector(
+                this->by_other_lead_source,
+                old_other_lead_source.value(),
+                client,
+                __LINE__,
+                "by_other_lead_source"
+            );
+        }
+        this->by_other_lead_source[source].push_back(client);
+    }
+}
+
+void ClientDataBase::changeMarketingConsent(
+    const BigUint& id, const bool consent, const InternalEmployeePtr& changer
+)
+{
+    auto id_it = this->by_id.find(id);
+    if (id_it == this->by_id.end()) return;
+
+    ClientPtr client = id_it->second;
+
+    auto      old_marketing_consent = client->getMarketingConsent();
+
+    if (client->setMarketingConsent(consent, changer)) {
+        safeRemoveFromVector(
+            this->by_marketing_consent,
+            old_marketing_consent,
+            client,
+            __LINE__,
+            "by_marketing_consent"
+        );
+        this->by_marketing_consent[consent].push_back(client);
+    }
+}
+
+void ClientDataBase::changeLeadStatus(
+    const BigUint&                          id,
+    const std::optional<Client::LeadStatus> status,
+    const InternalEmployeePtr&              changer
+)
+{
+    auto id_it = this->by_id.find(id);
+    if (id_it == this->by_id.end()) return;
+
+    ClientPtr client = id_it->second;
+
+    auto      old_lead_status = client->getLeadStatus();
+
+    if (client->setLeadStatus(status, changer)) {
+        if (old_lead_status) {
+            safeRemoveFromMultimap(
+                this->by_lead_status, old_lead_status.value(), client, __LINE__, "by_lead_status"
+            );
+        }
+        if (status) {
+            this->by_lead_status.emplace(status.value(), client);
+        }
+    }
+}
+
+void ClientDataBase::safeRemoveFromMultimap(
+    auto&              map,
+    const auto&        key,
+    const ClientPtr&   client,
+    const size_t       line,
+    const std::string& index_name
+)
 {
     auto range = map.equal_range(key);
     for (auto it = range.first; it != range.second; ++it) {
@@ -538,6 +793,41 @@ void ClientDataBase::removeFromMultimap(auto& map, const auto& key, const Client
             return;
         }
     }
+    this->logEmptyContainer(__FILE__, line, client->getId().num, index_name);
 }
 
-void ClientDataBase::removeFromMultimapVect(auto& map, const auto& key, const ClientPtr& client) {}
+void ClientDataBase::safeRemoveFromVector(
+    auto&              map,
+    const auto&        key,
+    const ClientPtr&   client,
+    const size_t       line,
+    const std::string& index_name
+)
+{
+    auto& vec = map[key];
+    if (vec.empty()) {
+        this->logEmptyContainer(__FILE__, line, client->getId().num, index_name);
+
+    } else {
+        vec.erase(std::remove(vec.begin(), vec.end(), client), vec.end());
+        if (vec.empty()) {
+            map.erase(key);
+        }
+    }
+}
+
+void ClientDataBase::logEmptyContainer(
+    const std::string& file,
+    const size_t       line,
+    const std::string& client_id,
+    const std::string& index_name
+)
+{
+    EventLog::getInstance().log(
+        LOG_LEVEL::ERROR,
+        file,
+        line,
+        "Data inconsistency in " + index_name + "\nClient id: " + client_id +
+            "\nExpected entry is missing."
+    );
+}
