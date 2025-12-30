@@ -37,12 +37,12 @@ public:
     auto findByEmailSubstr(const std::string& substr) const -> const std::vector<ClientPtr>;
     auto findByPhone(const std::string& phone) const -> const std::vector<ClientPtr>;
     auto findByPhoneSubstr(const std::string& substr) const -> const std::vector<ClientPtr>;
-    auto findByOwner(const BigUint& id) const -> const std::vector<ClientPtr>;
-    auto findByType(const Client::ClientType type) const -> const std::vector<ClientPtr>;
-    auto findByOtherType(const std::string& type) const -> const std::vector<ClientPtr>;
-    auto findByLeadSource(const Client::LeadSource source) const -> const std::vector<ClientPtr>;
-    auto findByOtherLeadSource(const std::string& source) const -> const std::vector<ClientPtr>;
-    auto findByMarketingConsent(const bool consent) const -> const std::vector<ClientPtr>;
+    auto findByOwner(const BigUint& id) const -> const std::vector<ClientPtr>&;
+    auto findByType(const Client::ClientType type) const -> const std::vector<ClientPtr>&;
+    auto findByOtherType(const std::string& type) const -> const std::vector<ClientPtr>&;
+    auto findByLeadSource(const Client::LeadSource source) const -> const std::vector<ClientPtr>&;
+    auto findByOtherLeadSource(const std::string& source) const -> const std::vector<ClientPtr>&;
+    auto findByMarketingConsent(const bool consent) const -> const std::vector<ClientPtr>&;
     auto findByLeadStatus(const Client::LeadStatus status) const -> const std::vector<ClientPtr>;
     /// @}
 
@@ -92,6 +92,7 @@ public:
     /// @}
 
 private:
+    const std::vector<ClientPtr>                    empty_vector;
     std::unordered_map<BigUint, ClientPtr>          by_id;
     std::unordered_multimap<std::string, ClientPtr> by_name;
     std::multimap<std::string, ClientPtr>           by_name_substr_search;

@@ -241,9 +241,7 @@ auto ClientDataBase::findById(const BigUint& id) const -> const ClientPtr
 auto ClientDataBase::findByName(const std::string& name) const -> const std::vector<ClientPtr>
 {
     auto clients = this->by_name.equal_range(name);
-    if (clients.first == clients.second) {
-        return std::vector<ClientPtr>{};
-    }
+    if (clients.first == clients.second) return empty_vector;
 
     std::vector<ClientPtr> result;
     for (auto it = clients.first; it != clients.second; ++it) {
@@ -255,7 +253,8 @@ auto ClientDataBase::findByName(const std::string& name) const -> const std::vec
 auto ClientDataBase::findByNameSubstr(const std::string& substr) const
     -> const std::vector<ClientPtr>
 {
-    if (substr.empty()) return std::vector<ClientPtr>{};
+    if (substr.empty()) return empty_vector;
+
     std::string key = substr;
     std::transform(key.begin(), key.end(), key.begin(), ::tolower);
 
@@ -263,7 +262,8 @@ auto ClientDataBase::findByNameSubstr(const std::string& substr) const
     key.back()++;
     auto second = this->by_name_substr_search.lower_bound(key);
 
-    if (first == second) return std::vector<ClientPtr>{};
+    if (first == second) return empty_vector;
+
     std::vector<ClientPtr> result;
     for (auto it = first; it != second; ++it) {
         result.push_back(it->second);
@@ -274,9 +274,8 @@ auto ClientDataBase::findByNameSubstr(const std::string& substr) const
 auto ClientDataBase::findByEmail(const std::string& email) const -> const std::vector<ClientPtr>
 {
     auto clients = this->by_email.equal_range(email);
-    if (clients.first == clients.second) {
-        return std::vector<ClientPtr>{};
-    }
+    if (clients.first == clients.second) return empty_vector;
+
     std::vector<ClientPtr> result;
     for (auto it = clients.first; it != clients.second; ++it) {
         result.push_back(it->second);
@@ -287,7 +286,8 @@ auto ClientDataBase::findByEmail(const std::string& email) const -> const std::v
 auto ClientDataBase::findByEmailSubstr(const std::string& substr) const
     -> const std::vector<ClientPtr>
 {
-    if (substr.empty()) return std::vector<ClientPtr>{};
+    if (substr.empty()) return empty_vector;
+
     std::string key = substr;
     std::transform(key.begin(), key.end(), key.begin(), ::tolower);
 
@@ -295,7 +295,8 @@ auto ClientDataBase::findByEmailSubstr(const std::string& substr) const
     key.back()++;
     auto second = this->by_email_substr_search.lower_bound(key);
 
-    if (first == second) return std::vector<ClientPtr>{};
+    if (first == second) return empty_vector;
+
     std::vector<ClientPtr> result;
     for (auto it = first; it != second; ++it) {
         result.push_back(it->second);
@@ -306,9 +307,8 @@ auto ClientDataBase::findByEmailSubstr(const std::string& substr) const
 auto ClientDataBase::findByPhone(const std::string& phone) const -> const std::vector<ClientPtr>
 {
     auto clients = this->by_phone.equal_range(phone);
-    if (clients.first == clients.second) {
-        return std::vector<ClientPtr>{};
-    }
+    if (clients.first == clients.second) return empty_vector;
+
     std::vector<ClientPtr> result;
     for (auto it = clients.first; it != clients.second; ++it) {
         result.push_back(it->second);
@@ -320,14 +320,16 @@ auto ClientDataBase::findByPhone(const std::string& phone) const -> const std::v
 auto ClientDataBase::findByPhoneSubstr(const std::string& substr) const
     -> const std::vector<ClientPtr>
 {
-    if (substr.empty()) return std::vector<ClientPtr>{};
+    if (substr.empty())         return empty_vector;
+
     std::string key = substr;
 
     auto        first = this->by_phone_substr_search.lower_bound(key);
     key.back()++;
     auto second = this->by_phone_substr_search.lower_bound(key);
 
-    if (first == second) return std::vector<ClientPtr>{};
+    if (first == second)         return empty_vector;
+
     std::vector<ClientPtr> result;
     for (auto it = first; it != second; ++it) {
         result.push_back(it->second);
@@ -335,68 +337,68 @@ auto ClientDataBase::findByPhoneSubstr(const std::string& substr) const
     return result;
 }
 
-auto ClientDataBase::findByOwner(const BigUint& id) const -> const std::vector<ClientPtr>
+auto ClientDataBase::findByOwner(const BigUint& id) const -> const std::vector<ClientPtr>&
 {
     auto clients = this->by_owner.find(id);
     if (clients != this->by_owner.end()) {
         return clients->second;
     }
-    return std::vector<ClientPtr>{};
+    return empty_vector;
 }
 
-auto ClientDataBase::findByType(const Client::ClientType type) const -> const std::vector<ClientPtr>
+auto ClientDataBase::findByType(const Client::ClientType type) const -> const std::vector<ClientPtr>&
 {
     auto clients = this->by_type.find(type);
     if (clients != this->by_type.end()) {
         return clients->second;
     }
-    return std::vector<ClientPtr>{};
+    return empty_vector;
 }
 
-auto ClientDataBase::findByOtherType(const std::string& type) const -> const std::vector<ClientPtr>
+auto ClientDataBase::findByOtherType(const std::string& type) const -> const std::vector<ClientPtr>&
 {
     auto clients = this->by_other_type.find(type);
     if (clients != this->by_other_type.end()) {
         return clients->second;
     }
-    return std::vector<ClientPtr>{};
+    return empty_vector;
 }
 
 auto ClientDataBase::findByLeadSource(const Client::LeadSource source) const
-    -> const std::vector<ClientPtr>
+    -> const std::vector<ClientPtr>&
 {
     auto clients = this->by_lead_source.find(source);
     if (clients != this->by_lead_source.end()) {
         return clients->second;
     }
-    return std::vector<ClientPtr>{};
+    return empty_vector;
 }
 
 auto ClientDataBase::findByOtherLeadSource(const std::string& source) const
-    -> const std::vector<ClientPtr>
+    -> const std::vector<ClientPtr>&
 {
     auto clients = this->by_other_lead_source.find(source);
     if (clients != this->by_other_lead_source.end()) {
         return clients->second;
     }
-    return std::vector<ClientPtr>{};
+    return empty_vector;
 }
 
 auto ClientDataBase::findByMarketingConsent(const bool consent) const
-    -> const std::vector<ClientPtr>
+    -> const std::vector<ClientPtr>&
 {
     auto clients = this->by_marketing_consent.find(consent);
     if (clients != this->by_marketing_consent.end()) {
         return clients->second;
     }
-    return std::vector<ClientPtr>{};
+    return empty_vector;
 }
 
 auto ClientDataBase::findByLeadStatus(const Client::LeadStatus status) const
     -> const std::vector<ClientPtr>
 {
     auto clients = this->by_lead_status.equal_range(status);
-    if (clients.first == clients.second) return std::vector<ClientPtr>{};
+    if (clients.first == clients.second) return empty_vector;
 
     std::vector<ClientPtr> result;
     for (auto it = clients.first; it != clients.second; ++it) {
