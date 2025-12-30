@@ -3,179 +3,179 @@
 #include <algorithm>
 #include <string>
 
+#include "events_log.hpp"
 #include "external_company.hpp"
 #include "external_employee.hpp"
 
-void ExternalEmployeeDataBase::add(const ExternalEmployeePtr& person)
+void ExternalEmployeeDataBase::add(const ExternalEmployeePtr& employee)
 {
-    if (person == nullptr) return;
+    if (employee == nullptr) return;
 
-    if (this->by_id.find(person->getId()) != this->by_id.end()) {
+    if (this->by_id.find(employee->getId()) != this->by_id.end()) {
         return;
     }
-    this->by_id[person->getId()] = person;
-    this->by_name.emplace(person->getName(), person);
+    this->by_id[employee->getId()] = employee;
+    this->by_name.emplace(employee->getName(), employee);
 
-    std::string lower_name = person->getName();
+    std::string lower_name = employee->getName();
     std::transform(lower_name.begin(), lower_name.end(), lower_name.begin(), ::tolower);
 
-    this->by_name_substr_search.emplace(lower_name, person);
+    this->by_name_substr_search.emplace(lower_name, employee);
 
-    if (person->getEmail()) {
-        this->by_email.emplace(person->getEmail().value(), person);
+    if (employee->getEmail()) {
+        this->by_email.emplace(employee->getEmail().value(), employee);
 
-        std::string lower_email = person->getEmail().value();
+        std::string lower_email = employee->getEmail().value();
         std::transform(lower_email.begin(), lower_email.end(), lower_email.begin(), ::tolower);
-        this->by_email_substr_search.emplace(lower_email, person);
+        this->by_email_substr_search.emplace(lower_email, employee);
     }
-    for (auto& email : person->getMoreEmails()) {
-        this->by_email.emplace(email, person);
+    for (auto& email : employee->getMoreEmails()) {
+        this->by_email.emplace(email, employee);
 
         std::string lower_email = email;
         std::transform(lower_email.begin(), lower_email.end(), lower_email.begin(), ::tolower);
-        this->by_email_substr_search.emplace(lower_email, person);
+        this->by_email_substr_search.emplace(lower_email, employee);
     }
 
-    if (person->getPhoneNumber()) {
-        this->by_phone.emplace(person->getPhoneNumber()->getNumber(), person);
+    if (employee->getPhoneNumber()) {
+        this->by_phone.emplace(employee->getPhoneNumber()->getNumber(), employee);
 
-        this->by_phone_substr_search.emplace(person->getPhoneNumber()->getNumber(), person);
+        this->by_phone_substr_search.emplace(employee->getPhoneNumber()->getNumber(), employee);
     }
-    for (auto& number : person->getMorePhoneNumbers()) {
-        this->by_phone.emplace(number.getNumber(), person);
+    for (auto& number : employee->getMorePhoneNumbers()) {
+        this->by_phone.emplace(number.getNumber(), employee);
 
-        this->by_phone_substr_search.emplace(number.getNumber(), person);
+        this->by_phone_substr_search.emplace(number.getNumber(), employee);
     }
 
-    if (person->getCompany()) {
-        this->by_company[person->getCompany()->getId()].push_back(person);
+    if (employee->getCompany()) {
+        this->by_company[employee->getCompany()->getId()].push_back(employee);
+    }
+
+    if (employee->getStatus() != EmployeeStatus::other) {
+        this->by_status[employee->getStatus()].push_back(employee);
+    } else if (employee->getOtherStatus()) {
+        this->by_other_status[employee->getOtherStatus().value()].push_back(employee);
+    }
+
+    if (employee->getAccessRole() != AccessRole::other) {
+        this->by_access_role[employee->getAccessRole()].push_back(employee);
+    } else if (employee->getOtherRole()) {
+        this->by_other_access_role[employee->getOtherRole().value()].push_back(employee);
+    }
+
+    if (employee->getDecisionInfluence()) {
+        this->by_influence_level[employee->getDecisionInfluence().value()].push_back(employee);
+    }
+    this->by_time_zone[employee->getTimeZone()].push_back(employee);
+    if (employee->getJobTitle()) {
+        this->by_job_title.emplace(employee->getJobTitle().value(), employee);
+    }
+    if (employee->getDepartment()) {
+        this->by_department.emplace(employee->getDepartment().value(), employee);
     }
 }
 
 void ExternalEmployeeDataBase::remove(const BigUint& id)
 {
-    auto person = this->by_id.find(id);
-    if (person == this->by_id.end()) {
+    auto employee_it = by_id.find(id);
+    if (employee_it == by_id.end()) {
         return;
     }
 
-    auto name_range = this->by_name.equal_range(person->second->getName());
-    for (auto it = name_range.first; it != name_range.second; ++it) {
-        if (it->second->getId() == id) {
-            this->by_name.erase(it);
-            break;
-        }
-    }
+    ExternalEmployeePtr employee = employee_it->second;
 
-    std::string lower_name = person->second->getName();
+    safeRemoveFromMultimap(by_name, employee->getName(), employee, __LINE__, "by_name");
+
+    std::string lower_name = employee->getName();
     std::transform(lower_name.begin(), lower_name.end(), lower_name.begin(), ::tolower);
+    safeRemoveFromMultimap(
+        this->by_name_substr_search, lower_name, employee, __LINE__, "by_name_substr_search"
+    );
 
-    auto name_substr_range = this->by_name_substr_search.equal_range(lower_name);
-    for (auto it = name_substr_range.first; it != name_substr_range.second; ++it) {
-        if (it->second->getId() == id) {
-            this->by_name_substr_search.erase(it);
-            break;
-        }
-    }
-
-    if (person->second->getEmail().has_value()) {
-        auto email_range = this->by_email.equal_range(person->second->getEmail().value());
-        for (auto it = email_range.first; it != email_range.second; ++it) {
-            if (it->second->getId() == id) {
-                this->by_email.erase(it);
-                break;
-            }
-        }
-
-        std::string lower_email = person->second->getEmail().value();
-        std::transform(lower_email.begin(), lower_email.end(), lower_email.begin(), ::tolower);
-
-        auto email_substr_range = this->by_email_substr_search.equal_range(lower_email);
-        for (auto it = email_substr_range.first; it != email_substr_range.second; ++it) {
-            if (it->second->getId() == id) {
-                this->by_email_substr_search.erase(it);
-                break;
-            }
-        }
-    }
-
-    for (auto& email : person->second->getMoreEmails()) {
-        auto email_range = this->by_email.equal_range(email);
-        for (auto it = email_range.first; it != email_range.second; ++it) {
-            if (it->second->getId() == id) {
-                this->by_email.erase(it);
-                break;
-            }
-        }
+    if (employee->getEmail().has_value()) {
+        const std::string& email = employee->getEmail().value();
+        safeRemoveFromMultimap(this->by_email, email, employee, __LINE__, "by_email");
 
         std::string lower_email = email;
         std::transform(lower_email.begin(), lower_email.end(), lower_email.begin(), ::tolower);
-
-        auto email_substr_range = this->by_email_substr_search.equal_range(lower_email);
-        for (auto it = email_substr_range.first; it != email_substr_range.second; ++it) {
-            if (it->second->getId() == id) {
-                this->by_email_substr_search.erase(it);
-                break;
-            }
-        }
+        safeRemoveFromMultimap(
+            this->by_email_substr_search, lower_email, employee, __LINE__, "by_email_substr_search"
+        );
     }
 
-    if (person->second->getPhoneNumber()) {
-        auto phone_range =
-            this->by_phone.equal_range(person->second->getPhoneNumber()->getNumber());
+    for (const std::string& email : employee->getMoreEmails()) {
+        safeRemoveFromMultimap(this->by_email, email, employee, __LINE__, "by_email");
 
-        for (auto it = phone_range.first; it != phone_range.second; ++it) {
-            if (it->second == person->second) {
-                this->by_phone.erase(it);
-                break;
-            }
-        }
-
-        auto phone_substr_range =
-            this->by_phone_substr_search.equal_range(person->second->getPhoneNumber()->getNumber());
-
-        for (auto it = phone_substr_range.first; it != phone_substr_range.second; ++it) {
-            if (it->second == person->second) {
-                this->by_phone_substr_search.erase(it);
-                break;
-            }
-        }
+        std::string lower_email = email;
+        std::transform(lower_email.begin(), lower_email.end(), lower_email.begin(), ::tolower);
+        safeRemoveFromMultimap(
+            this->by_email_substr_search, lower_email, employee, __LINE__, "by_email_substr_search"
+        );
     }
 
-    for (auto& phone_number : person->second->getMorePhoneNumbers()) {
-        auto persons = this->by_phone.equal_range(phone_number.getNumber());
-
-        for (auto it = persons.first; it != persons.second; ++it) {
-            if (it->second == person->second) {
-                this->by_phone.erase(it);
-                break;
-            }
-        }
-
-        auto phone_substr_range =
-            this->by_phone_substr_search.equal_range(phone_number.getNumber());
-
-        for (auto it = phone_substr_range.first; it != phone_substr_range.second; ++it) {
-            if (it->second == person->second) {
-                this->by_phone_substr_search.erase(it);
-                break;
-            }
-        }
+    if (employee->getPhoneNumber()) {
+        const std::string& phone = employee->getPhoneNumber()->getNumber();
+        safeRemoveFromMultimap(this->by_phone, phone, employee, __LINE__, "by_phone");
+        safeRemoveFromMultimap(
+            this->by_phone_substr_search, phone, employee, __LINE__, "by_phone_substr_search"
+        );
     }
 
-    if (person->second->getCompany()) {
-        CompanyId company_id = person->second->getCompany()->getId();
-        auto      company_it = this->by_company.find(company_id);
-        if (company_it != by_company.end()) {
-            auto& vec = company_it->second;
-            vec.erase(std::remove(vec.begin(), vec.end(), person->second), vec.end());
-
-            if (vec.empty()) {
-                this->by_company.erase(company_it);
-            }
-        }
+    for (const auto& phone : employee->getMorePhoneNumbers()) {
+        const std::string& phone_str = phone.getNumber();
+        safeRemoveFromMultimap(this->by_phone, phone_str, employee, __LINE__, "by_phone");
+        safeRemoveFromMultimap(
+            this->by_phone_substr_search, phone_str, employee, __LINE__, "by_phone_substr_search"
+        );
     }
-    this->by_id.erase(person);
+
+    if (employee->getCompany()) {
+        const CompanyId& company_id = employee->getCompany()->getId();
+        safeRemoveFromVector(this->by_company, company_id, employee, __LINE__, "by_company");
+    }
+
+    if (employee->getStatus() != EmployeeStatus::other) {
+        const auto& status = employee->getStatus();
+        safeRemoveFromVector(this->by_status, status, employee, __LINE__, "by_status");
+    } else if (employee->getOtherStatus()) {
+        const std::string& status = employee->getOtherStatus().value();
+        safeRemoveFromVector(this->by_other_status, status, employee, __LINE__, "by_other_status");
+    }
+
+    if (employee->getAccessRole() != AccessRole::other) {
+        const auto& role = employee->getAccessRole();
+        safeRemoveFromVector(this->by_access_role, role, employee, __LINE__, "by_access_role");
+    } else if (employee->getOtherRole()) {
+        const std::string& role = employee->getOtherRole().value();
+        safeRemoveFromVector(
+            this->by_other_access_role, role, employee, __LINE__, "by_other_access_role"
+        );
+    }
+
+    if (employee->getDecisionInfluence()) {
+        const auto& influence = employee->getDecisionInfluence().value();
+        safeRemoveFromVector(
+            this->by_influence_level, influence, employee, __LINE__, "by_decision_influence"
+        );
+    }
+    safeRemoveFromVector(
+        this->by_time_zone, employee->getTimeZone(), employee, __LINE__, "by_time_zone"
+    );
+
+    if (employee->getJobTitle()) {
+        const std::string& job_title = employee->getJobTitle().value();
+        safeRemoveFromMultimap(this->by_job_title, job_title, employee, __LINE__, "by_job_title");
+    }
+
+    if (employee->getDepartment()) {
+        const std::string& department = employee->getDepartment().value();
+        safeRemoveFromMultimap(
+            this->by_department, department, employee, __LINE__, "by_department"
+        );
+    }
+
+    by_id.erase(employee_it);
 }
 
 auto ExternalEmployeeDataBase::size() const -> size_t { return this->by_id.size(); }
@@ -214,9 +214,9 @@ auto ExternalEmployeeDataBase::getByCompany() const
 
 auto ExternalEmployeeDataBase::findById(const BigUint& id) const -> const ExternalEmployeePtr
 {
-    auto person = this->by_id.find(id);
-    if (person != this->by_id.end()) {
-        return person->second;
+    auto employee = this->by_id.find(id);
+    if (employee != this->by_id.end()) {
+        return employee->second;
     }
     return nullptr;
 }
@@ -224,13 +224,11 @@ auto ExternalEmployeeDataBase::findById(const BigUint& id) const -> const Extern
 auto ExternalEmployeeDataBase::findByName(const std::string& name) const
     -> const std::vector<ExternalEmployeePtr>
 {
-    auto persons = this->by_name.equal_range(name);
-    if (persons.first == persons.second) {
-        return std::vector<ExternalEmployeePtr>{};
-    }
+    auto employees = this->by_name.equal_range(name);
+    if (employees.first == employees.second) return empty_vector;
 
     std::vector<ExternalEmployeePtr> result;
-    for (auto it = persons.first; it != persons.second; ++it) {
+    for (auto it = employees.first; it != employees.second; ++it) {
         result.push_back(it->second);
     }
     return result;
@@ -239,7 +237,7 @@ auto ExternalEmployeeDataBase::findByName(const std::string& name) const
 auto ExternalEmployeeDataBase::findByNameSubstr(const std::string& substr) const
     -> const std::vector<ExternalEmployeePtr>
 {
-    if (substr.empty()) return std::vector<ExternalEmployeePtr>{};
+    if (substr.empty()) return empty_vector;
     std::string key = substr;
     std::transform(key.begin(), key.end(), key.begin(), ::tolower);
 
@@ -247,7 +245,8 @@ auto ExternalEmployeeDataBase::findByNameSubstr(const std::string& substr) const
     key.back()++;
     auto second = this->by_name_substr_search.lower_bound(key);
 
-    if (first == second) return std::vector<ExternalEmployeePtr>{};
+    if (first == second) return empty_vector;
+
     std::vector<ExternalEmployeePtr> result;
     for (auto it = first; it != second; ++it) {
         result.push_back(it->second);
@@ -258,12 +257,11 @@ auto ExternalEmployeeDataBase::findByNameSubstr(const std::string& substr) const
 auto ExternalEmployeeDataBase::findByEmail(const std::string& email) const
     -> const std::vector<ExternalEmployeePtr>
 {
-    auto persons = this->by_email.equal_range(email);
-    if (persons.first == persons.second) {
-        return std::vector<ExternalEmployeePtr>{};
-    }
+    auto employees = this->by_email.equal_range(email);
+    if (employees.first == employees.second) return empty_vector;
+
     std::vector<ExternalEmployeePtr> result;
-    for (auto it = persons.first; it != persons.second; ++it) {
+    for (auto it = employees.first; it != employees.second; ++it) {
         result.push_back(it->second);
     }
     return result;
@@ -272,7 +270,7 @@ auto ExternalEmployeeDataBase::findByEmail(const std::string& email) const
 auto ExternalEmployeeDataBase::findByEmailSubstr(const std::string& substr) const
     -> const std::vector<ExternalEmployeePtr>
 {
-    if (substr.empty()) return std::vector<ExternalEmployeePtr>{};
+    if (substr.empty()) return empty_vector;
     std::string key = substr;
     std::transform(key.begin(), key.end(), key.begin(), ::tolower);
 
@@ -280,7 +278,8 @@ auto ExternalEmployeeDataBase::findByEmailSubstr(const std::string& substr) cons
     key.back()++;
     auto second = this->by_email_substr_search.lower_bound(key);
 
-    if (first == second) return std::vector<ExternalEmployeePtr>{};
+    if (first == second) return empty_vector;
+
     std::vector<ExternalEmployeePtr> result;
     for (auto it = first; it != second; ++it) {
         result.push_back(it->second);
@@ -291,12 +290,11 @@ auto ExternalEmployeeDataBase::findByEmailSubstr(const std::string& substr) cons
 auto ExternalEmployeeDataBase::findByPhone(const std::string& phone) const
     -> const std::vector<ExternalEmployeePtr>
 {
-    auto persons = this->by_phone.equal_range(phone);
-    if (persons.first == persons.second) {
-        return std::vector<ExternalEmployeePtr>{};
-    }
+    auto employees = this->by_phone.equal_range(phone);
+    if (employees.first == employees.second) return empty_vector;
+
     std::vector<ExternalEmployeePtr> result;
-    for (auto it = persons.first; it != persons.second; ++it) {
+    for (auto it = employees.first; it != employees.second; ++it) {
         result.push_back(it->second);
     }
 
@@ -306,14 +304,15 @@ auto ExternalEmployeeDataBase::findByPhone(const std::string& phone) const
 auto ExternalEmployeeDataBase::findByPhoneSubstr(const std::string& substr) const
     -> const std::vector<ExternalEmployeePtr>
 {
-    if (substr.empty()) return std::vector<ExternalEmployeePtr>{};
+    if (substr.empty()) return empty_vector;
     std::string key = substr;
 
     auto        first = this->by_phone_substr_search.lower_bound(key);
     key.back()++;
     auto second = this->by_phone_substr_search.lower_bound(key);
 
-    if (first == second) return std::vector<ExternalEmployeePtr>{};
+    if (first == second) return empty_vector;
+
     std::vector<ExternalEmployeePtr> result;
     for (auto it = first; it != second; ++it) {
         result.push_back(it->second);
@@ -322,36 +321,111 @@ auto ExternalEmployeeDataBase::findByPhoneSubstr(const std::string& substr) cons
 }
 
 auto ExternalEmployeeDataBase::findByCompany(const CompanyId& id) const
+    -> const std::vector<ExternalEmployeePtr>&
+{
+    auto employees = this->by_company.find(id);
+    if (employees != this->by_company.end()) {
+        return employees->second;
+    }
+    return empty_vector;
+}
+
+auto ExternalEmployeeDataBase::findByStatus(const EmployeeStatus status) const
+    -> const std::vector<ExternalEmployeePtr>&
+{
+    auto it = this->by_status.find(status);
+    if (it == this->by_status.end()) return empty_vector;
+    return it->second;
+}
+
+auto ExternalEmployeeDataBase::findByOtherStatus(const std::string& status) const
+    -> const std::vector<ExternalEmployeePtr>&
+{
+    auto it = this->by_other_status.find(status);
+    if (it == this->by_other_status.end()) return empty_vector;
+    return it->second;
+}
+
+auto ExternalEmployeeDataBase::findByAccessRole(const AccessRole role) const
+    -> const std::vector<ExternalEmployeePtr>&
+{
+    auto it = this->by_access_role.find(role);
+    if (it == this->by_access_role.end()) return empty_vector;
+    return it->second;
+}
+
+auto ExternalEmployeeDataBase::findByOtherAccessRole(const std::string& role) const
+    -> const std::vector<ExternalEmployeePtr>&
+{
+    auto it = this->by_other_access_role.find(role);
+    if (it == this->by_other_access_role.end()) return empty_vector;
+    return it->second;
+}
+
+auto ExternalEmployeeDataBase::findByInfluence(const ExternalEmployee::InfluenceLevel level) const
+    -> const std::vector<ExternalEmployeePtr>&
+{
+    auto it = this->by_influence_level.find(level);
+    if (it == this->by_influence_level.end()) return empty_vector;
+    return it->second;
+}
+
+auto ExternalEmployeeDataBase::findByTimeZone(const int time_zone) const
+    -> const std::vector<ExternalEmployeePtr>&
+{
+    auto it = this->by_time_zone.find(time_zone);
+    if (it == this->by_time_zone.end()) return empty_vector;
+    return it->second;
+}
+
+auto ExternalEmployeeDataBase::findByJobTitle(const std::string& job_title) const
     -> const std::vector<ExternalEmployeePtr>
 {
-    auto persons = this->by_company.find(id);
-    if (persons != this->by_company.end()) {
-        return persons->second;
+    auto range = this->by_job_title.equal_range(job_title);
+    if (range.first == range.second) return empty_vector;
+    std::vector<ExternalEmployeePtr> result;
+    for (auto it = range.first; it != range.second; ++it) {
+        result.push_back(it->second);
     }
-    return std::vector<ExternalEmployeePtr>{};
+    return result;
+}
+
+auto ExternalEmployeeDataBase::findByDepartment(const std::string& department) const
+    -> const std::vector<ExternalEmployeePtr>
+{
+    auto range = this->by_department.equal_range(department);
+    if (range.first == range.second) return empty_vector;
+    std::vector<ExternalEmployeePtr> result;
+    for (auto it = range.first; it != range.second; ++it) {
+        result.push_back(it->second);
+    }
+    return result;
 }
 
 void ExternalEmployeeDataBase::changeName(
     const BigUint& id, const std::string& name, const InternalEmployeePtr& changer
 )
 {
-    auto id_it = this->by_id.find(id);
-    if (id_it == this->by_id.end()) return;
+    auto id_it = by_id.find(id);
+    if (id_it == by_id.end()) return;
 
-    ExternalEmployeePtr person   = id_it->second;
-    std::string         old_name = person->getName();
+    ExternalEmployeePtr employee = id_it->second;
+    std::string         old_name = employee->getName();
 
-    if (person->setName(name, changer)) {
-        // by_name
-        removeFromMultimap(this->by_name, old_name, person);
-        this->by_name.emplace(name, person);
+    if (employee->setName(name, changer)) {
+        safeRemoveFromMultimap(by_name, old_name, employee, __LINE__, "by_name");
 
-        // by_name_substr_search
-        std::transform(old_name.begin(), old_name.end(), old_name.begin(), ::tolower);
-        std::string new_name = name;
-        std::transform(new_name.begin(), new_name.end(), new_name.begin(), ::tolower);
-        removeFromMultimap(this->by_name_substr_search, old_name, person);
-        this->by_name_substr_search.emplace(new_name, person);
+        std::string old_lower = old_name;
+        std::transform(old_lower.begin(), old_lower.end(), old_lower.begin(), ::tolower);
+        safeRemoveFromMultimap(
+            by_name_substr_search, old_lower, employee, __LINE__, "by_name_substr_search"
+        );
+
+        by_name.emplace(name, employee);
+
+        std::string new_lower = name;
+        std::transform(new_lower.begin(), new_lower.end(), new_lower.begin(), ::tolower);
+        by_name_substr_search.emplace(new_lower, employee);
     }
 }
 
@@ -359,26 +433,31 @@ void ExternalEmployeeDataBase::changeEmail(
     const BigUint& id, const OptionalStr& email, const InternalEmployeePtr& changer
 )
 {
-    auto id_it = this->by_id.find(id);
-    if (id_it == this->by_id.end()) return;
-    ExternalEmployeePtr person    = id_it->second;
-    auto                old_email = person->getEmail();
+    auto id_it = by_id.find(id);
+    if (id_it == by_id.end()) return;
 
-    if (person->setEmail(email, changer)) {
+    ExternalEmployeePtr employee  = id_it->second;
+    OptionalStr         old_email = employee->getEmail();
+
+    if (employee->setEmail(email, changer)) {
         if (old_email.has_value()) {
-            std::string old_email_str = old_email.value();
+            const std::string& old_str = old_email.value();
+            safeRemoveFromMultimap(by_email, old_str, employee, __LINE__, "by_email");
 
-            removeFromMultimap(this->by_email, old_email_str, person);
-            std::transform(
-                old_email_str.begin(), old_email_str.end(), old_email_str.begin(), ::tolower
+            std::string old_lower = old_str;
+            std::transform(old_lower.begin(), old_lower.end(), old_lower.begin(), ::tolower);
+            safeRemoveFromMultimap(
+                by_email_substr_search, old_lower, employee, __LINE__, "by_email_substr_search"
             );
-            removeFromMultimap(this->by_email_substr_search, old_email_str, person);
         }
+
         if (email.has_value()) {
-            std::string new_email = email.value();
-            this->by_email.emplace(new_email, person);
-            std::transform(new_email.begin(), new_email.end(), new_email.begin(), ::tolower);
-            this->by_email_substr_search.emplace(new_email, person);
+            const std::string& new_str = email.value();
+            by_email.emplace(new_str, employee);
+
+            std::string new_lower = new_str;
+            std::transform(new_lower.begin(), new_lower.end(), new_lower.begin(), ::tolower);
+            by_email_substr_search.emplace(new_lower, employee);
         }
     }
 }
@@ -387,15 +466,15 @@ void ExternalEmployeeDataBase::addMoreEmail(
     const BigUint& id, const std::string& email, const InternalEmployeePtr& changer
 )
 {
-    auto person = this->by_id.find(id);
-    if (person == this->by_id.end()) return;
+    auto employee = this->by_id.find(id);
+    if (employee == this->by_id.end()) return;
 
-    if (person->second->addMoreEmails(email, changer)) {
-        this->by_email.emplace(email, person->second);
+    if (employee->second->addMoreEmails(email, changer)) {
+        this->by_email.emplace(email, employee->second);
 
         std::string lower_email = email;
         std::transform(lower_email.begin(), lower_email.end(), lower_email.begin(), ::tolower);
-        this->by_email_substr_search.emplace(lower_email, person->second);
+        this->by_email_substr_search.emplace(lower_email, employee->second);
     }
 }
 
@@ -403,18 +482,22 @@ void ExternalEmployeeDataBase::delMoreEmail(
     const BigUint& id, size_t index, const InternalEmployeePtr& changer
 )
 {
-    auto id_it = this->by_id.find(id);
-    if (id_it == this->by_id.end()) return;
+    auto id_it = by_id.find(id);
+    if (id_it == by_id.end()) return;
 
-    ExternalEmployeePtr person = id_it->second;
-    if (person->getMoreEmails().size() <= index) return;
+    ExternalEmployeePtr employee = id_it->second;
+    if (index >= employee->getMoreEmails().size()) return;
 
-    std::string old_email = person->getMoreEmails()[index];
+    std::string old_email = employee->getMoreEmails()[index];
 
-    if (person->delMoreEmails(index, changer)) {
-        removeFromMultimap(this->by_email, old_email, person);
-        std::transform(old_email.begin(), old_email.end(), old_email.begin(), ::tolower);
-        removeFromMultimap(this->by_email_substr_search, old_email, person);
+    if (employee->delMoreEmails(index, changer)) {
+        safeRemoveFromMultimap(by_email, old_email, employee, __LINE__, "by_email");
+
+        std::string lower_email = old_email;
+        std::transform(lower_email.begin(), lower_email.end(), lower_email.begin(), ::tolower);
+        safeRemoveFromMultimap(
+            by_email_substr_search, lower_email, employee, __LINE__, "by_email_substr_search"
+        );
     }
 }
 
@@ -422,21 +505,25 @@ void ExternalEmployeeDataBase::changePhone(
     const BigUint& id, const PhoneNumberPtr& number, const InternalEmployeePtr& changer
 )
 {
-    auto id_it = this->by_id.find(id);
-    if (id_it == this->by_id.end()) return;
+    auto id_it = by_id.find(id);
+    if (id_it == by_id.end()) return;
 
-    ExternalEmployeePtr person = id_it->second;
+    ExternalEmployeePtr employee   = id_it->second;
+    PhoneNumberPtr      old_number = employee->getPhoneNumber();
 
-    auto                old_number = person->getPhoneNumber();
-
-    if (person->setPhoneNumber(number, changer)) {
+    if (employee->setPhoneNumber(number, changer)) {
         if (old_number) {
-            removeFromMultimap(this->by_phone, old_number->getNumber(), person);
-            removeFromMultimap(this->by_phone_substr_search, old_number->getNumber(), person);
+            const std::string& old_phone = old_number->getNumber();
+            safeRemoveFromMultimap(by_phone, old_phone, employee, __LINE__, "by_phone");
+            safeRemoveFromMultimap(
+                by_phone_substr_search, old_phone, employee, __LINE__, "by_phone_substr_search"
+            );
         }
+
         if (number) {
-            this->by_phone.emplace(number->getNumber(), person);
-            this->by_phone_substr_search.emplace(number->getNumber(), person);
+            const std::string& new_phone = number->getNumber();
+            by_phone.emplace(new_phone, employee);
+            by_phone_substr_search.emplace(new_phone, employee);
         }
     }
 }
@@ -448,10 +535,10 @@ void ExternalEmployeeDataBase::addMorePhone(
     auto id_it = this->by_id.find(id);
     if (id_it == this->by_id.end()) return;
 
-    ExternalEmployeePtr person = id_it->second;
-    if (person->addMorePhoneNumber(number, changer)) {
-        this->by_phone.emplace(number.getNumber(), person);
-        this->by_phone_substr_search.emplace(number.getNumber(), person);
+    ExternalEmployeePtr employee = id_it->second;
+    if (employee->addMorePhoneNumber(number, changer)) {
+        this->by_phone.emplace(number.getNumber(), employee);
+        this->by_phone_substr_search.emplace(number.getNumber(), employee);
     }
 }
 
@@ -459,19 +546,20 @@ void ExternalEmployeeDataBase::delMorePhone(
     const BigUint& id, size_t index, const InternalEmployeePtr& changer
 )
 {
-    auto id_it = this->by_id.find(id);
-    if (id_it == this->by_id.end()) return;
+    auto id_it = by_id.find(id);
+    if (id_it == by_id.end()) return;
 
-    ExternalEmployeePtr person = id_it->second;
-    if (person->getMorePhoneNumbers().size() <= index) return;
+    ExternalEmployeePtr employee = id_it->second;
+    if (index >= employee->getMorePhoneNumbers().size()) return;
 
-    auto old_number = person->getMorePhoneNumbers()[index];
+    PhoneNumber old_number = employee->getMorePhoneNumbers()[index];
 
-    if (person->delMorePhoneNumber(index, changer)) {
-        std::string old_number_str = old_number.getNumber();
-
-        removeFromMultimap(this->by_phone, old_number_str, person);
-        removeFromMultimap(this->by_phone_substr_search, old_number_str, person);
+    if (employee->delMorePhoneNumber(index, changer)) {
+        const std::string& phone_str = old_number.getNumber();
+        safeRemoveFromMultimap(by_phone, phone_str, employee, __LINE__, "by_phone");
+        safeRemoveFromMultimap(
+            by_phone_substr_search, phone_str, employee, __LINE__, "by_phone_substr_search"
+        );
     }
 }
 
@@ -479,44 +567,277 @@ void ExternalEmployeeDataBase::changeCompany(
     const BigUint& id, const ExternalCompanyPtr& company, const InternalEmployeePtr& changer
 )
 {
-    auto id_it = this->by_id.find(id);
-    if (id_it == this->by_id.end()) return;
+    auto id_it = by_id.find(id);
+    if (id_it == by_id.end()) return;
 
-    ExternalEmployeePtr person = id_it->second;
+    ExternalEmployeePtr employee    = id_it->second;
+    ExternalCompanyPtr  old_company = employee->getCompany();
 
-    auto                old_company = person->getCompany();
-
-    if (person->setCompany(company, changer)) {
+    if (employee->setCompany(company, changer)) {
         if (old_company) {
-            CompanyId company_id = old_company->getId();
-
-            auto      company_it = this->by_company.find(company_id);
-            if (company_it != this->by_company.end()) {
-                auto& vec = company_it->second;
-
-                vec.erase(std::remove(vec.begin(), vec.end(), person), vec.end());
-
-                if (vec.empty()) {
-                    this->by_company.erase(company_id);
-                }
-            }
+            CompanyId old_id = old_company->getId();
+            safeRemoveFromVector(by_company, old_id, employee, __LINE__, "by_company");
         }
 
         if (company) {
-            this->by_company[company->getId()].push_back(person);
+            CompanyId new_id = company->getId();
+            by_company[new_id].push_back(employee);
         }
     }
 }
 
-void ExternalEmployeeDataBase::removeFromMultimap(
-    auto& map, const auto& key, const ExternalEmployeePtr& person
+void ExternalEmployeeDataBase::changeStatus(
+    const BigUint& id, const EmployeeStatus status, const InternalEmployeePtr& changer
+)
+{
+    auto id_it = by_id.find(id);
+    if (id_it == by_id.end()) return;
+
+    ExternalEmployeePtr employee = id_it->second;
+
+    EmployeeStatus      old_status = employee->getStatus();
+
+    if (employee->setStatus(status, changer)) {
+        if (old_status != EmployeeStatus::other) {
+            safeRemoveFromVector(this->by_status, old_status, employee, __LINE__, "by_status");
+        } else if (employee->getOtherStatus()) {
+            const std::string& status = employee->getOtherStatus().value();
+            safeRemoveFromVector(
+                this->by_other_status, status, employee, __LINE__, "by_other_status"
+            );
+        }
+        if (status != EmployeeStatus::other) {
+            this->by_status[status].push_back(employee);
+        }
+    }
+}
+
+void ExternalEmployeeDataBase::changeOtherStatus(
+    const BigUint& id, const OptionalStr& status, const InternalEmployeePtr& changer
+)
+{
+    auto id_it = by_id.find(id);
+    if (id_it == by_id.end()) return;
+
+    ExternalEmployeePtr employee = id_it->second;
+
+    const auto&         old_status = employee->getOtherStatus();
+
+    if (employee->setOtherStatus(status, changer)) {
+        if (old_status) {
+            safeRemoveFromVector(
+                this->by_other_status, old_status.value(), employee, __LINE__, "by_other_status"
+            );
+        } else if (employee->getStatus() != EmployeeStatus::other) {
+            const auto status = employee->getStatus();
+            safeRemoveFromVector(this->by_status, status, employee, __LINE__, "by_status");
+        }
+        if (status) {
+            this->by_other_status[status.value()].push_back(employee);
+        }
+    }
+}
+
+void ExternalEmployeeDataBase::changeAccessRole(
+    const BigUint& id, const AccessRole role, const InternalEmployeePtr& changer
+)
+{
+    auto id_it = by_id.find(id);
+    if (id_it == by_id.end()) return;
+
+    ExternalEmployeePtr employee = id_it->second;
+
+    AccessRole          old_role = employee->getAccessRole();
+
+    if (employee->setAccessRole(role, changer)) {
+        if (old_role != AccessRole::other) {
+            safeRemoveFromVector(
+                this->by_access_role, old_role, employee, __LINE__, "by_access_role"
+            );
+        } else if (employee->getOtherRole()) {
+            const std::string& role = employee->getOtherRole().value();
+            safeRemoveFromVector(
+                this->by_other_access_role, role, employee, __LINE__, "by_other_access_role"
+            );
+        }
+        if (role != AccessRole::other) {
+            this->by_access_role[role].push_back(employee);
+        }
+    }
+}
+
+void ExternalEmployeeDataBase::changeOtherAccessRole(
+    const BigUint& id, const OptionalStr& role, const InternalEmployeePtr& changer
+)
+{
+    auto id_it = by_id.find(id);
+    if (id_it == by_id.end()) return;
+
+    ExternalEmployeePtr employee = id_it->second;
+
+    const auto&         old_role = employee->getOtherRole();
+
+    if (employee->setOtherRole(role, changer)) {
+        if (old_role) {
+            safeRemoveFromVector(
+                this->by_other_access_role,
+                old_role.value(),
+                employee,
+                __LINE__,
+                "by_other_access_role"
+            );
+        } else if (employee->getAccessRole() != AccessRole::other) {
+            const auto role = employee->getAccessRole();
+            safeRemoveFromVector(this->by_access_role, role, employee, __LINE__, "by_access_role");
+        }
+        if (role) {
+            this->by_other_access_role[role.value()].push_back(employee);
+        }
+    }
+}
+
+void ExternalEmployeeDataBase::changeInfluence(
+    const BigUint&                                        id,
+    const std::optional<ExternalEmployee::InfluenceLevel> level,
+    const InternalEmployeePtr&                            changer
+)
+{
+    auto id_it = by_id.find(id);
+    if (id_it == by_id.end()) return;
+
+    ExternalEmployeePtr employee = id_it->second;
+
+    const auto          old_level = employee->getDecisionInfluence();
+
+    if (employee->setDecisionInfluence(level, changer)) {
+        if (old_level) {
+            safeRemoveFromVector(
+                this->by_influence_level,
+                old_level.value(),
+                employee,
+                __LINE__,
+                "by_decision_influence"
+            );
+        }
+        if (level) {
+            this->by_influence_level[level.value()].push_back(employee);
+        }
+    }
+}
+
+void ExternalEmployeeDataBase::changeTimeZone(
+    const BigUint& id, const int time_zone, const InternalEmployeePtr& changer
+)
+{
+    auto id_it = by_id.find(id);
+    if (id_it == by_id.end()) return;
+
+    ExternalEmployeePtr employee = id_it->second;
+
+    const int           old_time_zone = employee->getTimeZone();
+
+    if (employee->setTimeZone(time_zone, changer)) {
+        safeRemoveFromVector(this->by_time_zone, old_time_zone, employee, __LINE__, "by_time_zone");
+        this->by_time_zone[time_zone].push_back(employee);
+    }
+}
+
+void ExternalEmployeeDataBase::changeJobTitle(
+    const BigUint& id, const OptionalStr& title, const InternalEmployeePtr& changer
+)
+{
+    auto id_it = by_id.find(id);
+    if (id_it == by_id.end()) return;
+
+    ExternalEmployeePtr employee = id_it->second;
+
+    const auto&         old_title = employee->getJobTitle();
+
+    if (employee->setJobTitle(title, changer)) {
+        if (old_title) {
+            safeRemoveFromMultimap(
+                this->by_job_title, old_title.value(), employee, __LINE__, "by_job_title"
+            );
+        }
+        if (title) {
+            this->by_job_title.emplace(title.value(), employee);
+        }
+    }
+}
+
+void ExternalEmployeeDataBase::changeDepartment(
+    const BigUint& id, const OptionalStr& department, const InternalEmployeePtr& changer
+)
+{
+    auto id_it = by_id.find(id);
+    if (id_it == by_id.end()) return;
+
+    ExternalEmployeePtr employee = id_it->second;
+
+    const auto&         old_department = employee->getDepartment();
+
+    if (employee->setDepartment(department, changer)) {
+        if (old_department) {
+            safeRemoveFromMultimap(
+                this->by_department, old_department.value(), employee, __LINE__, "by_department"
+            );
+        }
+        if (department) {
+            this->by_department.emplace(department.value(), employee);
+        }
+    }
+}
+
+void ExternalEmployeeDataBase::safeRemoveFromMultimap(
+    auto&                      map,
+    const auto&                key,
+    const ExternalEmployeePtr& employee,
+    const size_t               line,
+    const std::string&         index_name
 )
 {
     auto range = map.equal_range(key);
     for (auto it = range.first; it != range.second; ++it) {
-        if (it->second == person) {
+        if (it->second == employee) {
             map.erase(it);
             return;
         }
     }
+    this->logEmptyContainer(__FILE__, line, employee->getId().num, index_name);
+}
+
+void ExternalEmployeeDataBase::safeRemoveFromVector(
+    auto&                      map,
+    const auto&                key,
+    const ExternalEmployeePtr& employee,
+    const size_t               line,
+    const std::string&         index_name
+)
+{
+    auto& vec = map[key];
+    if (vec.empty()) {
+        this->logEmptyContainer(__FILE__, line, employee->getId().num, index_name);
+
+    } else {
+        vec.erase(std::remove(vec.begin(), vec.end(), employee), vec.end());
+        if (vec.empty()) {
+            map.erase(key);
+        }
+    }
+}
+
+void ExternalEmployeeDataBase::logEmptyContainer(
+    const std::string& file,
+    const size_t       line,
+    const std::string& employee_id,
+    const std::string& index_name
+)
+{
+    EventLog::getInstance().log(
+        LOG_LEVEL::ERROR,
+        file,
+        line,
+        "Data inconsistency in " + index_name + "\nExternal Employee: " + employee_id +
+            "\nExpected entry is missing."
+    );
 }
