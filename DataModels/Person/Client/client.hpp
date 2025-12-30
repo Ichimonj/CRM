@@ -101,6 +101,8 @@ public:
 
     /// @name Change functions
     /// @{
+    // functions called only from the database
+private:
     bool setOwner(const InternalEmployeePtr& owner, const InternalEmployeePtr& changer);
     bool setType(const ClientType type, const InternalEmployeePtr& changer);
     bool setOtherType(const std::string& other_type, const InternalEmployeePtr& changer);
@@ -109,13 +111,16 @@ public:
         const std::string& other_lead_source, const InternalEmployeePtr& changer
     );
     bool setMarketingConsent(const bool marketing_consent, const InternalEmployeePtr& changer);
+    bool setLeadStatus(
+        const std::optional<LeadStatus>& lead_status, const InternalEmployeePtr& changer
+    );
+
+    //public functions
+public:
     bool setCommunicationChannel(const OptionalStr& channel, const InternalEmployeePtr& changer);
     bool setReferralCode(const OptionalStr& code, const InternalEmployeePtr& changer);
     bool setCustomerAcquisitionCost(
         const std::optional<Money>& money, const InternalEmployeePtr& changer
-    );
-    bool setLeadStatus(
-        const std::optional<LeadStatus>& lead_status, const InternalEmployeePtr& changer
     );
     bool setLeadScore(const std::optional<double>& lead_score, const InternalEmployeePtr& changer);
     bool setAnnualRevenue(
@@ -150,4 +155,6 @@ private:
     std::optional<Money>      lifetime_value;
     std::vector<DealPtr>      owned_deals;
     std::vector<OfferPtr>     interested_offers;
+
+    friend class ClientDataBase;
 };

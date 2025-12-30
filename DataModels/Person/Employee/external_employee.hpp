@@ -99,6 +99,8 @@ public:
 
     /// @name Change functions
     /// @{
+    // functions called only from the database
+private:
     bool setCompany(const ExternalCompanyPtr& company, const InternalEmployeePtr& changer);
     bool setJobTitle(const OptionalStr& title, const InternalEmployeePtr& changer);
     bool setDepartment(const OptionalStr& department, const InternalEmployeePtr& changer);
@@ -106,16 +108,19 @@ public:
     bool setOtherStatus(const OptionalStr& status, const InternalEmployeePtr& changer);
     bool setAccessRole(const AccessRole access_role, const InternalEmployeePtr& changer);
     bool setOtherRole(const OptionalStr& other_role, const InternalEmployeePtr& changer);
+    bool setTimeZone(const int time_zone, const InternalEmployeePtr& changer);
+    bool setDecisionInfluence(
+        const std::optional<InfluenceLevel>& decision_influence, const InternalEmployeePtr& changer
+    );
+
+    // public functions
+public:
     bool setCurrentInteraction(
         const InteractionPtr& current_interaction, const InternalEmployeePtr& changer
     );
     bool setLastContactDate(const DatePtr& last_contact_date, const InternalEmployeePtr& changer);
-    bool setTimeZone(const int time_zone, const InternalEmployeePtr& changer);
     bool setPreferredContactTime(
         const OptionalStr& preferred_contact_time, const InternalEmployeePtr& changer
-    );
-    bool setDecisionInfluence(
-        const std::optional<InfluenceLevel>& decision_influence, const InternalEmployeePtr& changer
     );
     bool setInfluenceScore(
         const std::optional<double>& influence_score, const InternalEmployeePtr& changer
@@ -166,4 +171,6 @@ private:
     // tasks
     std::vector<TaskPtr> assigned_tasks;
     std::vector<TaskPtr> completed_tasks;
+
+    friend class ExternalEmployeeDataBase;
 };

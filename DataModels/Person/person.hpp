@@ -11,6 +11,10 @@
 #include "phone_number.hpp"
 #include "social_network.hpp"
 
+#ifdef _DEBUG
+class InitPersons;
+#endif // _DEBUG
+
 class InternalEmployee;
 class ChangeLog;
 
@@ -87,14 +91,26 @@ public:
     /// @}
 
     /// @name Change functions
+    // functions called only from the database
+private:
     bool setName(const std::string& name, const InternalEmployeePtr& changer);
+    bool setEmail(const OptionalStr& email, const InternalEmployeePtr& changer);
+
+    bool addMoreEmails(const std::string& email, const InternalEmployeePtr& changer);
+    bool delMoreEmails(size_t index, const InternalEmployeePtr& changer);
+    
+    bool setPhoneNumber(const PhoneNumberPtr& number, const InternalEmployeePtr& changer);
+
+    bool addMorePhoneNumber(const PhoneNumber& number, const InternalEmployeePtr& changer);
+    bool delMorePhoneNumber(size_t index, const InternalEmployeePtr& changer);
+   
+    //public functions
+public:
     bool setSurname(const std::string& surname, const InternalEmployeePtr& changer);
     bool setPatronymic(const OptionalStr& patronymic, const InternalEmployeePtr& changer);
     bool setPreferredLanguage(const OptionalStr& lan, const InternalEmployeePtr& changer);
     bool setBirthday(const DatePtr& birthday, const InternalEmployeePtr& changer);
-    bool setPhoneNumber(const PhoneNumberPtr& number, const InternalEmployeePtr& changer);
     bool setAddress(const AddressPtr& address, const InternalEmployeePtr& changer);
-    bool setEmail(const OptionalStr& email, const InternalEmployeePtr& changer);
     bool setGender(const Gender gender, const InternalEmployeePtr& changer);
 
     bool addRelatedDeals(
@@ -104,14 +120,8 @@ public:
         const DealPtr& deal, const InternalEmployeePtr& changer, const Date& change_date = Date()
     );
 
-    bool addMorePhoneNumber(const PhoneNumber& number, const InternalEmployeePtr& changer);
-    bool delMorePhoneNumber(size_t index, const InternalEmployeePtr& changer);
-
     bool addMoreAddress(const Address& address, const InternalEmployeePtr& changer);
     bool delMoreAddress(size_t index, const InternalEmployeePtr& changer);
-
-    bool addMoreEmails(const std::string& email, const InternalEmployeePtr& changer);
-    bool delMoreEmails(size_t index, const InternalEmployeePtr& changer);
 
     bool addOtherDocument(const DocumentPtr& document, const InternalEmployeePtr& changer);
     bool delOtherDocument(size_t index, const InternalEmployeePtr& changer);
@@ -158,6 +168,13 @@ private:
     std::vector<InteractionPtr>  interaction_history;
     std::vector<std::string>     tags;
     std::vector<Note>            notes;
+
+    friend class ClientDataBase;
+    friend class ExternalEmployeeDataBase;
+    friend class InternalEmployeeDataBase;
+#ifdef _DEBUG
+    friend class InitPersons;
+#endif // _DEBUG
 
 protected:
     std::vector<ChangeLogPtr> change_logs;
