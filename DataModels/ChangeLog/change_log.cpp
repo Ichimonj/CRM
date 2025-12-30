@@ -292,7 +292,7 @@ StringPtr ChangeLog::valueToStr(FieldType type, ValueVariant value, StringPtr& s
             return str;
         }
         case FieldType::AccessLevel: {
-            str = std::make_shared<std::string>(accessLevelStr(std::get<AccessLevel>(value)));
+            str = std::make_shared<std::string>(accessLevelStr(std::get<AccessRole>(value)));
             return str;
         }
         case FieldType::EmployeeStatus: {
@@ -721,36 +721,36 @@ std::string ChangeLog::employeeStatusToStr(EmployeeStatus status)
     return std::string();
 }
 
-std::string ChangeLog::accessLevelStr(AccessLevel level)
+std::string ChangeLog::accessLevelStr(AccessRole level)
 {
     switch (level) {
-        case AccessLevel::Admin:
+        case AccessRole::Admin:
             return access_level_str::admin;
-        case AccessLevel::SalesRep:
+        case AccessRole::SalesRep:
             return access_level_str::sales_rep;
-        case AccessLevel::Executive:
+        case AccessRole::Executive:
             return access_level_str::executive;
-        case AccessLevel::Manager:
+        case AccessRole::Manager:
             return access_level_str::manager;
-        case AccessLevel::MarketingUser:
+        case AccessRole::MarketingUser:
             return access_level_str::marketing_user;
-        case AccessLevel::ReadOnly:
+        case AccessRole::ReadOnly:
             return access_level_str::read_only;
-        case AccessLevel::SalesManager:
+        case AccessRole::SalesManager:
             return access_level_str::sales_manager;
-        case AccessLevel::ServiceManager:
+        case AccessRole::ServiceManager:
             return access_level_str::service_manager;
-        case AccessLevel::Support:
+        case AccessRole::Support:
             return access_level_str::support;
-        case AccessLevel::DecisionMaker:
+        case AccessRole::DecisionMaker:
             return access_level_str::decision_maker;
-        case AccessLevel::Influencer:
+        case AccessRole::Influencer:
             return access_level_str::influencer;
-        case AccessLevel::User:
+        case AccessRole::User:
             return access_level_str::user;
-        case AccessLevel::Gatekeeper:
+        case AccessRole::Gatekeeper:
             return access_level_str::gatekeeper;
-        case AccessLevel::other:
+        case AccessRole::other:
             return access_level_str::other;
     }
     return std::string();

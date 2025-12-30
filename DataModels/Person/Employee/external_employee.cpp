@@ -8,7 +8,7 @@ ExternalEmployee::ExternalEmployee(
     const OptionalStr& patronymic
 )
     : Person(id, name, surname, patronymic)
-    , access_role(AccessLevel::ReadOnly)
+    , access_role(AccessRole::ReadOnly)
     , status(EmployeeStatus::other)
     , time_zone(0)
 {
@@ -30,7 +30,7 @@ ExternalEmployee::ExternalEmployee(
     const OptionalStr&                   department,
     const EmployeeStatus&                status,
     const OptionalStr&                   other_status,
-    const AccessLevel&                   access_level,
+    const AccessRole&                    access_role,
     const OptionalStr&                   other_role,
     const InteractionPtr&                current_interaction,
     const DatePtr&                       last_contact_date,
@@ -81,7 +81,7 @@ ExternalEmployee::ExternalEmployee(
     , department(department)
     , status(status)
     , other_status(other_status)
-    , access_role(access_level)
+    , access_role(access_role)
     , other_role(other_role)
     , current_interaction(current_interaction)
     , last_contact_date(last_contact_date)
@@ -104,7 +104,7 @@ auto ExternalEmployee::getJobTitle() const -> const OptionalStr& { return this->
 auto ExternalEmployee::getDepartment() const -> const OptionalStr& { return this->department; }
 auto ExternalEmployee::getStatus() const -> EmployeeStatus { return this->status; }
 auto ExternalEmployee::getOtherStatus() const -> const OptionalStr& { return this->other_status; }
-auto ExternalEmployee::getAccessLevel() const -> AccessLevel { return this->access_role; }
+auto ExternalEmployee::getAccessRole() const -> AccessRole { return this->access_role; }
 auto ExternalEmployee::getOtherRole() const -> const OptionalStr& { return this->other_role; }
 auto ExternalEmployee::getCurrentInteraction() const -> const InteractionPtr&
 {
@@ -278,7 +278,7 @@ bool ExternalEmployee::setOtherStatus(const OptionalStr& status, const InternalE
 }
 
 bool ExternalEmployee::setAccessRole(
-    const AccessLevel access_role, const InternalEmployeePtr& changer
+    const AccessRole access_role, const InternalEmployeePtr& changer
 )
 {
     if (this->access_role != access_role) {
@@ -326,7 +326,7 @@ bool ExternalEmployee::setOtherRole(
             update
         ));
         this->updateAt(update);
-        this->access_role = AccessLevel::other;
+        this->access_role = AccessRole::other;
         this->other_role  = other_role;
         return true;
     }

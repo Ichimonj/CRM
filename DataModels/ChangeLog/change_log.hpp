@@ -198,7 +198,7 @@ public:
         Task::Status,
         Gender,
         EmployeeStatus,
-        AccessLevel,
+        AccessRole,
         Client::ClientType,
         Client::LeadStatus,
         Client::LeadSource,
@@ -279,7 +279,7 @@ public:
     static std::string taskStatusToStr(Task::Status status);
     static std::string genderToStr(Gender gender);
     static std::string employeeStatusToStr(EmployeeStatus status);
-    static std::string accessLevelStr(AccessLevel level);
+    static std::string accessLevelStr(AccessRole level);
     static std::string clientTypeToStr(Client::ClientType type);
     static std::string leadStatusToStr(Client::LeadStatus status);
     static std::string leadSourceToStr(Client::LeadSource source);

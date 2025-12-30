@@ -8,7 +8,7 @@ InternalEmployee::InternalEmployee(
     const OptionalStr& patronymic
 )
     : Person(id, name, surname, patronymic)
-    , role(AccessLevel::other)
+    , access_role(AccessRole::other)
     , status(EmployeeStatus::other)
     , time_zone(0)
     , is_active(false)
@@ -29,7 +29,7 @@ InternalEmployee::InternalEmployee(
     const InternalEmployeePtr&       manager,
     const OptionalStr&               position,
     const OptionalStr&               department,
-    const AccessLevel&               role,
+    const AccessRole&                access_role,
     const OptionalStr&               other_role,
     const EmployeeStatus&            status,
     const OptionalStr&               other_status,
@@ -83,7 +83,7 @@ InternalEmployee::InternalEmployee(
     , manager(manager)
     , position(position)
     , department(department)
-    , role(role)
+    , access_role(access_role)
     , other_role(other_role)
     , status(status)
     , other_status(other_status)
@@ -110,7 +110,7 @@ InternalEmployee::InternalEmployee(
 auto InternalEmployee::getManager() const -> const InternalEmployeePtr& { return this->manager; }
 auto InternalEmployee::getPosition() const -> const OptionalStr& { return this->position; }
 auto InternalEmployee::getDepartment() const -> const OptionalStr& { return this->department; }
-auto InternalEmployee::getRole() const -> AccessLevel { return this->role; }
+auto InternalEmployee::getAccessRole() const -> AccessRole { return this->access_role; }
 auto InternalEmployee::getOtherRole() const -> const OptionalStr& { return this->other_role; }
 auto InternalEmployee::getStatus() const -> EmployeeStatus { return this->status; }
 auto InternalEmployee::getOtherStatus() const -> const OptionalStr& { return this->other_status; }
@@ -236,15 +236,15 @@ bool InternalEmployee::setDepartment(
     return false;
 }
 
-bool InternalEmployee::setRole(const AccessLevel role, const InternalEmployeePtr& changer)
+bool InternalEmployee::setAccessRole(const AccessRole role, const InternalEmployeePtr& changer)
 {
-    if (this->role != role) {
+    if (this->access_role != role) {
         Date update   = Date();
         auto old_vale = this->other_role
                           ? std::make_optional<ChangeLog::ValueVariant>(
                                 std::make_shared<std::string>(this->other_role.value())
                             )
-                          : std::make_optional(this->role);
+                          : std::make_optional(this->access_role);
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
             std::move(old_vale),
@@ -256,8 +256,8 @@ bool InternalEmployee::setRole(const AccessLevel role, const InternalEmployeePtr
             update
         ));
         this->updateAt(update);
-        this->role       = role;
-        this->other_role = std::nullopt;
+        this->access_role = role;
+        this->other_role  = std::nullopt;
         return true;
     }
     return false;
@@ -272,7 +272,7 @@ bool InternalEmployee::setOtherRole(const std::string& role, const InternalEmplo
             this->other_role ? std::make_optional<ChangeLog::ValueVariant>(
                                    std::make_shared<std::string>(this->other_role.value())
                                )
-                             : std::make_optional(this->role),
+                             : std::make_optional(this->access_role),
             std::make_shared<std::string>(role),
             InternalEmployeeFields::Role,
             this->other_role ? ChangeLog::FieldType::String : ChangeLog::FieldType::AccessLevel,
@@ -281,8 +281,8 @@ bool InternalEmployee::setOtherRole(const std::string& role, const InternalEmplo
             update
         ));
         this->updateAt(update);
-        this->other_role = role;
-        this->role       = AccessLevel::other;
+        this->other_role  = role;
+        this->access_role = AccessRole::other;
         return true;
     }
     return false;

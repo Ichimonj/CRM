@@ -1,5 +1,5 @@
 #pragma once
-enum class AccessLevel {
+enum class AccessRole {
     Admin,
     SalesRep,
     Executive,

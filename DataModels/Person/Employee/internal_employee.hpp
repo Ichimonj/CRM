@@ -44,7 +44,7 @@ public:
         const InternalEmployeePtr&       manager,
         const OptionalStr&               position,
         const OptionalStr&               department,
-        const AccessLevel&               role,
+        const AccessRole&                access_role,
         const OptionalStr&               other_role,
         const EmployeeStatus&            status,
         const OptionalStr&               other_status,
@@ -81,7 +81,7 @@ public:
     auto getManager() const -> const InternalEmployeePtr&;
     auto getPosition() const -> const OptionalStr&;
     auto getDepartment() const -> const OptionalStr&;
-    auto getRole() const -> AccessLevel;
+    auto getAccessRole() const -> AccessRole;
     auto getOtherRole() const -> const OptionalStr&;
     auto getStatus() const -> EmployeeStatus;
     auto getOtherStatus() const -> const OptionalStr&;
@@ -112,7 +112,7 @@ public:
     bool setManager(const InternalEmployeePtr& manager, const InternalEmployeePtr& changer);
     bool setPosition(const OptionalStr& position, const InternalEmployeePtr& changer);
     bool setDepartment(const OptionalStr& department, const InternalEmployeePtr& changer);
-    bool setRole(const AccessLevel role, const InternalEmployeePtr& changer);
+    bool setAccessRole(const AccessRole role, const InternalEmployeePtr& changer);
     bool setOtherRole(const std::string& role, const InternalEmployeePtr& changer);
     bool setStatus(const EmployeeStatus status, const InternalEmployeePtr& changer);
     bool setOtherStatus(const std::string& status, const InternalEmployeePtr& changer);
@@ -162,7 +162,7 @@ private:
     InternalEmployeePtr manager;
     OptionalStr         position;
     OptionalStr         department;
-    AccessLevel         role;
+    AccessRole          access_role;
     OptionalStr         other_role;
     EmployeeStatus      status;
     OptionalStr         other_status;

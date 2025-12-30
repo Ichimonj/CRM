@@ -44,7 +44,7 @@ public:
         const OptionalStr&                   department,
         const EmployeeStatus&                status,
         const OptionalStr&                   other_status,
-        const AccessLevel&                   access_level,
+        const AccessRole&                    access_role,
         const OptionalStr&                   other_role,
         const InteractionPtr&                current_interaction,
         const DatePtr&                       last_contact_date,
@@ -78,7 +78,7 @@ public:
     auto getDepartment() const -> const OptionalStr&;
     auto getStatus() const -> EmployeeStatus;
     auto getOtherStatus() const -> const OptionalStr&;
-    auto getAccessLevel() const -> AccessLevel;
+    auto getAccessRole() const -> AccessRole;
     auto getOtherRole() const -> const OptionalStr&;
     auto getCurrentInteraction() const -> const InteractionPtr&;
     auto getLastContactDate() const -> const DatePtr&;
@@ -104,7 +104,7 @@ public:
     bool setDepartment(const OptionalStr& department, const InternalEmployeePtr& changer);
     bool setStatus(const EmployeeStatus status, const InternalEmployeePtr& changer);
     bool setOtherStatus(const OptionalStr& status, const InternalEmployeePtr& changer);
-    bool setAccessRole(const AccessLevel access_role, const InternalEmployeePtr& changer);
+    bool setAccessRole(const AccessRole access_role, const InternalEmployeePtr& changer);
     bool setOtherRole(const OptionalStr& other_role, const InternalEmployeePtr& changer);
     bool setCurrentInteraction(
         const InteractionPtr& current_interaction, const InternalEmployeePtr& changer
@@ -146,7 +146,7 @@ private:
 
     EmployeeStatus     status;
     OptionalStr        other_status;
-    AccessLevel        access_role;
+    AccessRole         access_role;
     OptionalStr        other_role;
     InteractionPtr     current_interaction;
     DatePtr            last_contact_date;
