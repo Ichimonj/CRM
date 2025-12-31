@@ -85,14 +85,22 @@ public:
         const BigUint& id, const OptionalStr& role, const InternalEmployeePtr& changer
     );
     void changeTimeZone(const BigUint& id, const int time_zone, const InternalEmployeePtr& changer);
-    void changePosition(const BigUint& id, const OptionalStr& position, const InternalEmployeePtr& chagner);
-    void changeManager(const BigUint& id, const InternalEmployeePtr& manager, const InternalEmployeePtr& changer);
-    void changeIsActive(const BigUint& id, const bool is_active, const InternalEmployeePtr& changer);
-    void changeSalesTerritory(const BigUint& id, OptionalStr& sales_territory, const InternalEmployeePtr& chagner);
+    void changePosition(
+        const BigUint& id, const OptionalStr& position, const InternalEmployeePtr& chagner
+    );
+    void changeManager(
+        const BigUint& id, const InternalEmployeePtr& manager, const InternalEmployeePtr& changer
+    );
+    void changeIsActive(
+        const BigUint& id, const bool is_active, const InternalEmployeePtr& changer
+    );
+    void changeSalesTerritory(
+        const BigUint& id, OptionalStr& sales_territory, const InternalEmployeePtr& chagner
+    );
     /// @}
 
 private:
-    static const std::vector<InternalEmployeePtr>                    empty_vector;
+    static const std::vector<InternalEmployeePtr>             empty_vector;
     std::unordered_map<BigUint, InternalEmployeePtr>          by_id;
     std::unordered_multimap<std::string, InternalEmployeePtr> by_name;
     std::multimap<std::string, InternalEmployeePtr>           by_name_substr_search;

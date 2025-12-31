@@ -103,7 +103,7 @@ public:
     /// @}
 
 private:
-    static const std::vector<ExternalEmployeePtr> empty_vector;
+    static const std::vector<ExternalEmployeePtr>                   empty_vector;
     std::unordered_map<BigUint, ExternalEmployeePtr>                by_id;
     std::unordered_multimap<std::string, ExternalEmployeePtr>       by_name;
     std::multimap<std::string, ExternalEmployeePtr>                 by_name_substr_search;
