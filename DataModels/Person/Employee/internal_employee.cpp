@@ -263,26 +263,29 @@ bool InternalEmployee::setAccessRole(const AccessRole role, const InternalEmploy
     return false;
 }
 
-bool InternalEmployee::setOtherRole(const std::string& role, const InternalEmployeePtr& changer)
+bool InternalEmployee::setOtherRole(
+    const OptionalStr& other_role, const InternalEmployeePtr& changer
+)
 {
-    if (this->other_role != role) {
+    if (this->other_role != other_role) {
         Date update = Date();
+
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
             this->other_role ? std::make_optional<ChangeLog::ValueVariant>(
                                    std::make_shared<std::string>(this->other_role.value())
                                )
-                             : std::make_optional(this->access_role),
-            std::make_shared<std::string>(role),
+                             : std::make_optional<ChangeLog::ValueVariant>(this->access_role),
+            OPTIONAL_STR_TO_VALUE(other_role),
             InternalEmployeeFields::Role,
             this->other_role ? ChangeLog::FieldType::String : ChangeLog::FieldType::AccessLevel,
-            ChangeLog::FieldType::String,
+            other_role ? ChangeLog::FieldType::String : ChangeLog::FieldType::AccessLevel,
             ChangeLog::Action::Change,
             update
         ));
         this->updateAt(update);
-        this->other_role  = role;
         this->access_role = AccessRole::other;
+        this->other_role  = other_role;
         return true;
     }
     return false;
@@ -314,21 +317,22 @@ bool InternalEmployee::setStatus(const EmployeeStatus status, const InternalEmpl
     return false;
 }
 
-bool InternalEmployee::setOtherStatus(const std::string& status, const InternalEmployeePtr& changer)
+bool InternalEmployee::setOtherStatus(const OptionalStr& status, const InternalEmployeePtr& changer)
 {
     if (this->other_status != status) {
         Date update = Date();
+
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
             this->other_status ? std::make_optional<ChangeLog::ValueVariant>(
                                      std::make_shared<std::string>(this->other_status.value())
                                  )
-                               : std::make_optional(this->status),
-            std::make_shared<std::string>(status),
+                               : std::make_optional<ChangeLog::ValueVariant>(this->status),
+            OPTIONAL_STR_TO_VALUE(status),
             InternalEmployeeFields::Status,
             this->other_status ? ChangeLog::FieldType::String
                                : ChangeLog::FieldType::EmployeeStatus,
-            ChangeLog::FieldType::String,
+            status ? ChangeLog::FieldType::String : ChangeLog::FieldType::EmployeeStatus,
             ChangeLog::Action::Change,
             update
         ));

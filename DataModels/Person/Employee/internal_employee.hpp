@@ -113,9 +113,9 @@ public:
     bool setPosition(const OptionalStr& position, const InternalEmployeePtr& changer);
     bool setDepartment(const OptionalStr& department, const InternalEmployeePtr& changer);
     bool setAccessRole(const AccessRole role, const InternalEmployeePtr& changer);
-    bool setOtherRole(const std::string& role, const InternalEmployeePtr& changer);
+    bool setOtherRole(const OptionalStr& role, const InternalEmployeePtr& changer);
     bool setStatus(const EmployeeStatus status, const InternalEmployeePtr& changer);
-    bool setOtherStatus(const std::string& status, const InternalEmployeePtr& changer);
+    bool setOtherStatus(const OptionalStr& status, const InternalEmployeePtr& changer);
     bool setSalesTerritory(const OptionalStr& sales_territory, const InternalEmployeePtr& changer);
     bool setLastLoginDate(const DatePtr& last_login_date, const InternalEmployeePtr& changer);
     bool setLastActionDate(const DatePtr& last_action_date, const InternalEmployeePtr& changer);
