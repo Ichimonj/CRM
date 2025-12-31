@@ -14,6 +14,7 @@ struct Document;
 struct Deal;
 
 class InternalEmployee;
+class InternalEmployeeDataBase;
 using DatePtr             = std::shared_ptr<Date>;
 using DocumentPtr         = std::shared_ptr<Document>;
 using TaskPtr             = std::shared_ptr<Task>;
@@ -109,18 +110,23 @@ public:
 
     /// @name Change functions
     /// @{
-    bool setManager(const InternalEmployeePtr& manager, const InternalEmployeePtr& changer);
-    bool setPosition(const OptionalStr& position, const InternalEmployeePtr& changer);
+    // functions called only from the database
+private:
     bool setDepartment(const OptionalStr& department, const InternalEmployeePtr& changer);
-    bool setAccessRole(const AccessRole role, const InternalEmployeePtr& changer);
-    bool setOtherRole(const OptionalStr& role, const InternalEmployeePtr& changer);
     bool setStatus(const EmployeeStatus status, const InternalEmployeePtr& changer);
     bool setOtherStatus(const OptionalStr& status, const InternalEmployeePtr& changer);
+    bool setAccessRole(const AccessRole role, const InternalEmployeePtr& changer);
+    bool setOtherRole(const OptionalStr& role, const InternalEmployeePtr& changer);
+    bool setTimeZone(const int time_zone, const InternalEmployeePtr& changer);
+    bool setManager(const InternalEmployeePtr& manager, const InternalEmployeePtr& changer);
+    bool setPosition(const OptionalStr& position, const InternalEmployeePtr& changer);
+    bool setIsActive(bool is_active, const InternalEmployeePtr& changer);
     bool setSalesTerritory(const OptionalStr& sales_territory, const InternalEmployeePtr& changer);
+
+    // public functions
+public:
     bool setLastLoginDate(const DatePtr& last_login_date, const InternalEmployeePtr& changer);
     bool setLastActionDate(const DatePtr& last_action_date, const InternalEmployeePtr& changer);
-    bool setTimeZone(const int time_zone, const InternalEmployeePtr& changer);
-    bool setIsActive(bool is_active, const InternalEmployeePtr& changer);
     bool setNextReviewDate(const DatePtr& next_review_date, const InternalEmployeePtr& changer);
     bool setHireDate(const DatePtr& hire_date, const InternalEmployeePtr& changer);
     bool setDismissalDate(const DatePtr& dismissal_date, const InternalEmployeePtr& changer);
@@ -187,4 +193,6 @@ private:
     std::vector<DocumentPtr>         documents;
     std::vector<std::string>         skills;
     std::vector<InternalEmployeePtr> direct_reports;
+
+    friend InternalEmployeeDataBase;
 };
