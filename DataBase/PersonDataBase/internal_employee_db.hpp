@@ -32,6 +32,22 @@ public:
     auto findByPhone(const std::string& phone) const -> const std::vector<InternalEmployeePtr>;
     auto findByPhoneSubstr(const std::string& substr) const
         -> const std::vector<InternalEmployeePtr>;
+    auto findByDepartment(const std::string& department) const
+        -> const std::vector<InternalEmployeePtr>;
+    auto findByStatus(const EmployeeStatus status) const -> const std::vector<InternalEmployeePtr>&;
+    auto findByOtherStatus(const std::string& status) const
+        -> const std::vector<InternalEmployeePtr>&;
+    auto findByAccessRole(const AccessRole role) const -> const std::vector<InternalEmployeePtr>&;
+    auto findByOtherAccessRole(const std::string& role) const
+        -> const std::vector<InternalEmployeePtr>&;
+    auto findByTimeZone(const int time_zone) const -> const std::vector<InternalEmployeePtr>&;
+    auto findByManager(const BigUint& id) const -> const std::vector<InternalEmployeePtr>&;
+    auto findByPosition(const std::string& position) const
+        -> const std::vector<InternalEmployeePtr>;
+    auto findByIsActive(const bool is_active) const -> const std::vector<InternalEmployeePtr>&;
+    auto findBySalesTerritory(const std::string& sales) const
+        -> const std::vector<InternalEmployeePtr>;
+
     /// @}
 
     /// @name Change functions
@@ -53,9 +69,30 @@ public:
         const BigUint& id, const PhoneNumber& number, const InternalEmployeePtr& changer
     );
     void delMorePhone(const BigUint& id, size_t index, const InternalEmployeePtr& changer);
+    void changeDepartment(
+        const BigUint& id, const OptionalStr& department, const InternalEmployeePtr& changer
+    );
+    void changeStatus(
+        const BigUint& id, const EmployeeStatus status, const InternalEmployeePtr& changer
+    );
+    void changeOtherStatus(
+        const BigUint& id, const OptionalStr& status, const InternalEmployeePtr& changer
+    );
+    void changeAccessRole(
+        const BigUint& id, const AccessRole role, const InternalEmployeePtr& changer
+    );
+    void changeOtherAccessRole(
+        const BigUint& id, const OptionalStr& role, const InternalEmployeePtr& changer
+    );
+    void changeTimeZone(const BigUint& id, const int time_zone, const InternalEmployeePtr& changer);
+    void changePosition(const BigUint& id, const OptionalStr& position, const InternalEmployeePtr& chagner);
+    void changeManager(const BigUint& id, const InternalEmployeePtr& manager, const InternalEmployeePtr& changer);
+    void changeIsActive(const BigUint& id, const bool is_active, const InternalEmployeePtr& changer);
+    void changeSalesTerritory(const BigUint& id, OptionalStr& sales_territory, const InternalEmployeePtr& chagner);
     /// @}
 
 private:
+    const std::vector<InternalEmployeePtr>                    empty_vector;
     std::unordered_map<BigUint, InternalEmployeePtr>          by_id;
     std::unordered_multimap<std::string, InternalEmployeePtr> by_name;
     std::multimap<std::string, InternalEmployeePtr>           by_name_substr_search;
@@ -63,6 +100,39 @@ private:
     std::multimap<std::string, InternalEmployeePtr>           by_email_substr_search;
     std::unordered_multimap<std::string, InternalEmployeePtr> by_phone;
     std::multimap<std::string, InternalEmployeePtr>           by_phone_substr_search;
+    //
+    std::unordered_multimap<std::string, InternalEmployeePtr>            by_department;
+    std::unordered_map<EmployeeStatus, std::vector<InternalEmployeePtr>> by_status;
+    std::unordered_map<std::string, std::vector<InternalEmployeePtr>>    by_other_status;
+    std::unordered_map<AccessRole, std::vector<InternalEmployeePtr>>     by_access_role;
+    std::unordered_map<std::string, std::vector<InternalEmployeePtr>>    by_other_access_role;
+    std::unordered_map<int, std::vector<InternalEmployeePtr>>            by_time_zone;
 
-    void removeFromMultimap(auto& map, const auto& key, const InternalEmployeePtr& person);
+    std::unordered_map<BigUint, std::vector<InternalEmployeePtr>>        by_manager;
+    std::unordered_multimap<std::string, InternalEmployeePtr>            by_position;
+    std::unordered_map<bool, std::vector<InternalEmployeePtr>>           by_is_active;
+    std::unordered_multimap<std::string, InternalEmployeePtr>            by_sales_territory;
+
+    //
+    void safeRemoveFromMultimap(
+        auto&                      map,
+        const auto&                key,
+        const InternalEmployeePtr& employee,
+        const size_t               line,
+        const std::string&         index_name
+    );
+    void safeRemoveFromVector(
+        auto&                      map,
+        const auto&                key,
+        const InternalEmployeePtr& employee,
+        const size_t               line,
+        const std::string&         index_name
+    );
+
+    void logEmptyContainer(
+        const std::string& file,
+        const size_t       line,
+        const std::string& employee_id,
+        const std::string& index_name
+    );
 };
