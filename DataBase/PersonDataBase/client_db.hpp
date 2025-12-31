@@ -92,7 +92,7 @@ public:
     /// @}
 
 private:
-    const std::vector<ClientPtr>                    empty_vector;
+    static const std::vector<ClientPtr>             empty_vector;
     std::unordered_map<BigUint, ClientPtr>          by_id;
     std::unordered_multimap<std::string, ClientPtr> by_name;
     std::multimap<std::string, ClientPtr>           by_name_substr_search;
