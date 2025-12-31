@@ -6,6 +6,9 @@
 
 #include "events_log.hpp"
 #include "internal_employee.hpp"
+
+const std::vector<ClientPtr> ClientDataBase::empty_vector;
+//
 void ClientDataBase::add(const ClientPtr& client)
 {
     if (client == nullptr) return;
@@ -320,7 +323,7 @@ auto ClientDataBase::findByPhone(const std::string& phone) const -> const std::v
 auto ClientDataBase::findByPhoneSubstr(const std::string& substr) const
     -> const std::vector<ClientPtr>
 {
-    if (substr.empty())         return empty_vector;
+    if (substr.empty()) return empty_vector;
 
     std::string key = substr;
 
@@ -328,7 +331,7 @@ auto ClientDataBase::findByPhoneSubstr(const std::string& substr) const
     key.back()++;
     auto second = this->by_phone_substr_search.lower_bound(key);
 
-    if (first == second)         return empty_vector;
+    if (first == second) return empty_vector;
 
     std::vector<ClientPtr> result;
     for (auto it = first; it != second; ++it) {
@@ -346,7 +349,8 @@ auto ClientDataBase::findByOwner(const BigUint& id) const -> const std::vector<C
     return empty_vector;
 }
 
-auto ClientDataBase::findByType(const Client::ClientType type) const -> const std::vector<ClientPtr>&
+auto ClientDataBase::findByType(const Client::ClientType type) const
+    -> const std::vector<ClientPtr>&
 {
     auto clients = this->by_type.find(type);
     if (clients != this->by_type.end()) {

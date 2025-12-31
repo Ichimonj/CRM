@@ -7,6 +7,9 @@
 #include "external_company.hpp"
 #include "external_employee.hpp"
 
+const std::vector<ExternalEmployeePtr> ExternalEmployeeDataBase::empty_vector;
+
+//
 void ExternalEmployeeDataBase::add(const ExternalEmployeePtr& employee)
 {
     if (employee == nullptr) return;

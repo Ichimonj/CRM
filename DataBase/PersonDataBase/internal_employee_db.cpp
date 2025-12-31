@@ -5,6 +5,9 @@
 
 #include "events_log.hpp"
 
+const std::vector<InternalEmployeePtr> InternalEmployeeDataBase::empty_vector;
+
+//
 void InternalEmployeeDataBase::add(const InternalEmployeePtr& employee)
 {
     if (employee == nullptr) return;
@@ -729,18 +732,22 @@ void InternalEmployeeDataBase::changeTimeZone(
     }
 }
 
-void InternalEmployeeDataBase::changePosition(const BigUint& id, const OptionalStr& position, const InternalEmployeePtr& chagner)
+void InternalEmployeeDataBase::changePosition(
+    const BigUint& id, const OptionalStr& position, const InternalEmployeePtr& chagner
+)
 {
     auto id_it = by_id.find(id);
     if (id_it == by_id.end()) return;
 
     InternalEmployeePtr employee = id_it->second;
 
-    const auto old_position = employee->getPosition();
-    
+    const auto          old_position = employee->getPosition();
+
     if (employee->setPosition(position, chagner)) {
         if (old_position) {
-            safeRemoveFromMultimap(this->by_position, old_position.value(), employee, __LINE__, "by_position");
+            safeRemoveFromMultimap(
+                this->by_position, old_position.value(), employee, __LINE__, "by_position"
+            );
         }
         if (position) {
             this->by_position.emplace(position.value(), employee);
@@ -788,18 +795,26 @@ void InternalEmployeeDataBase::changeIsActive(
     }
 }
 
-void InternalEmployeeDataBase::changeSalesTerritory(const BigUint& id, OptionalStr& sales_territory, const InternalEmployeePtr& chagner)
+void InternalEmployeeDataBase::changeSalesTerritory(
+    const BigUint& id, OptionalStr& sales_territory, const InternalEmployeePtr& chagner
+)
 {
     auto id_it = by_id.find(id);
     if (id_it == by_id.end()) return;
 
     InternalEmployeePtr employee = id_it->second;
 
-    const auto old_sales = employee->getSalesTerritory();
+    const auto          old_sales = employee->getSalesTerritory();
 
     if (employee->setSalesTerritory(sales_territory, chagner)) {
         if (old_sales) {
-            safeRemoveFromMultimap(this->by_sales_territory, old_sales.value(), employee, __LINE__, "by_sales_territory");
+            safeRemoveFromMultimap(
+                this->by_sales_territory,
+                old_sales.value(),
+                employee,
+                __LINE__,
+                "by_sales_territory"
+            );
         }
         if (sales_territory) {
             this->by_sales_territory.emplace(sales_territory.value(), employee);
