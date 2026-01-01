@@ -13,7 +13,7 @@
 
 #ifdef _DEBUG
 class InitPersons;
-#endif // _DEBUG
+#endif  // _DEBUG
 
 class InternalEmployee;
 class ChangeLog;
@@ -91,20 +91,20 @@ public:
     /// @}
 
     /// @name Change functions
-    // functions called only from the database
-private:
+    // functions called only from the
+protected:
     bool setName(const std::string& name, const InternalEmployeePtr& changer);
     bool setEmail(const OptionalStr& email, const InternalEmployeePtr& changer);
 
     bool addMoreEmails(const std::string& email, const InternalEmployeePtr& changer);
     bool delMoreEmails(size_t index, const InternalEmployeePtr& changer);
-    
+
     bool setPhoneNumber(const PhoneNumberPtr& number, const InternalEmployeePtr& changer);
 
     bool addMorePhoneNumber(const PhoneNumber& number, const InternalEmployeePtr& changer);
     bool delMorePhoneNumber(size_t index, const InternalEmployeePtr& changer);
-   
-    //public functions
+
+    // public functions
 public:
     bool setSurname(const std::string& surname, const InternalEmployeePtr& changer);
     bool setPatronymic(const OptionalStr& patronymic, const InternalEmployeePtr& changer);
@@ -174,7 +174,42 @@ private:
     friend class InternalEmployeeDataBase;
 #ifdef _DEBUG
     friend class InitPersons;
-#endif // _DEBUG
+#endif  // _DEBUG
+
+#ifdef _TESTING
+public:
+    bool _setName(const std::string& name, const InternalEmployeePtr& changer)
+    {
+        return this->setName(name, changer);
+    }
+    bool _setEmail(const OptionalStr& email, const InternalEmployeePtr& changer)
+    {
+        return this->setEmail(email, changer);
+    }
+
+    bool _addMoreEmails(const std::string& email, const InternalEmployeePtr& changer)
+    {
+        return this->addMoreEmails(email, changer);
+    }
+    bool _delMoreEmails(size_t index, const InternalEmployeePtr& changer)
+    {
+        return this->delMoreEmails(index, changer);
+    }
+
+    bool _setPhoneNumber(const PhoneNumberPtr& number, const InternalEmployeePtr& changer)
+    {
+        return this->setPhoneNumber(number, changer);
+    }
+
+    bool _addMorePhoneNumber(const PhoneNumber& number, const InternalEmployeePtr& changer)
+    {
+        return this->addMorePhoneNumber(number, changer);
+    }
+    bool _delMorePhoneNumber(size_t index, const InternalEmployeePtr& changer)
+    {
+        return this->delMorePhoneNumber(index, changer);
+    }
+#endif  // _TESTING
 
 protected:
     std::vector<ChangeLogPtr> change_logs;
