@@ -1,6 +1,6 @@
 #include "email_thread.hpp"
 
-#include "change_log.hpp"
+#include "ChangeLog/change_log.hpp"
 
 EmailThread::EmailThread(const BigUint& id) : BaseInteraction(id, InteractionType::emailThread) {}
 

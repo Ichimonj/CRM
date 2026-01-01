@@ -1,6 +1,6 @@
 #pragma once
-#include "company.hpp"
-#include "currencies.hpp"
+#include "Company/company.hpp"
+#include "Currencies/currencies.hpp"
 class Client;
 class FileMetadata;
 class Task;

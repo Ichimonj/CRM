@@ -3,16 +3,16 @@
 #include <format>
 #include <string>
 
-#include "base_interaction.hpp"
-#include "client.hpp"
-#include "commentary_social_networks.hpp"
-#include "file_metadata.hpp"
-#include "internal_employee.hpp"
+#include "FileMetadata/file_metadata.hpp"
+#include "Interaction/base_interaction.hpp"
+#include "Interaction/commentary_social_networks.hpp"
+#include "Interaction/message.hpp"
+#include "Person/Client/client.hpp"
+#include "Person/Employee/internal_employee.hpp"
 #include "location.hpp"
-#include "message.hpp"
-#include "payment.hpp"
-#include "session_manager.hpp"
-#include "time_duration.hpp"
+#include "Payment/payment.hpp"
+#include "UserSession/session_manager.hpp"
+#include "DateTime/time_duration.hpp"
 ChangeLog::ChangeLog(
     std::shared_ptr<InternalEmployee> changer,
     std::optional<ValueVariant>       old_value,
@@ -428,10 +428,10 @@ auto ChangeLog::getNewValue() const -> const std::optional<ValueVariant>&
 {
     return this->new_value;
 }
-auto ChangeLog::getField() const -> const FieldVariant { return this->field; }
-auto ChangeLog::getOldValueFieldType() const -> FieldType { return this->old_field_type; }
-auto ChangeLog::getNewValueFieldType() const -> FieldType { return this->new_field_type; }
-auto ChangeLog::getAction() const -> Action { return this->action; }
+auto        ChangeLog::getField() const -> const FieldVariant { return this->field; }
+auto        ChangeLog::getOldValueFieldType() const -> FieldType { return this->old_field_type; }
+auto        ChangeLog::getNewValueFieldType() const -> FieldType { return this->new_field_type; }
+auto        ChangeLog::getAction() const -> Action { return this->action; }
 
 std::string ChangeLog::callTypeToStr(PhoneCallData::CallType type)
 {

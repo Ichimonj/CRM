@@ -1,6 +1,6 @@
 #pragma once
-#include "base_interaction.hpp"
-#include "date.hpp"
+#include "Interaction/base_interaction.hpp"
+#include "DateTime/date.hpp"
 
 class Client;
 struct Address;

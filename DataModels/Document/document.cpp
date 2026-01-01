@@ -2,7 +2,7 @@
 
 #include <cstring>
 
-#include "change_log.hpp"
+#include "ChangeLog/change_log.hpp"
 
 Document::Document(const BigUint& id) : id(id), status(DocumentStatus::Draft) {}
 

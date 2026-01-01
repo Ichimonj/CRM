@@ -2,9 +2,9 @@
 #include <memory>
 #include <vector>
 
-#include "big_uint.hpp"
-#include "date.hpp"
-#include "person.hpp"
+#include "BigNum/big_uint.hpp"
+#include "DateTime/date.hpp"
+#include "Person/person.hpp"
 
 class InternalEmployee;
 class ChangeLog;

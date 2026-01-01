@@ -2,7 +2,7 @@
 
 #include <optional>
 
-#include "change_log.hpp"
+#include "ChangeLog/change_log.hpp"
 
 Meeting::Meeting(const BigUint& id)
     : BaseInteraction(id, InteractionType::meeting)

@@ -1,6 +1,6 @@
 #include "case.hpp"
 
-#include "change_log.hpp"
+#include "ChangeLog/change_log.hpp"
 
 Case::Case(const BigUint& id) : id(id), status(CaseStatus::Open) {}
 

@@ -1,6 +1,6 @@
 #include "report.hpp"
 
-#include "change_log.hpp"
+#include "ChangeLog/change_log.hpp"
 
 Report::Report(
     const BigUint&                 id,

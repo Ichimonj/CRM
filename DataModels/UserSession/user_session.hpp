@@ -4,8 +4,8 @@
 #include <string>
 #include <vector>
 
-#include "date.hpp"
-#include "time_duration.hpp"
+#include "DateTime/date.hpp"
+#include "DateTime/time_duration.hpp"
 
 class InternalEmployee;
 class ChangeLog;

@@ -1,6 +1,6 @@
 #include "message.hpp"
 
-#include "change_log.hpp"
+#include "ChangeLog/change_log.hpp"
 
 Message::Message(const BigUint& id) : BaseInteraction(id, InteractionType::message) {}
 

@@ -2,7 +2,8 @@
 #include <string>
 #include <variant>
 
-#include "currencies.hpp"
+#include "Currencies/currencies.hpp"
+
 class Money {
 public:
     Money(const std::string& num, const Currencies currency = ÑountriesCurrencies::USD);

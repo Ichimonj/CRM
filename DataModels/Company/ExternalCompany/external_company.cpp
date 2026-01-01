@@ -1,6 +1,6 @@
 #include "external_company.hpp"
 
-#include "change_log.hpp"
+#include "ChangeLog/change_log.hpp"
 ExternalCompany::ExternalCompany(const BigUint& id)
     : Company(id)
     , rating(Rating::Inactive)

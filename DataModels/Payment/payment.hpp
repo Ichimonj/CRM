@@ -1,13 +1,13 @@
 #pragma once
 #include <memory>
 
-#include "big_uint.hpp"
-#include "company.hpp"
-#include "currencies.hpp"
-#include "date.hpp"
-#include "document.hpp"
-#include "money.hpp"
-#include "person.hpp"
+#include "BigNum/big_uint.hpp"
+#include "Company/company.hpp"
+#include "Currencies/currencies.hpp"
+#include "DateTime/date.hpp"
+#include "Document/document.hpp"
+#include "BigNum/money.hpp"
+#include "Person/person.hpp"
 
 class ChangeLog;
 struct Deal;

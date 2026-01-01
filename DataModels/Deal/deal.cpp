@@ -2,7 +2,7 @@
 
 #include <utility>
 
-#include "change_log.hpp"
+#include "ChangeLog/change_log.hpp"
 
 Deal::Deal(const BigUint& id) : id(id) {}
 

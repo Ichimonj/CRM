@@ -1,6 +1,6 @@
 #include "interaction_result.hpp"
 
-#include "change_log.hpp"
+#include "ChangeLog/change_log.hpp"
 
 InteractionResult::InteractionResult(
     const std::string&          interaction_title,

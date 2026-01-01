@@ -1,8 +1,8 @@
 #pragma once
+#include "BigNum/money.hpp"
+#include "Person/Client/client.hpp"
+#include "DateTime/date.hpp"
 #include "campaign.hpp"
-#include "client.hpp"
-#include "date.hpp"
-#include "money.hpp"
 
 using CampaignPtr = std::shared_ptr<Campaign>;
 using ClientPtr   = std::shared_ptr<Client>;

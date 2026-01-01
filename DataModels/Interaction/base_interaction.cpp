@@ -1,8 +1,8 @@
 #include "base_interaction.hpp"
 
-#include "change_log.hpp"
-#include "date.hpp"
-#include "task.hpp"
+#include "ChangeLog/change_log.hpp"
+#include "DateTime/date.hpp"
+#include "Task/task.hpp"
 
 BaseInteraction::BaseInteraction(const BigUint& id, InteractionType type)
     : id(id), priority(Priority::null), type(type)

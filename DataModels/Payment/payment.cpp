@@ -1,7 +1,7 @@
 #include "payment.hpp"
 
-#include "change_log.hpp"
-#include "deal.hpp"
+#include "ChangeLog/change_log.hpp"
+#include "Deal/deal.hpp"
 
 Payment::Payment(const BigUint& id) : id(id), status(PaymentStatus::pending) {}
 

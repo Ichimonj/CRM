@@ -2,8 +2,8 @@
 #include <memory>
 #include <optional>
 
-#include "big_uint.hpp"
-#include "money.hpp"
+#include "BigNum/big_uint.hpp"
+#include "BigNum/money.hpp"
 
 struct Offer;
 struct Deal;

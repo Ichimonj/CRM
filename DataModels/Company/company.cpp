@@ -1,6 +1,6 @@
 #include "company.hpp"
 
-#include "change_log.hpp"
+#include "ChangeLog/change_log.hpp"
 
 Company::Company(const BigUint& id) : id(id) {}
 Company::Company(

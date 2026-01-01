@@ -1,8 +1,8 @@
 #pragma once
-#include "deal.hpp"
-#include "note.hpp"
-#include "person.hpp"
-#include "time_duration.hpp"
+#include "Deal/deal.hpp"
+#include "Note/note.hpp"
+#include "Person/person.hpp"
+#include "DateTime/time_duration.hpp"
 
 struct BaseInteraction;
 using InteractionPtr = std::shared_ptr<BaseInteraction>;

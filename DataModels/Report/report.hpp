@@ -1,9 +1,9 @@
 #pragma once
 #include <memory>
 
-#include "big_uint.hpp"
-#include "date.hpp"
-#include "external_employee.hpp"
+#include "BigNum/big_uint.hpp"
+#include "DateTime/date.hpp"
+#include "Person/Employee/external_employee.hpp"
 
 using DatePtr             = std::shared_ptr<Date>;
 using InternalEmployeePtr = std::shared_ptr<InternalEmployee>;

@@ -1,9 +1,9 @@
 #pragma once
-#include "base_interaction.hpp"
-#include "employee_enums.hpp"
-#include "money.hpp"
-#include "person.hpp"
-#include "social_network.hpp"
+#include "BigNum/money.hpp"
+#include "Interaction/base_interaction.hpp"
+#include "SocialNetwork/social_network.hpp"
+#include "Person/Employee/employee_enums.hpp"
+#include "Person/person.hpp"
 
 struct Deal;
 using DealPtr = std::shared_ptr<Deal>;

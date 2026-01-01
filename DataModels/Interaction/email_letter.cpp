@@ -1,7 +1,7 @@
 #include "email_letter.hpp"
 
-#include "change_log.hpp"
-#include "date.hpp"
+#include "ChangeLog/change_log.hpp"
+#include "DateTime/date.hpp"
 
 EmailLetter::EmailLetter(const BigUint& id)
     : BaseInteraction(id, InteractionType::emailLetter)

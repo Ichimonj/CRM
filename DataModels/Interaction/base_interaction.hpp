@@ -3,12 +3,12 @@
 #include <optional>
 #include <vector>
 
-#include "big_uint.hpp"
-#include "file_metadata.hpp"
-#include "interaction_result.hpp"
-#include "note.hpp"
+#include "BigNum/big_uint.hpp"
+#include "FileMetadata/file_metadata.hpp"
+#include "Interaction/interaction_result.hpp"
+#include "Note/note.hpp"
 #include "priority.hpp"
-#include "time_duration.hpp"
+#include "DateTime/time_duration.hpp"
 
 class Person;
 struct Date;

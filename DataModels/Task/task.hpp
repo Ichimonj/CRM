@@ -3,11 +3,11 @@
 #include <optional>
 #include <vector>
 
-#include "big_uint.hpp"
-#include "date.hpp"
-#include "file_metadata.hpp"
-#include "priority.hpp"
-#include "time_duration.hpp"
+#include "BigNum/big_uint.hpp"
+#include "DateTime/date.hpp"
+#include "FileMetadata/file_metadata.hpp"
+#include "Interaction/priority.hpp"
+#include "DateTime/time_duration.hpp"
 class ChangeLog;
 class InternalEmployee;
 class Person;

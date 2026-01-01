@@ -1,8 +1,8 @@
 #include "person.hpp"
 
-#include "campaign.hpp"
-#include "change_log.hpp"
-#include "company.hpp"
+#include "Campaign/campaign.hpp"
+#include "ChangeLog/change_log.hpp"
+#include "Company/company.hpp"
 
 Person::Person(
     const BigUint&     id,

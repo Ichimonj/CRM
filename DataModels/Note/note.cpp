@@ -1,7 +1,7 @@
 #include "note.hpp"
 
-#include "internal_employee.hpp"
-#include "person.hpp"
+#include "Person/Employee/internal_employee.hpp"
+#include "Person/person.hpp"
 Note::Note(
     const InternalEmployeePtr& creator,
     const PersonPtr&           author,

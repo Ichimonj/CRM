@@ -4,14 +4,14 @@
 #include <string>
 #include <vector>
 
-#include "big_uint.hpp"
-#include "currencies.hpp"
-#include "date.hpp"
-#include "document.hpp"
-#include "money.hpp"
-#include "offer_deal.hpp"
-#include "payment.hpp"
-#include "priority.hpp"
+#include "BigNum/big_uint.hpp"
+#include "Currencies/currencies.hpp"
+#include "DateTime/date.hpp"
+#include "Document/document.hpp"
+#include "BigNum/money.hpp"
+#include "Offering/offer_deal.hpp"
+#include "Payment/payment.hpp"
+#include "Interaction/priority.hpp"
 
 class ChangeLog;
 class Task;

@@ -1,6 +1,6 @@
 #include "meeting_thread.hpp"
 
-#include "change_log.hpp"
+#include "ChangeLog/change_log.hpp"
 
 MeetingThread::MeetingThread(const BigUint& id)
     : BaseInteraction(id, InteractionType::meetingThread)

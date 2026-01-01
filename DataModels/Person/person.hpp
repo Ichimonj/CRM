@@ -2,14 +2,14 @@
 #include <memory>
 #include <vector>
 
-#include "address.hpp"
-#include "base_interaction.hpp"
-#include "date.hpp"
-#include "document.hpp"
-#include "file_metadata.hpp"
-#include "note.hpp"
-#include "phone_number.hpp"
-#include "social_network.hpp"
+#include "Address/address.hpp"
+#include "Interaction/base_interaction.hpp"
+#include "DateTime/date.hpp"
+#include "Document/document.hpp"
+#include "FileMetadata/file_metadata.hpp"
+#include "Note/note.hpp"
+#include "PhoneNumber/phone_number.hpp"
+#include "SocialNetwork/social_network.hpp"
 
 #ifdef _DEBUG
 class InitPersons;

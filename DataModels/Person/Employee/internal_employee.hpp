@@ -2,14 +2,14 @@
 #include <optional>
 #include <string>
 
-#include "big_uint.hpp"
-#include "date.hpp"
-#include "deal.hpp"
-#include "employee_enums.hpp"
-#include "money.hpp"
-#include "note.hpp"
-#include "person.hpp"
-#include "task.hpp"
+#include "BigNum/big_uint.hpp"
+#include "DateTime/date.hpp"
+#include "Deal/deal.hpp"
+#include "Person/Employee/employee_enums.hpp"
+#include "BigNum/money.hpp"
+#include "Note/note.hpp"
+#include "Person/person.hpp"
+#include "Task/task.hpp"
 struct Document;
 struct Deal;
 

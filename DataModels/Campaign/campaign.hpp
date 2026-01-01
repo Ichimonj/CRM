@@ -3,8 +3,8 @@
 #include <optional>
 #include <vector>
 
-#include "big_uint.hpp"
-#include "note.hpp"
+#include "BigNum/big_uint.hpp"
+#include "Note/note.hpp"
 
 class Money;
 class Client;

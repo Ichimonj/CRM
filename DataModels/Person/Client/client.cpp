@@ -1,7 +1,7 @@
 #include "client.hpp"
 
-#include "big_uint.hpp"
-#include "change_log.hpp"
+#include "BigNum/big_uint.hpp"
+#include "ChangeLog/change_log.hpp"
 
 Client::Client(
     const BigUint&     id,

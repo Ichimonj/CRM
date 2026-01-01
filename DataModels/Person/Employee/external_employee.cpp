@@ -1,6 +1,6 @@
-#include "external_employee.hpp"
+#include "Person/Employee/external_employee.hpp"
 
-#include "change_log.hpp"
+#include "ChangeLog/change_log.hpp"
 ExternalEmployee::ExternalEmployee(
     const BigUint&     id,
     const std::string& name,

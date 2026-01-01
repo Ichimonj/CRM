@@ -3,13 +3,13 @@
 #include <optional>
 #include <vector>
 
-#include "address.hpp"
-#include "big_uint.hpp"
-#include "date.hpp"
-#include "external_employee.hpp"
-#include "money.hpp"
-#include "note.hpp"
-#include "phone_number.hpp"
+#include "Address/address.hpp"
+#include "BigNum/big_uint.hpp"
+#include "DateTime/date.hpp"
+#include "Person/Employee/external_employee.hpp"
+#include "BigNum/money.hpp"
+#include "Note/note.hpp"
+#include "PhoneNumber/phone_number.hpp"
 using PhoneNumberPtr      = std::shared_ptr<PhoneNumber>;
 using AddressPtr          = std::shared_ptr<Address>;
 using StringPair          = std::pair<std::string, std::string>;

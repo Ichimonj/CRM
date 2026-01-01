@@ -1,6 +1,6 @@
 #include "internal_employee.hpp"
 
-#include "change_log.hpp"
+#include "ChangeLog/change_log.hpp"
 InternalEmployee::InternalEmployee(
     const BigUint&     id,
     const std::string& name,

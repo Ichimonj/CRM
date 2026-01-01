@@ -3,8 +3,8 @@
 #include <string>
 #include <vector>
 
-#include "big_uint.hpp"
-#include "date.hpp"
+#include "BigNum/big_uint.hpp"
+#include "DateTime/date.hpp"
 
 class ChangeLog;
 class InternalEmployee;

@@ -4,10 +4,10 @@
 #include <string>
 #include <vector>
 
-#include "big_uint.hpp"
-#include "date.hpp"
-#include "note.hpp"
-#include "priority.hpp"
+#include "BigNum/big_uint.hpp"
+#include "DateTime/date.hpp"
+#include "Note/note.hpp"
+#include "Interaction/priority.hpp"
 
 struct BaseInteraction;
 class InternalEmployee;

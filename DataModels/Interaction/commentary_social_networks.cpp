@@ -1,7 +1,7 @@
 #include "commentary_social_networks.hpp"
 
-#include "change_log.hpp"
-#include "time_duration.hpp"
+#include "ChangeLog/change_log.hpp"
+#include "DateTime/time_duration.hpp"
 
 CommentarySocialNetworks::CommentarySocialNetworks(const BigUint& id)
     : BaseInteraction(id, InteractionType::commentarySocialNetworks), is_first(true)

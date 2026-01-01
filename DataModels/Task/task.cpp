@@ -1,6 +1,6 @@
 #include "task.hpp"
 
-#include "change_log.hpp"
+#include "ChangeLog/change_log.hpp"
 Task::Task(const BigUint& id) : id(id), priority(Priority::Medium), status(Status::NotStarted) {}
 
 Task::Task(

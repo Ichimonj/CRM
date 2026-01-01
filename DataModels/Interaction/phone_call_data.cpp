@@ -1,6 +1,6 @@
 #include "phone_call_data.hpp"
 
-#include "change_log.hpp"
+#include "ChangeLog/change_log.hpp"
 
 PhoneCallData::PhoneCallData(const BigUint& id) : BaseInteraction(id, InteractionType::phoneCall) {}
 

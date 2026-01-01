@@ -1,6 +1,6 @@
 #include "commentary_social_networks_thread.hpp"
 
-#include "change_log.hpp"
+#include "ChangeLog/change_log.hpp"
 
 CommentarySocialNetworksThread::CommentarySocialNetworksThread(const BigUint& id)
     : BaseInteraction(id, InteractionType::commentarySocialNetworksThread)

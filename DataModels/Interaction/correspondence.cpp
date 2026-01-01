@@ -1,6 +1,6 @@
 #include "correspondence.hpp"
 
-#include "change_log.hpp"
+#include "ChangeLog/change_log.hpp"
 
 Correspondence::Correspondence(const BigUint& id)
     : BaseInteraction(id, InteractionType::correspondence)
