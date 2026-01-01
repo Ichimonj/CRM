@@ -173,4 +173,46 @@ private:
     std::vector<TaskPtr> completed_tasks;
 
     friend class ExternalEmployeeDataBase;
+
+#ifdef _TESTING
+public:
+    bool _setCompany(const ExternalCompanyPtr& company, const InternalEmployeePtr& changer)
+    {
+        return this->setCompany(company, changer);
+    }
+    bool _setJobTitle(const OptionalStr& title, const InternalEmployeePtr& changer)
+    {
+        return this->setJobTitle(title, changer);
+    }
+    bool _setDepartment(const OptionalStr& department, const InternalEmployeePtr& changer)
+    {
+        return this->setDepartment(department, changer);
+    }
+    bool _setStatus(const EmployeeStatus status, const InternalEmployeePtr& changer)
+    {
+        return this->setStatus(status, changer);
+    }
+    bool _setOtherStatus(const OptionalStr& status, const InternalEmployeePtr& changer)
+    {
+        return this->setOtherStatus(status, changer);
+    }
+    bool _setAccessRole(const AccessRole access_role, const InternalEmployeePtr& changer)
+    {
+        return this->setAccessRole(access_role, changer);
+    }
+    bool _setOtherRole(const OptionalStr& other_role, const InternalEmployeePtr& changer)
+    {
+        return this->setOtherRole(other_role, changer);
+    }
+    bool _setTimeZone(const int time_zone, const InternalEmployeePtr& changer)
+    {
+        return this->setTimeZone(time_zone, changer);
+    }
+    bool _setDecisionInfluence(
+        const std::optional<InfluenceLevel>& decision_influence, const InternalEmployeePtr& changer
+    )
+    {
+        return this->setDecisionInfluence(decision_influence, changer);
+    }
+#endif  // _TESTING
 };
