@@ -5,7 +5,7 @@
 #include "Tests/ChangeLog/enums_to_str_tests.hpp"
 #include "Tests/DateTime/date_tests.hpp"
 #include "Tests/DateTime/time_duration_tests.hpp"
-
+#include "Tests/PhoneNumber/phone_number_tests.hpp"
 int main(int argc, char**argv) {
 	::testing::InitGoogleTest(&argc, argv);
 	return RUN_ALL_TESTS();
