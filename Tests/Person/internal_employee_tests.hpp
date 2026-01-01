@@ -1,6 +1,6 @@
-#include "change_log.hpp"
+#include "ChangeLog/change_log.hpp"
 #include "gtest/gtest.h"
-#include "internal_employee.hpp"
+#include "Person/Employee/internal_employee.hpp"
 #include "memory.h"
 namespace unit {
     InternalEmployee ie(BigUint("1"), "Name", "Surname", std::nullopt);

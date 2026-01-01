@@ -1,6 +1,6 @@
-#include "change_log.hpp"  
+#include "ChangeLog/change_log.hpp"  
 #include "gtest/gtest.h"
-#include "priority.hpp"
+#include "Interaction/priority.hpp"
 namespace unit {
     TEST(EnumToStrTests, PriorityTest)
     {

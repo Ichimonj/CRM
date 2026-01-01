@@ -1,4 +1,4 @@
-#include "change_log.hpp"
+#include "ChangeLog/change_log.hpp"
 #include "gtest/gtest.h"
 
 namespace unit {

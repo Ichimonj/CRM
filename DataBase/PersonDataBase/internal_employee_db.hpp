@@ -2,7 +2,8 @@
 #include <map>
 #include <unordered_map>
 
-#include "internal_employee.hpp"
+#include "Person/Employee/internal_employee.hpp"
+
 using InternalEmployeePtr = std::shared_ptr<InternalEmployee>;
 
 class InternalEmployeeDataBase {

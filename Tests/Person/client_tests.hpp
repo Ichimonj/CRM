@@ -1,6 +1,6 @@
-#include "Employee/internal_employee.hpp"
-#include "change_log.hpp"
-#include "client.hpp"
+#include "Person/Employee/internal_employee.hpp"
+#include "ChangeLog/change_log.hpp"
+#include "Person/Client/client.hpp"
 #include "gtest/gtest.h"
 
 namespace unit {

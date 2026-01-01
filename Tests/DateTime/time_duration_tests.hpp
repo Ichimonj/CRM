@@ -1,5 +1,5 @@
 #include "gtest/gtest.h"
-#include "time_duration.hpp"
+#include "DateTime/time_duration.hpp"
 
 namespace unit {
     TEST(TimeDurationTest, Constructor)

@@ -1,5 +1,5 @@
 #include "gtest/gtest.h"
-#include "person.hpp"
+#include "Person/person.hpp"
 
 InternalEmployeePtr changer = nullptr;
 
