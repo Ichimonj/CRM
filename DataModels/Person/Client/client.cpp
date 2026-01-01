@@ -177,7 +177,7 @@ bool Client::setOtherType(const std::string& other_type, const InternalEmployeeP
                                )
                              : std::make_optional<ChangeLog::ValueVariant>(this->type),
             std::make_optional<ChangeLog::ValueVariant>(std::make_shared<std::string>(other_type)),
-            ClientFields::Type,
+            ClientFields::OtherType,
             this->other_type ? ChangeLog::FieldType::String : ChangeLog::FieldType::ClientType,
             ChangeLog::FieldType::String,
             ChangeLog::Action::Change,
@@ -236,7 +236,7 @@ bool Client::setOtherLeadSource(
             std::make_optional<ChangeLog::ValueVariant>(
                 std::make_shared<std::string>(other_lead_source)
             ),
-            ClientFields::LeadSource,
+            ClientFields::OtherLeadSource,
             this->other_lead_source ? ChangeLog::FieldType::String
                                     : ChangeLog::FieldType::LeadSource,
             ChangeLog::FieldType::String,

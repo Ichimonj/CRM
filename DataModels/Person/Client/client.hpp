@@ -1,8 +1,11 @@
 #pragma once
+#include <gtest/gtest_prod.h>
+
 #include "deal.hpp"
 #include "note.hpp"
 #include "person.hpp"
 #include "time_duration.hpp"
+
 struct BaseInteraction;
 using InteractionPtr = std::shared_ptr<BaseInteraction>;
 using StringPair     = std::pair<std::string, std::string>;
@@ -115,7 +118,7 @@ private:
         const std::optional<LeadStatus>& lead_status, const InternalEmployeePtr& changer
     );
 
-    //public functions
+    // public functions
 public:
     bool setCommunicationChannel(const OptionalStr& channel, const InternalEmployeePtr& changer);
     bool setReferralCode(const OptionalStr& code, const InternalEmployeePtr& changer);
@@ -157,4 +160,40 @@ private:
     std::vector<OfferPtr>     interested_offers;
 
     friend class ClientDataBase;
+
+#ifdef _TESTING
+public:
+    bool _setOwner(const InternalEmployeePtr& owner, const InternalEmployeePtr& changer)
+    {
+        return this->setOwner(owner, changer);
+    }
+    bool _setType(const ClientType type, const InternalEmployeePtr& changer)
+    {
+        return this->setType(type, changer);
+    }
+    bool _setOtherType(const std::string& other_type, const InternalEmployeePtr& changer)
+    {
+        return this->setOtherType(other_type, changer);
+    }
+    bool _setLeadSource(const LeadSource lead_source, const InternalEmployeePtr& changer)
+    {
+        return this->setLeadSource(lead_source, changer);
+    }
+    bool _setOtherLeadSource(
+        const std::string& other_lead_source, const InternalEmployeePtr& changer
+    )
+    {
+        return this->setOtherLeadSource(other_lead_source, changer);
+    }
+    bool _setMarketingConsent(const bool marketing_consent, const InternalEmployeePtr& changer)
+    {
+        return this->setMarketingConsent(marketing_consent, changer);
+    }
+    bool _setLeadStatus(
+        const std::optional<LeadStatus>& lead_status, const InternalEmployeePtr& changer
+    )
+    {
+        return this->setLeadStatus(lead_status, changer);
+    }
+#endif  // _TESTING
 };
