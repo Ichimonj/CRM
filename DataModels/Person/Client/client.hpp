@@ -1,6 +1,4 @@
 #pragma once
-#include <gtest/gtest_prod.h>
-
 #include "deal.hpp"
 #include "note.hpp"
 #include "person.hpp"
