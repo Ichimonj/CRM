@@ -195,4 +195,39 @@ private:
     std::vector<InternalEmployeePtr> direct_reports;
 
     friend InternalEmployeeDataBase;
+
+#ifdef _TESTING
+public:
+    bool _setDepartment(const OptionalStr& department, const InternalEmployeePtr& changer) {
+        return this->setDepartment(department, changer);
+    }
+    bool _setStatus(const EmployeeStatus status, const InternalEmployeePtr& changer) {
+        return this->setStatus(status, changer);
+    }
+    bool _setOtherStatus(const OptionalStr& status, const InternalEmployeePtr& changer) {
+        return this->setOtherStatus(status, changer);
+    }
+    bool _setAccessRole(const AccessRole role, const InternalEmployeePtr& changer) {
+        return this->setAccessRole(role, changer);
+    }
+    bool _setOtherRole(const OptionalStr& role, const InternalEmployeePtr& changer) {
+        return this->setOtherRole(role, changer);
+    }
+    bool _setTimeZone(const int time_zone, const InternalEmployeePtr& changer) {
+        return this->setTimeZone(time_zone, changer);
+    }
+    bool _setManager(const InternalEmployeePtr& manager, const InternalEmployeePtr& changer) {
+        return this->setManager(manager, changer);
+    }
+    bool _setPosition(const OptionalStr& position, const InternalEmployeePtr& changer) {
+        return this->setPosition(position, changer);
+    }
+    bool _setIsActive(bool is_active, const InternalEmployeePtr& changer) {
+        return this->setIsActive(is_active, changer);
+    }
+    bool _setSalesTerritory(const OptionalStr& sales_territory, const InternalEmployeePtr& changer) {
+        return this->setSalesTerritory(sales_territory, changer);
+    }
+#endif // _TESTING
+
 };
