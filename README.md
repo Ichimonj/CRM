@@ -9,7 +9,6 @@
 ## Requirements
 - Cmake ? 3.20
 - C++20 (MSVC 2022)
-- 
 
 # Build
 ## Release
