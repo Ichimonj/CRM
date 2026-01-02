@@ -1,6 +1,6 @@
 #include "campaign.hpp"
 
-#include "change_log.hpp"
+#include "ChangeLog/change_log.hpp"
 
 Campaign::Campaign(const BigUint& id) : id(id) {}
 
