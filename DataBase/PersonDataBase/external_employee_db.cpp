@@ -3,9 +3,9 @@
 #include <algorithm>
 #include <string>
 
-#include "events_log.hpp"
-#include "external_company.hpp"
-#include "external_employee.hpp"
+#include "Company/ExternalCompany/external_company.hpp"
+#include "Logger/events_log.hpp"
+#include "Person/Employee/external_employee.hpp"
 
 const std::vector<ExternalEmployeePtr> ExternalEmployeeDataBase::empty_vector;
 

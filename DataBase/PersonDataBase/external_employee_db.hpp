@@ -2,7 +2,7 @@
 #include <map>
 #include <unordered_map>
 
-#include "company.hpp"
+#include "Company/company.hpp"
 
 using CompanyId = BigUint;
 class ExternalEmployeeDataBase {

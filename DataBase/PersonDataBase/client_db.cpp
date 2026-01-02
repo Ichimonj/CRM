@@ -4,8 +4,8 @@
 #include <string>
 #include <vector>
 
-#include "events_log.hpp"
-#include "internal_employee.hpp"
+#include "Logger/events_log.hpp"
+#include "Person/Employee/internal_employee.hpp"
 
 const std::vector<ClientPtr> ClientDataBase::empty_vector;
 //

@@ -3,7 +3,7 @@
 #include <algorithm>
 #include <string>
 
-#include "events_log.hpp"
+#include "Logger/events_log.hpp"
 
 const std::vector<InternalEmployeePtr> InternalEmployeeDataBase::empty_vector;
 
