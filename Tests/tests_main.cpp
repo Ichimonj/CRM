@@ -9,6 +9,7 @@
 #include "Tests/Person/client_tests.hpp"
 #include "Tests/Person/internal_employee_tests.hpp"
 #include "Tests/Person/external_employee_tests.hpp"
+#include "Tests/Task/task_tests.hpp"
 
 int main(int argc, char**argv) {
 	::testing::InitGoogleTest(&argc, argv);
