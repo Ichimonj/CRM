@@ -23,7 +23,6 @@ Deal::Deal(
     const DatePtr&                         drawing_date,
     const DatePtr&                         date_approval,
     const Date&                            creation_date,
-    const InternalEmployeePtr              manager,
     std::vector<InternalEmployeePtr>       assigned_employees,
     std::vector<OfferDealPtr>              offers,
     std::vector<DocumentPtr>               documents,
@@ -48,7 +47,6 @@ Deal::Deal(
     , drawing_date(drawing_date)
     , date_approval(date_approval)
     , creation_date(creation_date)
-    , manager(manager)
     , assigned_employees(std::move(assigned_employees))
     , offers(std::move(offers))
     , documents(std::move(documents))
@@ -75,7 +73,6 @@ auto Deal::getDealPriority() const -> const Priority& { return deal_priority; }
 auto Deal::getDrawingDate() const -> const DatePtr& { return drawing_date; }
 auto Deal::getDateApproval() const -> const DatePtr& { return date_approval; }
 auto Deal::getCreationDate() const -> const Date& { return creation_date; }
-auto Deal::getManager() const -> const InternalEmployeePtr& { return manager; }
 auto Deal::getAssignedEmployees() const -> const std::vector<InternalEmployeePtr>&
 {
     return assigned_employees;
@@ -443,24 +440,6 @@ bool Deal::setDateApproval(const DatePtr& date, const InternalEmployeePtr& chang
     ));
     this->date_approval = date;
     return true;
-}
-
-bool Deal::changeManager(const InternalEmployeePtr& manager, const InternalEmployeePtr& changer)
-{
-    if (this->manager != manager) {
-        this->change_logs.emplace_back(std::make_shared<ChangeLog>(
-            changer,
-            PTR_TO_OPTIONAL(this->manager),
-            PTR_TO_OPTIONAL(manager),
-            DealFields::Manager,
-            this->manager ? ChangeLog::FieldType::InternalEmployee : ChangeLog::FieldType::null,
-            manager ? ChangeLog::FieldType::InternalEmployee : ChangeLog::FieldType::null,
-            ChangeLog::Action::Change
-        ));
-        this->manager = manager;
-        return true;
-    }
-    return false;
 }
 
 bool Deal::addAssignedEmployee(
