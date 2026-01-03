@@ -89,34 +89,34 @@ void InternalEmployeeDataBase::remove(const BigUint& id)
 
     InternalEmployeePtr employee = employee_it->second;
 
-    safeRemoveFromMultimap(by_name, employee->getName(), employee, __LINE__, "by_name");
+    safeRemoveFromMap(by_name, employee->getName(), employee, __LINE__, "by_name");
 
     std::string lower_name = employee->getName();
     std::transform(lower_name.begin(), lower_name.end(), lower_name.begin(), ::tolower);
-    safeRemoveFromMultimap(
+    safeRemoveFromMap(
         by_name_substr_search, lower_name, employee, __LINE__, "by_name_substr_search"
     );
 
     if (employee->getEmail().has_value()) {
         const std::string& email = employee->getEmail().value();
 
-        safeRemoveFromMultimap(by_email, email, employee, __LINE__, "by_email");
+        safeRemoveFromMap(by_email, email, employee, __LINE__, "by_email");
 
         std::string lower_email = email;
         std::transform(lower_email.begin(), lower_email.end(), lower_email.begin(), ::tolower);
-        safeRemoveFromMultimap(
+        safeRemoveFromMap(
             by_email_substr_search, lower_email, employee, __LINE__, "by_email_substr_search"
         );
     }
 
     for (const std::string& more_email : employee->getMoreEmails()) {
-        safeRemoveFromMultimap(by_email, more_email, employee, __LINE__, "by_email");
+        safeRemoveFromMap(by_email, more_email, employee, __LINE__, "by_email");
 
         std::string lower_more_email = more_email;
         std::transform(
             lower_more_email.begin(), lower_more_email.end(), lower_more_email.begin(), ::tolower
         );
-        safeRemoveFromMultimap(
+        safeRemoveFromMap(
             by_email_substr_search, lower_more_email, employee, __LINE__, "by_email_substr_search"
         );
     }
@@ -124,8 +124,8 @@ void InternalEmployeeDataBase::remove(const BigUint& id)
     if (employee->getPhoneNumber()) {
         const std::string& phone = employee->getPhoneNumber()->getNumber();
 
-        safeRemoveFromMultimap(by_phone, phone, employee, __LINE__, "by_phone");
-        safeRemoveFromMultimap(
+        safeRemoveFromMap(by_phone, phone, employee, __LINE__, "by_phone");
+        safeRemoveFromMap(
             by_phone_substr_search, phone, employee, __LINE__, "by_phone_substr_search"
         );
     }
@@ -133,15 +133,15 @@ void InternalEmployeeDataBase::remove(const BigUint& id)
     for (const auto& more_phone : employee->getMorePhoneNumbers()) {
         const std::string& phone_str = more_phone.getNumber();
 
-        safeRemoveFromMultimap(by_phone, phone_str, employee, __LINE__, "by_phone");
-        safeRemoveFromMultimap(
+        safeRemoveFromMap(by_phone, phone_str, employee, __LINE__, "by_phone");
+        safeRemoveFromMap(
             by_phone_substr_search, phone_str, employee, __LINE__, "by_phone_substr_search"
         );
     }
 
     if (employee->getDepartment()) {
         const std::string& department = employee->getDepartment().value();
-        safeRemoveFromMultimap(
+        safeRemoveFromMap(
             this->by_department, department, employee, __LINE__, "by_department"
         );
     }
@@ -170,7 +170,7 @@ void InternalEmployeeDataBase::remove(const BigUint& id)
 
     if (employee->getPosition()) {
         const std::string& position = employee->getPosition().value();
-        safeRemoveFromMultimap(this->by_position, position, employee, __LINE__, "by_position");
+        safeRemoveFromMap(this->by_position, position, employee, __LINE__, "by_position");
     }
 
     safeRemoveFromVector(
@@ -179,7 +179,7 @@ void InternalEmployeeDataBase::remove(const BigUint& id)
 
     if (employee->getSalesTerritory()) {
         const std::string& territory = employee->getSalesTerritory().value();
-        safeRemoveFromMultimap(
+        safeRemoveFromMap(
             this->by_sales_territory, territory, employee, __LINE__, "by_sales_territory"
         );
     }
@@ -425,7 +425,7 @@ void InternalEmployeeDataBase::changeName(
 
     if (employee->setName(name, changer)) {
         // by_name
-        safeRemoveFromMultimap(this->by_name, old_name, employee, __LINE__, "by_name");
+        safeRemoveFromMap(this->by_name, old_name, employee, __LINE__, "by_name");
         this->by_name.emplace(name, employee);
 
         // by_name_substr_search
@@ -433,7 +433,7 @@ void InternalEmployeeDataBase::changeName(
         std::string new_name = name;
         std::transform(new_name.begin(), new_name.end(), new_name.begin(), ::tolower);
 
-        safeRemoveFromMultimap(
+        safeRemoveFromMap(
             this->by_name_substr_search, old_name, employee, __LINE__, "by_name_substr_search"
         );
         this->by_name_substr_search.emplace(new_name, employee);
@@ -453,11 +453,11 @@ void InternalEmployeeDataBase::changeEmail(
         if (old_email.has_value()) {
             std::string old_email_str = old_email.value();
 
-            safeRemoveFromMultimap(this->by_email, old_email_str, employee, __LINE__, "by_email");
+            safeRemoveFromMap(this->by_email, old_email_str, employee, __LINE__, "by_email");
             std::transform(
                 old_email_str.begin(), old_email_str.end(), old_email_str.begin(), ::tolower
             );
-            safeRemoveFromMultimap(
+            safeRemoveFromMap(
                 this->by_email_substr_search,
                 old_email_str,
                 employee,
@@ -503,9 +503,9 @@ void InternalEmployeeDataBase::delMoreEmail(
     std::string old_email = employee->getMoreEmails()[index];
 
     if (employee->delMoreEmails(index, changer)) {
-        safeRemoveFromMultimap(this->by_email, old_email, employee, __LINE__, "by_email");
+        safeRemoveFromMap(this->by_email, old_email, employee, __LINE__, "by_email");
         std::transform(old_email.begin(), old_email.end(), old_email.begin(), ::tolower);
-        safeRemoveFromMultimap(
+        safeRemoveFromMap(
             this->by_email_substr_search, old_email, employee, __LINE__, "by_email_substr_search"
         );
     }
@@ -524,10 +524,10 @@ void InternalEmployeeDataBase::changePhone(
 
     if (employee->setPhoneNumber(number, changer)) {
         if (old_number) {
-            safeRemoveFromMultimap(
+            safeRemoveFromMap(
                 this->by_phone, old_number->getNumber(), employee, __LINE__, "by_phone"
             );
-            safeRemoveFromMultimap(
+            safeRemoveFromMap(
                 this->by_phone_substr_search,
                 old_number->getNumber(),
                 employee,
@@ -571,8 +571,8 @@ void InternalEmployeeDataBase::delMorePhone(
     if (employee->delMorePhoneNumber(index, changer)) {
         std::string old_number_str = old_number.getNumber();
 
-        safeRemoveFromMultimap(this->by_phone, old_number_str, employee, __LINE__, "by_phone");
-        safeRemoveFromMultimap(
+        safeRemoveFromMap(this->by_phone, old_number_str, employee, __LINE__, "by_phone");
+        safeRemoveFromMap(
             this->by_phone_substr_search,
             old_number_str,
             employee,
@@ -595,7 +595,7 @@ void InternalEmployeeDataBase::changeDepartment(
 
     if (employee->setDepartment(department, changer)) {
         if (old_department) {
-            safeRemoveFromMultimap(
+            safeRemoveFromMap(
                 this->by_department, old_department.value(), employee, __LINE__, "by_department"
             );
         }
@@ -733,7 +733,7 @@ void InternalEmployeeDataBase::changeTimeZone(
 }
 
 void InternalEmployeeDataBase::changePosition(
-    const BigUint& id, const OptionalStr& position, const InternalEmployeePtr& chagner
+    const BigUint& id, const OptionalStr& position, const InternalEmployeePtr& changer
 )
 {
     auto id_it = by_id.find(id);
@@ -743,9 +743,9 @@ void InternalEmployeeDataBase::changePosition(
 
     const auto          old_position = employee->getPosition();
 
-    if (employee->setPosition(position, chagner)) {
+    if (employee->setPosition(position, changer)) {
         if (old_position) {
-            safeRemoveFromMultimap(
+            safeRemoveFromMap(
                 this->by_position, old_position.value(), employee, __LINE__, "by_position"
             );
         }
@@ -796,7 +796,7 @@ void InternalEmployeeDataBase::changeIsActive(
 }
 
 void InternalEmployeeDataBase::changeSalesTerritory(
-    const BigUint& id, OptionalStr& sales_territory, const InternalEmployeePtr& chagner
+    const BigUint& id, OptionalStr& sales_territory, const InternalEmployeePtr& changer
 )
 {
     auto id_it = by_id.find(id);
@@ -806,9 +806,9 @@ void InternalEmployeeDataBase::changeSalesTerritory(
 
     const auto          old_sales = employee->getSalesTerritory();
 
-    if (employee->setSalesTerritory(sales_territory, chagner)) {
+    if (employee->setSalesTerritory(sales_territory, changer)) {
         if (old_sales) {
-            safeRemoveFromMultimap(
+            safeRemoveFromMap(
                 this->by_sales_territory,
                 old_sales.value(),
                 employee,
@@ -822,7 +822,7 @@ void InternalEmployeeDataBase::changeSalesTerritory(
     }
 }
 
-void InternalEmployeeDataBase::safeRemoveFromMultimap(
+void InternalEmployeeDataBase::safeRemoveFromMap(
     auto&                      map,
     const auto&                key,
     const InternalEmployeePtr& employee,

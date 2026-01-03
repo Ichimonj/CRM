@@ -124,7 +124,7 @@ private:
     std::unordered_multimap<std::string, ExternalEmployeePtr> by_job_title;
     std::unordered_multimap<std::string, ExternalEmployeePtr> by_department;
     //
-    void safeRemoveFromMultimap(
+    void safeRemoveFromMap(
         auto&                      map,
         const auto&                key,
         const ExternalEmployeePtr& employee,

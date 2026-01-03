@@ -110,7 +110,7 @@ private:
     std::unordered_map<bool, std::vector<ClientPtr>>               by_marketing_consent;
     std::unordered_multimap<Client::LeadStatus, ClientPtr>         by_lead_status;
     //
-    void safeRemoveFromMultimap(
+    void safeRemoveFromMap(
         auto&              map,
         const auto&        key,
         const ClientPtr&   client,

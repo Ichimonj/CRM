@@ -90,8 +90,8 @@ void ClientDataBase::remove(const BigUint& id)
     std::string        lower_name = name;
     std::transform(lower_name.begin(), lower_name.end(), lower_name.begin(), ::tolower);
 
-    safeRemoveFromMultimap(by_name, name, client, __LINE__, "by_name");
-    safeRemoveFromMultimap(
+    safeRemoveFromMap(by_name, name, client, __LINE__, "by_name");
+    safeRemoveFromMap(
         by_name_substr_search, lower_name, client, __LINE__, "by_name_substr_search"
     );
 
@@ -100,8 +100,8 @@ void ClientDataBase::remove(const BigUint& id)
         std::string        lower_email = email;
         std::transform(lower_email.begin(), lower_email.end(), lower_email.begin(), ::tolower);
 
-        safeRemoveFromMultimap(by_email, email, client, __LINE__, "by_email");
-        safeRemoveFromMultimap(
+        safeRemoveFromMap(by_email, email, client, __LINE__, "by_email");
+        safeRemoveFromMap(
             by_email_substr_search, lower_email, client, __LINE__, "by_email_substr_search"
         );
     }
@@ -112,8 +112,8 @@ void ClientDataBase::remove(const BigUint& id)
             lower_more_email.begin(), lower_more_email.end(), lower_more_email.begin(), ::tolower
         );
 
-        safeRemoveFromMultimap(by_email, more_email, client, __LINE__, "by_email");
-        safeRemoveFromMultimap(
+        safeRemoveFromMap(by_email, more_email, client, __LINE__, "by_email");
+        safeRemoveFromMap(
             by_email_substr_search, lower_more_email, client, __LINE__, "by_email_substr_search"
         );
     }
@@ -121,8 +121,8 @@ void ClientDataBase::remove(const BigUint& id)
     if (client->getPhoneNumber()) {
         const std::string& phone = client->getPhoneNumber()->getNumber();
 
-        safeRemoveFromMultimap(by_phone, phone, client, __LINE__, "by_phone");
-        safeRemoveFromMultimap(
+        safeRemoveFromMap(by_phone, phone, client, __LINE__, "by_phone");
+        safeRemoveFromMap(
             by_phone_substr_search, phone, client, __LINE__, "by_phone_substr_search"
         );
     }
@@ -130,8 +130,8 @@ void ClientDataBase::remove(const BigUint& id)
     for (const auto& more_phone : client->getMorePhoneNumbers()) {
         const std::string& phone_str = more_phone.getNumber();
 
-        safeRemoveFromMultimap(by_phone, phone_str, client, __LINE__, "by_phone");
-        safeRemoveFromMultimap(
+        safeRemoveFromMap(by_phone, phone_str, client, __LINE__, "by_phone");
+        safeRemoveFromMap(
             by_phone_substr_search, phone_str, client, __LINE__, "by_phone_substr_search"
         );
     }
@@ -166,7 +166,7 @@ void ClientDataBase::remove(const BigUint& id)
 
     if (client->getLeadStatus().has_value()) {
         Client::LeadStatus status = client->getLeadStatus().value();
-        safeRemoveFromMultimap(by_lead_status, status, client, __LINE__, "by_lead_status");
+        safeRemoveFromMap(by_lead_status, status, client, __LINE__, "by_lead_status");
     }
 
     by_id.erase(id_it);
@@ -423,7 +423,7 @@ void ClientDataBase::changeName(
 
     if (client->setName(name, changer)) {
         // by_name
-        safeRemoveFromMultimap(this->by_name, old_name, client, __LINE__, "by_name");
+        safeRemoveFromMap(this->by_name, old_name, client, __LINE__, "by_name");
         this->by_name.emplace(name, client);
 
         // by_name_substr_search
@@ -431,7 +431,7 @@ void ClientDataBase::changeName(
         std::string new_name = name;
         std::transform(new_name.begin(), new_name.end(), new_name.begin(), ::tolower);
 
-        safeRemoveFromMultimap(
+        safeRemoveFromMap(
             this->by_name_substr_search, old_name, client, __LINE__, "by_name_substr_search"
         );
         this->by_name_substr_search.emplace(new_name, client);
@@ -450,11 +450,11 @@ void ClientDataBase::changeEmail(
     if (client->setEmail(email, changer)) {
         if (old_email.has_value()) {
             std::string old_email_str = old_email.value();
-            safeRemoveFromMultimap(this->by_email, old_email_str, client, __LINE__, "by_email");
+            safeRemoveFromMap(this->by_email, old_email_str, client, __LINE__, "by_email");
             std::transform(
                 old_email_str.begin(), old_email_str.end(), old_email_str.begin(), ::tolower
             );
-            safeRemoveFromMultimap(
+            safeRemoveFromMap(
                 this->by_email_substr_search,
                 old_email_str,
                 client,
@@ -500,9 +500,9 @@ void ClientDataBase::delMoreEmail(
     std::string old_email = client->getMoreEmails()[index];
 
     if (client->delMoreEmails(index, changer)) {
-        safeRemoveFromMultimap(this->by_email, old_email, client, __LINE__, "by_email");
+        safeRemoveFromMap(this->by_email, old_email, client, __LINE__, "by_email");
         std::transform(old_email.begin(), old_email.end(), old_email.begin(), ::tolower);
-        safeRemoveFromMultimap(
+        safeRemoveFromMap(
             this->by_email_substr_search, old_email, client, __LINE__, "by_email_substr_search"
         );
     }
@@ -521,10 +521,10 @@ void ClientDataBase::changePhone(
 
     if (client->setPhoneNumber(number, changer)) {
         if (old_number) {
-            safeRemoveFromMultimap(
+            safeRemoveFromMap(
                 this->by_phone, old_number->getNumber(), client, __LINE__, "by_phone"
             );
-            safeRemoveFromMultimap(
+            safeRemoveFromMap(
                 this->by_phone_substr_search,
                 old_number->getNumber(),
                 client,
@@ -568,8 +568,8 @@ void ClientDataBase::delMorePhone(
     if (client->delMorePhoneNumber(index, changer)) {
         std::string old_number_str = old_number.getNumber();
 
-        safeRemoveFromMultimap(this->by_phone, old_number_str, client, __LINE__, "by_phone");
-        safeRemoveFromMultimap(
+        safeRemoveFromMap(this->by_phone, old_number_str, client, __LINE__, "by_phone");
+        safeRemoveFromMap(
             this->by_phone_substr_search, old_number_str, client, __LINE__, "by_phone_substr_search"
         );
     }
@@ -746,7 +746,7 @@ void ClientDataBase::changeLeadStatus(
 
     if (client->setLeadStatus(status, changer)) {
         if (old_lead_status) {
-            safeRemoveFromMultimap(
+            safeRemoveFromMap(
                 this->by_lead_status, old_lead_status.value(), client, __LINE__, "by_lead_status"
             );
         }
@@ -756,7 +756,7 @@ void ClientDataBase::changeLeadStatus(
     }
 }
 
-void ClientDataBase::safeRemoveFromMultimap(
+void ClientDataBase::safeRemoveFromMap(
     auto&              map,
     const auto&        key,
     const ClientPtr&   client,
