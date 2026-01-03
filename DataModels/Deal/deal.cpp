@@ -594,14 +594,16 @@ bool Deal::delTask(size_t index, const InternalEmployeePtr& changer)
 
 bool Deal::setOwner(const std::weak_ptr<Person>& owner, const InternalEmployeePtr& changer)
 {
-    if (this->owner.lock() != owner.lock()) {
+    auto old_owner = this->owner.lock();
+    auto new_owner = owner.lock();
+    if (old_owner != new_owner) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
-            PTR_TO_OPTIONAL(this->owner.lock()),
-            PTR_TO_OPTIONAL(owner.lock()),
+            PTR_TO_OPTIONAL(old_owner),
+            PTR_TO_OPTIONAL(new_owner),
             DealFields::Owner,
-            this->owner.lock() ? ChangeLog::FieldType::Person : ChangeLog::FieldType::null,
-            owner.lock() ? ChangeLog::FieldType::Person : ChangeLog::FieldType::null,
+            old_owner ? ChangeLog::FieldType::Person : ChangeLog::FieldType::null,
+            new_owner ? ChangeLog::FieldType::Person : ChangeLog::FieldType::null,
             ChangeLog::Action::Change
         ));
         this->owner = owner;
@@ -614,15 +616,17 @@ bool Deal::setDealManager(
     const std::weak_ptr<InternalEmployee>& manager, const InternalEmployeePtr& changer
 )
 {
-    if (this->deal_manager.lock() != manager.lock()) {
+    auto old_manager = this->deal_manager.lock();
+    auto new_manager = manager.lock();
+
+    if (old_manager != new_manager) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
-            PTR_TO_OPTIONAL(this->deal_manager.lock()),
-            PTR_TO_OPTIONAL(manager.lock()),
+            PTR_TO_OPTIONAL(old_manager),
+            PTR_TO_OPTIONAL(new_manager),
             DealFields::DealManager,
-            this->deal_manager.lock() ? ChangeLog::FieldType::InternalEmployee
-                                      : ChangeLog::FieldType::null,
-            manager.lock() ? ChangeLog::FieldType::InternalEmployee : ChangeLog::FieldType::null,
+            old_manager ? ChangeLog::FieldType::InternalEmployee : ChangeLog::FieldType::null,
+            new_manager ? ChangeLog::FieldType::InternalEmployee : ChangeLog::FieldType::null,
             ChangeLog::Action::Change
         ));
         this->deal_manager = manager;
