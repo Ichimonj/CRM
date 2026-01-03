@@ -5,13 +5,13 @@
 #include <vector>
 
 #include "BigNum/big_uint.hpp"
+#include "BigNum/money.hpp"
 #include "Currencies/currencies.hpp"
 #include "DateTime/date.hpp"
 #include "Document/document.hpp"
-#include "BigNum/money.hpp"
+#include "Interaction/priority.hpp"
 #include "Offering/offer_deal.hpp"
 #include "Payment/payment.hpp"
-#include "Interaction/priority.hpp"
 
 class ChangeLog;
 class Task;
@@ -95,6 +95,7 @@ struct Deal {
     auto getDrawingDate() const -> const DatePtr&;
     auto getDateApproval() const -> const DatePtr&;
     auto getCreationDate() const -> const Date&;
+    auto getManager() const -> const InternalEmployeePtr&;
     auto getAssignedEmployees() const -> const std::vector<InternalEmployeePtr>&;
     auto getOffers() const -> const std::vector<OfferDealPtr>&;
     auto getDocuments() const -> const std::vector<DocumentPtr>&;
@@ -129,6 +130,7 @@ struct Deal {
     bool changeDealPriority(const Priority priority, const InternalEmployeePtr& changer);
     bool setDrawingDate(const DatePtr& date, const InternalEmployeePtr& changer);
     bool setDateApproval(const DatePtr& date, const InternalEmployeePtr& changer);
+    bool changeManager(const InternalEmployeePtr& manager, const InternalEmployeePtr& changer);
 
     bool addAssignedEmployee(
         const InternalEmployeePtr& employee, const InternalEmployeePtr& changer
@@ -170,6 +172,7 @@ private:
     DatePtr                          drawing_date;
     DatePtr                          date_approval;
     Date                             creation_date = Date();
+    InternalEmployeePtr              manager;
     std::vector<InternalEmployeePtr> assigned_employees;
     std::vector<OfferDealPtr>        offers;  // Merged (purchased + considered)
     std::vector<DocumentPtr>         documents;
