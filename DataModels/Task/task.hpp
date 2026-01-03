@@ -5,9 +5,11 @@
 
 #include "BigNum/big_uint.hpp"
 #include "DateTime/date.hpp"
+#include "DateTime/time_duration.hpp"
 #include "FileMetadata/file_metadata.hpp"
 #include "Interaction/priority.hpp"
-#include "DateTime/time_duration.hpp"
+#include "Note/note.hpp"
+
 class ChangeLog;
 class InternalEmployee;
 class Person;
@@ -41,7 +43,7 @@ public:
         const DurationPtr&         ATS,
         const InternalEmployeePtr& created_by,
         const InternalEmployeePtr& manager,
-        std::vector<std::string>   notes,
+        std::vector<Note>          notes,
         std::vector<StringPair>    more_data,
         std::vector<PersonPtr>     teem
     );
@@ -64,7 +66,7 @@ public:
     auto getManager() const -> const InternalEmployeePtr&;
     auto getFiles() const -> const std::vector<FilePtr>&;
     auto getTasks() const -> const std::vector<TaskPtr>&;
-    auto getNotes() const -> const std::vector<std::string>&;
+    auto getNotes() const -> const std::vector<Note>&;
     auto getMoreData() const -> const std::vector<StringPair>&;
     auto getTeem() const -> const std::vector<PersonPtr>&;
     auto getChangeLogs() const -> const std::vector<ChangeLogPtr>&;
@@ -89,7 +91,7 @@ public:
     bool addFile(const FilePtr& file, const InternalEmployeePtr& changer);
     bool delFile(size_t index, const InternalEmployeePtr& changer);
 
-    bool addNote(const std::string& note, const InternalEmployeePtr& changer);
+    bool addNote(const Note& note, const InternalEmployeePtr& changer);
     bool delNote(size_t index, const InternalEmployeePtr& changer);
 
     bool addMoreData(
@@ -121,7 +123,7 @@ private:
     //
     std::vector<TaskPtr>      attachment_tasks;
     std::vector<FilePtr>      attachment_files;
-    std::vector<std::string>  notes;
+    std::vector<Note>         notes;
     std::vector<StringPair>   more_data;
     std::vector<PersonPtr>    teem;
 

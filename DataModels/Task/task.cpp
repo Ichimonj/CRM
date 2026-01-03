@@ -16,7 +16,7 @@ Task::Task(
     const DurationPtr&         ATS,
     const InternalEmployeePtr& created_by,
     const InternalEmployeePtr& manager,
-    std::vector<std::string>   notes,
+    std::vector<Note>          notes,
     std::vector<StringPair>    more_data,
     std::vector<PersonPtr>     teem
 )
@@ -53,7 +53,7 @@ auto Task::getCreatedBy() const -> const InternalEmployeePtr& { return created_b
 auto Task::getFiles() const -> const std::vector<FilePtr>& { return this->attachment_files; }
 auto Task::getTasks() const -> const std::vector<TaskPtr>& { return this->attachment_tasks; }
 auto Task::getManager() const -> const InternalEmployeePtr& { return manager; }
-auto Task::getNotes() const -> const std::vector<std::string>& { return notes; }
+auto Task::getNotes() const -> const std::vector<Note>& { return notes; }
 auto Task::getMoreData() const -> const std::vector<StringPair>& { return more_data; }
 auto Task::getTeem() const -> const std::vector<PersonPtr>& { return teem; }
 auto Task::getChangeLogs() const -> const std::vector<ChangeLogPtr>& { return this->change_logs; }
@@ -336,16 +336,16 @@ bool Task::delFile(size_t index, const InternalEmployeePtr& changer)
     return false;
 }
 
-bool Task::addNote(const std::string& note, const InternalEmployeePtr& changer)
+bool Task::addNote(const Note& note, const InternalEmployeePtr& changer)
 {
     if (std::find(this->notes.begin(), this->notes.end(), note) == this->notes.end()) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
             std::nullopt,
-            std::make_optional(std::make_shared<std::string>(note)),
+            std::make_optional(std::make_shared<Note>(note)),
             TaskFields::Notes,
             ChangeLog::FieldType::null,
-            ChangeLog::FieldType::String,
+            ChangeLog::FieldType::Note,
             ChangeLog::Action::Add
         ));
         this->notes.push_back(note);
@@ -359,10 +359,10 @@ bool Task::delNote(size_t index, const InternalEmployeePtr& changer)
     if (this->notes.size() > index) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
-            std::make_optional(std::make_shared<std::string>(this->notes[index])),
+            std::make_optional(std::make_shared<Note>(this->notes[index])),
             std::nullopt,
             TaskFields::Notes,
-            ChangeLog::FieldType::String,
+            ChangeLog::FieldType::Note,
             ChangeLog::FieldType::null,
             ChangeLog::Action::Remove
         ));

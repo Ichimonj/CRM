@@ -38,19 +38,6 @@ namespace unit {
         EXPECT_TRUE(task.getChangeLogs().empty());
     }
 
-    /*
-    StringPtr getOldValueStr();
-    StringPtr getNewValueStr();
-
-    auto getChanger() const -> const std::shared_ptr<InternalEmployee>;
-    auto getChangeDate() const -> const Date&;
-    auto getOldValue() const -> const std::optional<ValueVariant>&;
-    auto getNewValue() const -> const std::optional<ValueVariant>&;
-    auto getField() const -> const FieldVariant;
-    auto getOldValueFieldType() const -> FieldType;
-    auto getNewValueFieldType() const -> FieldType;
-    auto getAction() const -> Action;
-    */
     Task task(BigUint("1"));
     TEST(TaskTest, setTitle)
     {
@@ -859,10 +846,11 @@ namespace unit {
 
     TEST(TaskTest, addNote)
     {
-        EXPECT_TRUE(task.addNote("Note", changer));
+        Note note(nullptr, nullptr, "Title", "Text");
+        EXPECT_TRUE(task.addNote(note, changer));
 
         SCOPED_TRACE("Check value");
-        EXPECT_EQ(task.getNotes().back(), "Note");
+        EXPECT_EQ(task.getNotes().back(), note);
         EXPECT_EQ(task.getChangeLogs().size(), 27);
         auto change = task.getChangeLogs().back();
 
@@ -871,20 +859,20 @@ namespace unit {
         EXPECT_FALSE(change->getOldValue().has_value());
         EXPECT_EQ(change->getOldValueStr(), nullptr);
         EXPECT_TRUE(change->getNewValue().has_value());
-        auto old_note = std::get<StringPtr>(change->getNewValue().value());
-        EXPECT_EQ(*old_note, "Note");
-        EXPECT_EQ(*change->getNewValueStr(), "Note");
+        auto old_note = std::get<std::shared_ptr<Note>>(change->getNewValue().value());
+        EXPECT_EQ(old_note->getTitle(), "Title");
+        EXPECT_EQ(*change->getNewValueStr(), "Title");
 
         SCOPED_TRACE("Check field");
         auto field = ChangeLog::FieldVariant(TaskFields::Notes);
         EXPECT_EQ(change->getField(), field);
         EXPECT_EQ(change->getOldValueFieldType(), ChangeLog::FieldType::null);
-        EXPECT_EQ(change->getNewValueFieldType(), ChangeLog::FieldType::String);
+        EXPECT_EQ(change->getNewValueFieldType(), ChangeLog::FieldType::Note);
 
         SCOPED_TRACE("Check action");
         EXPECT_EQ(change->getAction(), ChangeLog::Action::Add);
 
-        EXPECT_FALSE(task.addNote("Note", changer));
+        EXPECT_FALSE(task.addNote(note, changer));
     }
 
     TEST(TaskTest, delNote)
@@ -899,16 +887,16 @@ namespace unit {
         SCOPED_TRACE("Check change log value");
         EXPECT_EQ(change->getChanger(), changer);
         EXPECT_TRUE(change->getOldValue().has_value());
-        EXPECT_EQ(*change->getOldValueStr(), "Note");
-        auto old_note = std::get<StringPtr>(change->getOldValue().value());
-        EXPECT_EQ(*old_note, "Note");
+        EXPECT_EQ(*change->getOldValueStr(), "Title");
+        auto old_note = std::get<std::shared_ptr<Note>>(change->getOldValue().value());
+        EXPECT_EQ(old_note->getTitle(), "Title");
         EXPECT_FALSE(change->getNewValue().has_value());
         EXPECT_EQ(change->getNewValueStr(), nullptr);
 
         SCOPED_TRACE("Check field");
         auto field = ChangeLog::FieldVariant(TaskFields::Notes);
         EXPECT_EQ(change->getField(), field);
-        EXPECT_EQ(change->getOldValueFieldType(), ChangeLog::FieldType::String);
+        EXPECT_EQ(change->getOldValueFieldType(), ChangeLog::FieldType::Note);
         EXPECT_EQ(change->getNewValueFieldType(), ChangeLog::FieldType::null);
 
         SCOPED_TRACE("Check action");

@@ -1,6 +1,6 @@
 #include "ChangeLog/change_log.hpp"
-#include "gtest/gtest.h"
 #include "Person/Employee/internal_employee.hpp"
+#include "gtest/gtest.h"
 #include "memory.h"
 namespace unit {
     InternalEmployee ie(BigUint("1"), "Name", "Surname", std::nullopt);
@@ -1768,7 +1768,7 @@ namespace unit {
 
     TEST(InternalEmployeeTest, AddLead)
     {
-        auto lead = std::make_shared<Client>(BigUint("919"),"Alexander", "Petrov", std::nullopt);
+        auto lead = std::make_shared<Client>(BigUint("919"), "Alexander", "Petrov", std::nullopt);
 
         ie.addLead(lead, changer);
 
@@ -1803,7 +1803,7 @@ namespace unit {
 
     TEST(InternalEmployeeTest, SwapLead)
     {
-        auto new_lead = std::make_shared<Client>(BigUint("12"),"Victoria", "Sidorova", "Ivanovna");
+        auto new_lead = std::make_shared<Client>(BigUint("12"), "Victoria", "Sidorova", "Ivanovna");
 
         ie.addLead(new_lead, changer);
 
@@ -1985,7 +1985,7 @@ namespace unit {
             nullptr,
             changer,
             nullptr,
-            std::vector<std::string>{},
+            std::vector<Note>{},
             std::vector<StringPair>{},
             std::vector<PersonPtr>{}
         );
@@ -2037,7 +2037,7 @@ namespace unit {
             nullptr,
             changer,
             nullptr,
-            std::vector<std::string>{},
+            std::vector<Note>{},
             std::vector<StringPair>{},
             std::vector<PersonPtr>{}
         );
@@ -2110,7 +2110,7 @@ namespace unit {
     TEST(InternalEmployeeTest, AddDocument)
     {
         auto doc = std::make_shared<Document>(BigUint("55"));
-        doc->setDocumentTitle("Employment Contract 2025",nullptr);
+        doc->setDocumentTitle("Employment Contract 2025", nullptr);
 
         ie.addDocument(doc, changer);
 
@@ -2313,8 +2313,8 @@ namespace unit {
     }
     TEST(InternalEmployeeTest, AddDirectReport)
     {
-        auto report = std::make_shared<InternalEmployee>(
-            BigUint("501"), "Alexey", "Ivanov", std::nullopt);
+        auto report =
+            std::make_shared<InternalEmployee>(BigUint("501"), "Alexey", "Ivanov", std::nullopt);
 
         ie.addDirectReport(report, changer);
 
@@ -2352,8 +2352,8 @@ namespace unit {
 
     TEST(InternalEmployeeTest, AddDirectReport2)
     {
-        auto new_report = std::make_shared<InternalEmployee>(
-            BigUint("502"), "Daria", "Petrova", std::nullopt);
+        auto new_report =
+            std::make_shared<InternalEmployee>(BigUint("502"), "Daria", "Petrova", std::nullopt);
 
         ie.addDirectReport(new_report, changer);
 
