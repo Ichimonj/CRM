@@ -25,7 +25,8 @@ public:
     auto getByLeadSource() const
         -> const std::unordered_map<Client::LeadSource, std::vector<ClientPtr>>&;
     auto getByMarketingConsent() const -> const std::unordered_map<bool, std::vector<ClientPtr>>&;
-    auto getByLeadStatus() const -> const std::unordered_multimap<Client::LeadStatus, ClientPtr>&;
+    auto getByLeadStatus() const
+        -> const std::unordered_map<Client::LeadStatus, std::vector<ClientPtr>>&;
     /// @}
 
     /// @name Find functions
@@ -43,7 +44,7 @@ public:
     auto findByLeadSource(const Client::LeadSource source) const -> const std::vector<ClientPtr>&;
     auto findByOtherLeadSource(const std::string& source) const -> const std::vector<ClientPtr>&;
     auto findByMarketingConsent(const bool consent) const -> const std::vector<ClientPtr>&;
-    auto findByLeadStatus(const Client::LeadStatus status) const -> const std::vector<ClientPtr>;
+    auto findByLeadStatus(const Client::LeadStatus status) const -> const std::vector<ClientPtr>&;
     /// @}
 
     /// @name Change functions
@@ -108,7 +109,7 @@ private:
     std::unordered_map<Client::LeadSource, std::vector<ClientPtr>> by_lead_source;
     std::unordered_map<std::string, std::vector<ClientPtr>>        by_other_lead_source;
     std::unordered_map<bool, std::vector<ClientPtr>>               by_marketing_consent;
-    std::unordered_multimap<Client::LeadStatus, ClientPtr>         by_lead_status;
+    std::unordered_map<Client::LeadStatus, std::vector<ClientPtr>> by_lead_status;
     //
     void safeRemoveFromMap(
         auto&              map,

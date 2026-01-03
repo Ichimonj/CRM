@@ -73,7 +73,7 @@ void ClientDataBase::add(const ClientPtr& client)
     this->by_marketing_consent[client->getMarketingConsent()].push_back(client);
 
     if (client->getLeadStatus().has_value()) {
-        this->by_lead_status.emplace(client->getLeadStatus().value(), client);
+        this->by_lead_status[client->getLeadStatus().value()].push_back(client);
     }
 }
 
@@ -166,7 +166,7 @@ void ClientDataBase::remove(const BigUint& id)
 
     if (client->getLeadStatus().has_value()) {
         Client::LeadStatus status = client->getLeadStatus().value();
-        safeRemoveFromMap(by_lead_status, status, client, __LINE__, "by_lead_status");
+        safeRemoveFromVector(by_lead_status, status, client, __LINE__, "by_lead_status");
     }
 
     by_id.erase(id_it);
@@ -227,7 +227,7 @@ auto ClientDataBase::getByMarketingConsent() const
 }
 
 auto ClientDataBase::getByLeadStatus() const
-    -> const std::unordered_multimap<Client::LeadStatus, ClientPtr>&
+    -> const std::unordered_map<Client::LeadStatus, std::vector<ClientPtr>>&
 {
     return this->by_lead_status;
 }
@@ -399,16 +399,13 @@ auto ClientDataBase::findByMarketingConsent(const bool consent) const
 }
 
 auto ClientDataBase::findByLeadStatus(const Client::LeadStatus status) const
-    -> const std::vector<ClientPtr>
+    -> const std::vector<ClientPtr>&
 {
-    auto clients = this->by_lead_status.equal_range(status);
-    if (clients.first == clients.second) return empty_vector;
-
-    std::vector<ClientPtr> result;
-    for (auto it = clients.first; it != clients.second; ++it) {
-        result.push_back(it->second);
+    auto clients = this->by_lead_status.find(status);
+    if (clients != this->by_lead_status.end()) {
+        return clients->second;
     }
-    return result;
+    return empty_vector;
 }
 
 void ClientDataBase::changeName(
@@ -746,12 +743,12 @@ void ClientDataBase::changeLeadStatus(
 
     if (client->setLeadStatus(status, changer)) {
         if (old_lead_status) {
-            safeRemoveFromMap(
+            safeRemoveFromVector(
                 this->by_lead_status, old_lead_status.value(), client, __LINE__, "by_lead_status"
             );
         }
         if (status) {
-            this->by_lead_status.emplace(status.value(), client);
+            this->by_lead_status[status.value()].push_back(client);
         }
     }
 }
