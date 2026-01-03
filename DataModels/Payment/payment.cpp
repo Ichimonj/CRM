@@ -297,14 +297,16 @@ bool Payment::setPaymentMethod(
 
 bool Payment::setDeal(const WDealPtr& deal, const InternalEmployeePtr& changer)
 {
-    if (this->deal.lock() != deal.lock()) {
+    auto old_deal = this->deal.lock();
+    auto new_deal = deal.lock();
+    if (old_deal != new_deal) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
-            PTR_TO_OPTIONAL(this->deal.lock()),
-            PTR_TO_OPTIONAL(deal.lock()),
+            PTR_TO_OPTIONAL(old_deal),
+            PTR_TO_OPTIONAL(new_deal),
             PaymentFields::Deal,
-            this->deal.lock() ? ChangeLog::FieldType::Deal : ChangeLog::FieldType::null,
-            deal.lock() ? ChangeLog::FieldType::Deal : ChangeLog::FieldType::null,
+            old_deal ? ChangeLog::FieldType::Deal : ChangeLog::FieldType::null,
+            new_deal ? ChangeLog::FieldType::Deal : ChangeLog::FieldType::null,
             ChangeLog::Action::Change
         ));
         this->deal = deal;
