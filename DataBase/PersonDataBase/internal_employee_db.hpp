@@ -87,7 +87,7 @@ public:
     );
     void changeTimeZone(const BigUint& id, const int time_zone, const InternalEmployeePtr& changer);
     void changePosition(
-        const BigUint& id, const OptionalStr& position, const InternalEmployeePtr& chagner
+        const BigUint& id, const OptionalStr& position, const InternalEmployeePtr& changer
     );
     void changeManager(
         const BigUint& id, const InternalEmployeePtr& manager, const InternalEmployeePtr& changer
@@ -96,7 +96,7 @@ public:
         const BigUint& id, const bool is_active, const InternalEmployeePtr& changer
     );
     void changeSalesTerritory(
-        const BigUint& id, OptionalStr& sales_territory, const InternalEmployeePtr& chagner
+        const BigUint& id, OptionalStr& sales_territory, const InternalEmployeePtr& changer
     );
     /// @}
 
@@ -123,7 +123,7 @@ private:
     std::unordered_multimap<std::string, InternalEmployeePtr>            by_sales_territory;
 
     //
-    void safeRemoveFromMultimap(
+    void safeRemoveFromMap(
         auto&                      map,
         const auto&                key,
         const InternalEmployeePtr& employee,
