@@ -3,30 +3,30 @@
 #include <format>
 #include <string>
 
+#include "DateTime/time_duration.hpp"
 #include "FileMetadata/file_metadata.hpp"
 #include "Interaction/base_interaction.hpp"
 #include "Interaction/commentary_social_networks.hpp"
 #include "Interaction/message.hpp"
+#include "Payment/payment.hpp"
 #include "Person/Client/client.hpp"
 #include "Person/Employee/internal_employee.hpp"
-#include "location.hpp"
-#include "Payment/payment.hpp"
 #include "UserSession/session_manager.hpp"
-#include "DateTime/time_duration.hpp"
+#include "location.hpp"
 ChangeLog::ChangeLog(
-    std::shared_ptr<InternalEmployee> changer,
-    std::optional<ValueVariant>       old_value,
-    std::optional<ValueVariant>       new_value,
-    FieldVariant                      field,
-    FieldType                         old_field_type,
-    FieldType                         new_field_type,
-    Action                            action,
-    Date                              change_date
+    const std::weak_ptr<InternalEmployee>& changer,
+    const std::optional<ValueVariant>&     old_value,
+    const std::optional<ValueVariant>&     new_value,
+    FieldVariant                           field,
+    FieldType                              old_field_type,
+    FieldType                              new_field_type,
+    Action                                 action,
+    Date                                   change_date
 )
     : changer(changer)
     , change_date(change_date)
-    , old_value(old_value)
-    , new_value(new_value)
+    , old_value((old_value))
+    , new_value((new_value))
     , field(field)
     , old_field_type(old_field_type)
     , new_field_type(new_field_type)
@@ -415,9 +415,9 @@ StringPtr ChangeLog::getNewValueStr()
     return valueToStr(new_field_type, new_value.value(), new_value_str);
 }
 
-auto ChangeLog::getChanger() const -> const std::shared_ptr<InternalEmployee>
+auto ChangeLog::getChanger() const -> std::weak_ptr<InternalEmployee>
 {
-    return this->changer;
+    return this->changer.lock();
 }
 auto ChangeLog::getChangeDate() const -> const Date& { return this->change_date; }
 auto ChangeLog::getOldValue() const -> const std::optional<ValueVariant>&
@@ -428,11 +428,12 @@ auto ChangeLog::getNewValue() const -> const std::optional<ValueVariant>&
 {
     return this->new_value;
 }
-auto        ChangeLog::getField() const -> const FieldVariant { return this->field; }
-auto        ChangeLog::getOldValueFieldType() const -> FieldType { return this->old_field_type; }
-auto        ChangeLog::getNewValueFieldType() const -> FieldType { return this->new_field_type; }
-auto        ChangeLog::getAction() const -> Action { return this->action; }
+auto ChangeLog::getField() const -> const FieldVariant { return this->field; }
+auto ChangeLog::getOldValueFieldType() const -> FieldType { return this->old_field_type; }
+auto ChangeLog::getNewValueFieldType() const -> FieldType { return this->new_field_type; }
+auto ChangeLog::getAction() const -> Action { return this->action; }
 
+//
 std::string ChangeLog::callTypeToStr(PhoneCallData::CallType type)
 {
     switch (type) {

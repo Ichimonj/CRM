@@ -217,14 +217,14 @@ public:
         CaseStatus>;
 
     ChangeLog(
-        std::shared_ptr<InternalEmployee> changer,
-        std::optional<ValueVariant>       old_value,
-        std::optional<ValueVariant>       new_value,
-        FieldVariant                      field,
-        FieldType                         old_field_type,
-        FieldType                         new_field_type,
-        Action                            action,
-        Date                              change_date = Date()
+        const std::weak_ptr<InternalEmployee>& changer,
+        const std::optional<ValueVariant>&     old_value,
+        const std::optional<ValueVariant>&     new_value,
+        FieldVariant                           field,
+        FieldType                              old_field_type,
+        FieldType                              new_field_type,
+        Action                                 action,
+        Date                                   change_date = Date()
     );
 
     virtual ~ChangeLog();
@@ -238,7 +238,7 @@ public:
 
     /// @name Getters
     /// @{
-    auto getChanger() const -> const std::shared_ptr<InternalEmployee>;
+    auto getChanger() const -> std::weak_ptr<InternalEmployee>;
     auto getChangeDate() const -> const Date&;
     auto getOldValue() const -> const std::optional<ValueVariant>&;
     auto getNewValue() const -> const std::optional<ValueVariant>&;
@@ -249,18 +249,18 @@ public:
     /// @}
 
 private:
-    std::shared_ptr<InternalEmployee> changer;
-    Date                              change_date;
-    StringPtr                         old_value_str;
-    StringPtr                         new_value_str;
+    std::weak_ptr<InternalEmployee> changer;
+    Date                            change_date;
+    StringPtr                       old_value_str;
+    StringPtr                       new_value_str;
 
-    std::optional<ValueVariant>       old_value;
-    std::optional<ValueVariant>       new_value;
-    FieldVariant                      field;
+    std::optional<ValueVariant>     old_value;
+    std::optional<ValueVariant>     new_value;
+    FieldVariant                    field;
 
-    FieldType                         old_field_type;
-    FieldType                         new_field_type;
-    Action                            action;
+    FieldType                       old_field_type;
+    FieldType                       new_field_type;
+    Action                          action;
 
 public:
     /// @name Enums value to str
