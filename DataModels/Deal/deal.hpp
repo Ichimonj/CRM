@@ -130,7 +130,6 @@ struct Deal {
     bool changeDealPriority(const Priority priority, const InternalEmployeePtr& changer);
     bool setDrawingDate(const DatePtr& date, const InternalEmployeePtr& changer);
     bool setDateApproval(const DatePtr& date, const InternalEmployeePtr& changer);
-    bool changeManager(const InternalEmployeePtr& manager, const InternalEmployeePtr& changer);
 
     bool addAssignedEmployee(
         const InternalEmployeePtr& employee, const InternalEmployeePtr& changer
