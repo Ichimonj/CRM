@@ -95,7 +95,6 @@ struct Deal {
     auto getDrawingDate() const -> const DatePtr&;
     auto getDateApproval() const -> const DatePtr&;
     auto getCreationDate() const -> const Date&;
-    auto getManager() const -> const InternalEmployeePtr&;
     auto getAssignedEmployees() const -> const std::vector<InternalEmployeePtr>&;
     auto getOffers() const -> const std::vector<OfferDealPtr>&;
     auto getDocuments() const -> const std::vector<DocumentPtr>&;
