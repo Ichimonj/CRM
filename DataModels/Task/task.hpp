@@ -15,21 +15,21 @@ public:
 
     Task(const BigUint& id);
     Task(
-        const BigUint&             id,
-        const std::string&         title,
-        const OptionalStr&         description,
-        const OptionalStr&         subject,
-        const Status&              status,
-        const Priority&            priority,
-        const DatePtr&             deadline,
-        const DatePtr&             start_date,
-        const DurationPtr&         ETC,
-        const DurationPtr&         ATS,
-        const InternalEmployeePtr& created_by,
-        const InternalEmployeePtr& manager,
-        std::vector<Note>          notes,
-        std::vector<StringPair>    more_data,
-        std::vector<PersonPtr>     teem
+        const BigUint&              id,
+        const std::string&          title,
+        const OptionalStr&          description,
+        const OptionalStr&          subject,
+        const Status&               status,
+        const Priority&             priority,
+        const DatePtr&              deadline,
+        const DatePtr&              start_date,
+        const DurationPtr&          ETC,
+        const DurationPtr&          ATS,
+        const WeakInternalEmployee& created_by,
+        const WeakInternalEmployee& manager,
+        std::vector<Note>           notes,
+        std::vector<StringPair>     more_data,
+        std::vector<WeakPersonPtr>  teem
     );
 
 public:
@@ -46,13 +46,13 @@ public:
     auto getStartDate() const -> const DatePtr&;
     auto getETC() const -> const DurationPtr&;
     auto getATS() const -> const DurationPtr&;
-    auto getCreatedBy() const -> const InternalEmployeePtr&;
-    auto getManager() const -> const InternalEmployeePtr&;
+    auto getCreatedBy() const -> const WeakInternalEmployee&;
+    auto getManager() const -> const WeakInternalEmployee&;
     auto getFiles() const -> const std::vector<FilePtr>&;
     auto getTasks() const -> const std::vector<TaskPtr>&;
     auto getNotes() const -> const std::vector<Note>&;
     auto getMoreData() const -> const std::vector<StringPair>&;
-    auto getTeem() const -> const std::vector<PersonPtr>&;
+    auto getTeem() const -> const std::vector<WeakPersonPtr>&;
     auto getChangeLogs() const -> const std::vector<ChangeLogPtr>&;
     /// @}
 
@@ -67,7 +67,7 @@ public:
     bool setStartDate(const DatePtr& start_date, const InternalEmployeePtr& changer);
     bool setETC(const DurationPtr& ETC, const InternalEmployeePtr& changer);
     bool setATS(const DurationPtr& ATS, const InternalEmployeePtr& changer);
-    bool setManager(const InternalEmployeePtr& manager, const InternalEmployeePtr& changer);
+    bool setManager(const WeakInternalEmployee& weak_manager, const InternalEmployeePtr& changer);
 
     bool addTask(const TaskPtr& task, const InternalEmployeePtr& changer);
     bool delTask(size_t index, const InternalEmployeePtr& changer);
@@ -83,33 +83,33 @@ public:
     );
     bool delMoreData(size_t index, const InternalEmployeePtr& changer);
 
-    bool addTeemMember(const PersonPtr& member, const InternalEmployeePtr& changer);
+    bool addTeemMember(const WeakPersonPtr& member, const InternalEmployeePtr& changer);
     bool delTeemMember(size_t index, const InternalEmployeePtr& changer);
     /// @}
 
 private:
-    BigUint             id;
-    std::string         title;
-    OptionalStr         description;
-    OptionalStr         subject;
-    Status              status;
-    Priority            priority;
+    BigUint              id;
+    std::string          title;
+    OptionalStr          description;
+    OptionalStr          subject;
+    Status               status;
+    Priority             priority;
 
-    Date                created_date = Date();
-    DatePtr             deadline;
-    DatePtr             start_date;
-    DurationPtr         ETC;  ///< Estimated Time of Completion
-    DurationPtr         ATS;  ///< Actual Time Spent
+    Date                 created_date = Date();
+    DatePtr              deadline;
+    DatePtr              start_date;
+    DurationPtr          ETC;  ///< Estimated Time of Completion
+    DurationPtr          ATS;  ///< Actual Time Spent
 
-    InternalEmployeePtr created_by;
-    InternalEmployeePtr manager;
+    WeakInternalEmployee created_by;
+    WeakInternalEmployee manager;
 
     //
-    std::vector<TaskPtr>      attachment_tasks;
-    std::vector<FilePtr>      attachment_files;
-    std::vector<Note>         notes;
-    std::vector<StringPair>   more_data;
-    std::vector<PersonPtr>    teem;
+    std::vector<TaskPtr>       attachment_tasks;
+    std::vector<FilePtr>       attachment_files;
+    std::vector<Note>          notes;
+    std::vector<StringPair>    more_data;
+    std::vector<WeakPersonPtr> teem;
 
-    std::vector<ChangeLogPtr> change_logs;
+    std::vector<ChangeLogPtr>  change_logs;
 };
