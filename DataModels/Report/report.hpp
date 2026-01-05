@@ -26,7 +26,7 @@ public:
         std::vector<std::string>       data,
         const DatePtr&                 generated_date,
         const std::vector<StringPair>& parameters,
-        const WeakInternalEmployee&     creator,
+        const WeakInternalEmployee&    creator,
         const ExportFormat&            export_format
     );
 

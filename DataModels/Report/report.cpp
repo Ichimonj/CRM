@@ -168,8 +168,10 @@ bool Report::setCreator(const WeakInternalEmployee& creator, const InternalEmplo
             WEAK_PTR_TO_OPTIONAL(this->creator),
             WEAK_PTR_TO_OPTIONAL(creator),
             ReportFields::Creator,
-            this->creator.lock() ? ChangeLog::FieldType::InternalEmployee : ChangeLog::FieldType::null,
-            creator.lock() ? ChangeLog::FieldType::InternalEmployee : ChangeLog::FieldType::null,
+            !this->creator.expired() ? ChangeLog::FieldType::InternalEmployee
+                                     : ChangeLog::FieldType::null,
+            !creator.expired() ? ChangeLog::FieldType::InternalEmployee
+                               : ChangeLog::FieldType::null,
             ChangeLog::Action::Change
         ));
         this->creator = creator;
