@@ -145,10 +145,12 @@ public:
         uint32_t,
         std::shared_ptr<PhoneNumber>,
         std::shared_ptr<Date>,
-        std::shared_ptr<Person>,
+        WeakPersonPtr,
+        std::shared_ptr<Person>, // DEL
         std::shared_ptr<Client>,
         std::shared_ptr<Meeting>,
-        std::shared_ptr<InternalEmployee>,
+        WeakInternalEmployee,
+        std::shared_ptr<InternalEmployee>,  // DEL
         std::shared_ptr<ExternalEmployee>,
         std::shared_ptr<Address>,
         std::shared_ptr<Document>,
@@ -291,6 +293,9 @@ public:
 
 #define PTR_TO_OPTIONAL(ptr) \
     (ptr == nullptr ? std::nullopt : std::make_optional<ChangeLog::ValueVariant>(ptr))
+
+#define WEAK_PTR_TO_OPTIONAL(ptr) \
+    (ptr.lock() == nullptr ? std::nullopt : std::make_optional<ChangeLog::ValueVariant>(ptr))
 
 #define OPTIONAL_STR_TO_VALUE(STR)      \
     (STR == std::nullopt ? std::nullopt \

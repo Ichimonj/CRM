@@ -4,21 +4,21 @@
 Task::Task(const BigUint& id) : id(id), priority(Priority::Medium), status(Status::NotStarted) {}
 
 Task::Task(
-    const BigUint&             id,
-    const std::string&         title,
-    const OptionalStr&         description,
-    const OptionalStr&         subject,
-    const Status&              status,
-    const Priority&            priority,
-    const DatePtr&             deadline,
-    const DatePtr&             start_date,
-    const DurationPtr&         ETC,
-    const DurationPtr&         ATS,
-    const InternalEmployeePtr& created_by,
-    const InternalEmployeePtr& manager,
-    std::vector<Note>          notes,
-    std::vector<StringPair>    more_data,
-    std::vector<PersonPtr>     teem
+    const BigUint&              id,
+    const std::string&          title,
+    const OptionalStr&          description,
+    const OptionalStr&          subject,
+    const Status&               status,
+    const Priority&             priority,
+    const DatePtr&              deadline,
+    const DatePtr&              start_date,
+    const DurationPtr&          ETC,
+    const DurationPtr&          ATS,
+    const WeakInternalEmployee& created_by,
+    const WeakInternalEmployee& manager,
+    std::vector<Note>           notes,
+    std::vector<StringPair>     more_data,
+    std::vector<WeakPersonPtr>  teem
 )
     : id(id)
     , title(title)
@@ -49,13 +49,13 @@ auto Task::getDeadline() const -> const DatePtr& { return deadline; }
 auto Task::getStartDate() const -> const DatePtr& { return start_date; }
 auto Task::getETC() const -> const DurationPtr& { return ETC; }
 auto Task::getATS() const -> const DurationPtr& { return ATS; }
-auto Task::getCreatedBy() const -> const InternalEmployeePtr& { return created_by; }
+auto Task::getCreatedBy() const -> const WeakInternalEmployee& { return created_by; }
+auto Task::getManager() const -> const WeakInternalEmployee& { return manager; }
 auto Task::getFiles() const -> const std::vector<FilePtr>& { return this->attachment_files; }
 auto Task::getTasks() const -> const std::vector<TaskPtr>& { return this->attachment_tasks; }
-auto Task::getManager() const -> const InternalEmployeePtr& { return manager; }
 auto Task::getNotes() const -> const std::vector<Note>& { return notes; }
 auto Task::getMoreData() const -> const std::vector<StringPair>& { return more_data; }
-auto Task::getTeem() const -> const std::vector<PersonPtr>& { return teem; }
+auto Task::getTeem() const -> const std::vector<WeakPersonPtr>& { return teem; }
 auto Task::getChangeLogs() const -> const std::vector<ChangeLogPtr>& { return this->change_logs; }
 
 bool Task::setTitle(const std::string& title, const InternalEmployeePtr& changer)
@@ -244,16 +244,17 @@ bool Task::setATS(const DurationPtr& ATS, const InternalEmployeePtr& changer)
     return true;
 }
 
-bool Task::setManager(const InternalEmployeePtr& manager, const InternalEmployeePtr& changer)
+bool Task::setManager(const WeakInternalEmployee& weak_manager, const InternalEmployeePtr& changer)
 {
-    if (this->manager != manager) {
+    if (this->manager.owner_before(manager) || manager.owner_before(this->manager)) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
-            PTR_TO_OPTIONAL(this->manager),
-            PTR_TO_OPTIONAL(manager),
+            WEAK_PTR_TO_OPTIONAL(this->manager),
+            WEAK_PTR_TO_OPTIONAL(manager),
             TaskFields::Manager,
-            this->manager ? ChangeLog::FieldType::InternalEmployee : ChangeLog::FieldType::null,
-            manager ? ChangeLog::FieldType::InternalEmployee : ChangeLog::FieldType::null,
+            this->manager.lock() ? ChangeLog::FieldType::InternalEmployee
+                                 : ChangeLog::FieldType::null,
+            manager.lock() ? ChangeLog::FieldType::InternalEmployee : ChangeLog::FieldType::null,
             ChangeLog::Action::Change
         ));
         this->manager = manager;
@@ -415,9 +416,11 @@ bool Task::delMoreData(size_t index, const InternalEmployeePtr& changer)
     return false;
 }
 
-bool Task::addTeemMember(const PersonPtr& member, const InternalEmployeePtr& changer)
+bool Task::addTeemMember(const WeakPersonPtr& member, const InternalEmployeePtr& changer)
 {
-    if (std::find(this->teem.begin(), this->teem.end(), member) == this->teem.end()) {
+    if (std::find_if(this->teem.begin(), this->teem.end(), [&member](const WeakPersonPtr& person) {
+            return member.owner_before(person) || person.owner_before(member);
+        }) == this->teem.end()) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
             std::nullopt,
