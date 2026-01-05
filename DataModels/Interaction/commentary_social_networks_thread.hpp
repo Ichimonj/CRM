@@ -1,9 +1,6 @@
 #pragma once
 #include "base_interaction.hpp"
 
-struct CommentarySocialNetworks;
-using CommentarySocialNetworksPtr = std::shared_ptr<CommentarySocialNetworks>;
-
 struct CommentarySocialNetworksThread : public BaseInteraction {
     CommentarySocialNetworksThread(const BigUint& id);
     CommentarySocialNetworksThread(

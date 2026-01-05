@@ -1,15 +1,7 @@
 #pragma once
 #include "Company/company.hpp"
 #include "Currencies/currencies.hpp"
-class Client;
-class FileMetadata;
-class Task;
-struct Deal;
-using ClientPtr = std::shared_ptr<Client>;
-using DatePtr   = std::shared_ptr<Date>;
-using FilePtr   = std::shared_ptr<FileMetadata>;
-using TaskPtr   = std::shared_ptr<Task>;
-using DealPtr   = std::shared_ptr<Deal>;
+#include "Usings/type_usings.hpp"
 
 class ExternalCompany : public Company {
 public:

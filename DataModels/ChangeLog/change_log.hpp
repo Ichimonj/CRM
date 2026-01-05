@@ -29,15 +29,6 @@
 #include "SocialNetwork/social_network.hpp"
 #include "Task/task.hpp"
 
-class InternalEmployee;
-class TimeDuration;
-class Person;
-class FileMetadata;
-struct Message;
-struct CommentarySocialNetworks;
-struct BaseInteraction;
-
-using StringPtr = std::shared_ptr<std::string>;
 /**
  * @struct ChangeLog
  * @brief A structure that represents a single entry in the change log, capturing modifications to

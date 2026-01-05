@@ -10,18 +10,6 @@
 #include "Note/note.hpp"
 #include "Person/person.hpp"
 #include "Task/task.hpp"
-struct Document;
-struct Deal;
-
-class InternalEmployee;
-class InternalEmployeeDataBase;
-using DatePtr             = std::shared_ptr<Date>;
-using DocumentPtr         = std::shared_ptr<Document>;
-using TaskPtr             = std::shared_ptr<Task>;
-using DealPtr             = std::shared_ptr<Deal>;
-using ClientPtr           = std::shared_ptr<Client>;
-using InternalEmployeePtr = std::shared_ptr<InternalEmployee>;
-using MoneyPtr            = std::shared_ptr<Money>;
 
 class InternalEmployee : public Person {
 public:

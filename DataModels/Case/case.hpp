@@ -1,25 +1,12 @@
 #pragma once
-#include <memory>
-#include <optional>
-#include <string>
 #include <vector>
 
 #include "BigNum/big_uint.hpp"
 #include "DateTime/date.hpp"
 #include "Note/note.hpp"
 #include "Interaction/priority.hpp"
+#include "Usings/type_usings.hpp"
 
-struct BaseInteraction;
-class InternalEmployee;
-class Client;
-class ChangeLog;
-
-using OptionalStr         = std::optional<std::string>;
-using DatePtr             = std::shared_ptr<Date>;
-using InternalEmployeePtr = std::shared_ptr<InternalEmployee>;
-using ClientPtr           = std::shared_ptr<Client>;
-using BaseInteractionPtr  = std::shared_ptr<BaseInteraction>;
-using ChangeLogPtr        = std::shared_ptr<ChangeLog>;
 enum class CaseStatus : uint8_t { Open, InProgress, Resolved, Closed, COUNT };
 
 class Case {

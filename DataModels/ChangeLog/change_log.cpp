@@ -13,6 +13,7 @@
 #include "Person/Employee/internal_employee.hpp"
 #include "UserSession/session_manager.hpp"
 #include "location.hpp"
+
 ChangeLog::ChangeLog(
     const std::weak_ptr<InternalEmployee>& changer,
     const std::optional<ValueVariant>&     old_value,

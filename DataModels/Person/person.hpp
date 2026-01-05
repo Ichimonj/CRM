@@ -1,5 +1,4 @@
 #pragma once
-#include <memory>
 #include <vector>
 
 #include "Address/address.hpp"
@@ -10,23 +9,12 @@
 #include "Note/note.hpp"
 #include "PhoneNumber/phone_number.hpp"
 #include "SocialNetwork/social_network.hpp"
+#include "Usings/type_usings.hpp"
 
 #ifdef _DEBUG
 class InitPersons;
 #endif  // _DEBUG
 
-class InternalEmployee;
-class ChangeLog;
-
-using DatePtr             = std::shared_ptr<Date>;
-using PhoneNumberPtr      = std::shared_ptr<PhoneNumber>;
-using AddressPtr          = std::shared_ptr<Address>;
-using InternalEmployeePtr = std::shared_ptr<InternalEmployee>;
-using ChangeLogPtr        = std::shared_ptr<ChangeLog>;
-using FileMetadataPtr     = std::shared_ptr<FileMetadata>;
-using DocumentPtr         = std::shared_ptr<Document>;
-using InteractionPtr      = std::shared_ptr<BaseInteraction>;
-using OptionalStr         = std::optional<std::string>;
 enum Gender { male, female, unknown, COUNT };
 class Person {
 public:

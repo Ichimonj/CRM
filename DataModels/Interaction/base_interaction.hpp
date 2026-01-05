@@ -1,30 +1,14 @@
 #pragma once
-#include <memory>
-#include <optional>
 #include <vector>
 
 #include "BigNum/big_uint.hpp"
+#include "DateTime/time_duration.hpp"
 #include "FileMetadata/file_metadata.hpp"
 #include "Interaction/interaction_result.hpp"
 #include "Note/note.hpp"
+#include "Usings/type_usings.hpp"
 #include "priority.hpp"
-#include "DateTime/time_duration.hpp"
 
-class Person;
-struct Date;
-struct InteractionResult;
-class ChangeLog;
-class Campaign;
-
-using DatePtr             = std::shared_ptr<Date>;
-using InternalEmployeePtr = std::shared_ptr<InternalEmployee>;
-using PersonPtr           = std::shared_ptr<Person>;
-using InteractionPtr      = std::shared_ptr<BaseInteraction>;
-using FilePtr             = std::shared_ptr<FileMetadata>;
-using ChangeLogPtr        = std::shared_ptr<ChangeLog>;
-using StringPair          = std::pair<std::string, std::string>;
-using OptionalStr         = std::optional<std::string>;
-using CampaignWPTR        = std::weak_ptr<Campaign>;
 struct BaseInteraction {
     enum class InteractionType : uint8_t {
         phoneCall,

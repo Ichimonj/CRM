@@ -1,8 +1,7 @@
 #pragma once
-#include <memory>
 #include "user_session.hpp"
+#include "Usings/type_usings.hpp"
 
-using UserSessionPtr = std::shared_ptr<UserSession>;
 class SessionManager {
 public:
     static SessionManager& getInstance();

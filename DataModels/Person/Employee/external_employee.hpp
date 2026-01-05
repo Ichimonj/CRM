@@ -1,23 +1,11 @@
 #pragma once
 #include "BigNum/money.hpp"
 #include "Interaction/base_interaction.hpp"
-#include "SocialNetwork/social_network.hpp"
 #include "Person/Employee/employee_enums.hpp"
 #include "Person/person.hpp"
+#include "SocialNetwork/social_network.hpp"
+#include "Usings/type_usings.hpp"
 
-struct Deal;
-using DealPtr = std::shared_ptr<Deal>;
-class Task;
-using TaskPtr = std::shared_ptr<Task>;
-struct Date;
-using DatePtr = std::shared_ptr<Date>;
-class ExternalCompany;
-using ExternalCompanyPtr = std::shared_ptr<ExternalCompany>;
-class InternalEmployee;
-using InternalEmployeePtr = std::shared_ptr<InternalEmployee>;
-class Note;
-using StringPair = std::pair<std::string, std::string>;
-using MoneyPtr   = std::shared_ptr<Money>;
 class ExternalEmployee : public Person {
 public:
     enum class InfluenceLevel : uint8_t { Critical, High, Medium, Low, VeryLow, COUNT };

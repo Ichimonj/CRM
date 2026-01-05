@@ -2,14 +2,6 @@
 #include "Interaction/base_interaction.hpp"
 #include "DateTime/date.hpp"
 
-class Client;
-struct Address;
-struct Meeting;
-
-using MeetingPtr = std::shared_ptr<Meeting>;
-using AddressPtr = std::shared_ptr<Address>;
-using ClientPtr  = std::shared_ptr<Client>;
-
 struct Meeting : public BaseInteraction {
     enum class MeetingType : uint8_t { Negotiation, Presentation, Training, Other, COUNT };
     enum class MeetingOutcome : uint8_t {

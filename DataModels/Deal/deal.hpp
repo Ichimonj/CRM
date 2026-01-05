@@ -1,7 +1,4 @@
 #pragma once
-#include <memory>
-#include <optional>
-#include <string>
 #include <vector>
 
 #include "BigNum/big_uint.hpp"
@@ -12,21 +9,7 @@
 #include "Interaction/priority.hpp"
 #include "Offering/offer_deal.hpp"
 #include "Payment/payment.hpp"
-
-class ChangeLog;
-class Task;
-class Client;
-class InternalEmployee;
-class Person;
-
-using BuyerShare          = std::pair<std::shared_ptr<Person>, Money>;
-using PaymentArr          = std::vector<std::shared_ptr<Payment>>;
-using DatePtr             = std::shared_ptr<Date>;
-using InternalEmployeePtr = std::shared_ptr<InternalEmployee>;
-using OfferDealPtr        = std::shared_ptr<OfferDeal>;
-using DocumentPtr         = std::shared_ptr<Document>;
-using ChangeLogPtr        = std::shared_ptr<ChangeLog>;
-using TaskPtr             = std::shared_ptr<Task>;
+#include "Usings/type_usings.hpp"
 
 struct Deal {
     enum class Status : uint8_t {
@@ -61,7 +44,7 @@ struct Deal {
         std::vector<BuyerShare>                buyers,
         const Money&                           total_amount,
         const Money&                           paid_amount,
-        const PaymentArr&                      payment_transactions,
+        const std::vector<PaymentPtr>&                      payment_transactions,
         const Status&                          status,
         const OptionalStr&                     other_status,
         const Priority&                        deal_priority,
@@ -88,7 +71,7 @@ struct Deal {
     auto getBuyers() const -> const std::vector<BuyerShare>&;
     auto getTotalAmount() const -> const Money&;
     auto getPaidAmount() const -> const Money&;
-    auto getPaymentTransactions() const -> const PaymentArr&;
+    auto getPaymentTransactions() const -> const std::vector<PaymentPtr>&;
     auto getStatus() const -> const Status&;
     auto getOtherStatus() const -> const OptionalStr&;
     auto getDealPriority() const -> const Priority&;
@@ -163,7 +146,7 @@ private:
     std::vector<BuyerShare>          buyers;
     Money                            total_amount = Money("");
     Money                            paid_amount  = Money("");
-    PaymentArr                       payment_transactions;
+    std::vector<PaymentPtr>                       payment_transactions;
     Status                           status = Status::Draft;
     OptionalStr                      other_status;
     Priority                         deal_priority = Priority::Medium;

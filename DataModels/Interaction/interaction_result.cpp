@@ -1,7 +1,7 @@
 #include "interaction_result.hpp"
 
 #include "ChangeLog/change_log.hpp"
-
+#include "Usings/type_usings.hpp"
 InteractionResult::InteractionResult(
     const std::string&          interaction_title,
     const std::string&          description,

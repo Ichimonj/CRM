@@ -1,6 +1,7 @@
 #pragma once
 #include <optional>
 #include <string>
+
 /// @brief Storage structure of the physical address
 struct Address {
     Address() = default;

@@ -1,13 +1,8 @@
 #pragma once
-#include <memory>
-
 #include "BigNum/big_uint.hpp"
 #include "DateTime/date.hpp"
 #include "Person/Employee/external_employee.hpp"
-
-using DatePtr             = std::shared_ptr<Date>;
-using InternalEmployeePtr = std::shared_ptr<InternalEmployee>;
-using StringPair          = std::pair<std::string, std::string>;
+#include "Usings/type_usings.hpp"
 
 enum class ReportType : uint8_t {
     SalesSummary,

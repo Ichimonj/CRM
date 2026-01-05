@@ -1,9 +1,6 @@
 #pragma once
 #include "base_interaction.hpp"
 
-struct PhoneNumber;
-using PhoneNumberPtr = std::shared_ptr<PhoneNumber>;
-
 struct PhoneCallData : public BaseInteraction {
     enum class CallType : uint8_t { incoming, outgoing, missed, COUNT };
 

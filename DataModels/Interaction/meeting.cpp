@@ -1,9 +1,6 @@
 #include "meeting.hpp"
-
-#include <optional>
-
 #include "ChangeLog/change_log.hpp"
-
+#include "Usings/type_usings.hpp"
 Meeting::Meeting(const BigUint& id)
     : BaseInteraction(id, InteractionType::meeting)
     , is_confirmed(false)

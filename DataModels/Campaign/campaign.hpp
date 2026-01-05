@@ -1,24 +1,10 @@
 #pragma once
-#include <memory>
-#include <optional>
 #include <vector>
 
 #include "BigNum/big_uint.hpp"
 #include "Note/note.hpp"
 
-class Money;
-class Client;
-struct Date;
-class InternalEmployee;
-class ChangeLog;
-class CampaignLead;
-
-using OptionalStr         = std::optional<std::string>;
-using MoneyPtr            = std::shared_ptr<Money>;
-using DatePtr             = std::shared_ptr<Date>;
-using CampaignLeadPtr     = std::shared_ptr<CampaignLead>;
-using InternalEmployeePtr = std::shared_ptr<InternalEmployee>;
-using ChangeLogPtr        = std::shared_ptr<ChangeLog>;
+#include "Usings/type_usings.hpp"
 
 enum class CampaignType : uint8_t { Email, SocialAds, Webinar, Event, other, COUNT };
 

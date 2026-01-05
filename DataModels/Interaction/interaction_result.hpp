@@ -5,20 +5,6 @@
 
 #include "FileMetadata/file_metadata.hpp"
 
-struct Document;
-struct Deal;
-struct BaseInteraction;
-struct Date;
-class ChangeLog;
-class InternalEmployee;
-
-using DealPtr             = std::shared_ptr<Deal>;
-using DocumentPtr         = std::shared_ptr<Document>;
-using InteractionPtr      = std::shared_ptr<BaseInteraction>;
-using FilePtr             = std::shared_ptr<FileMetadata>;
-using StringPair          = std::pair<std::string, std::string>;
-using InternalEmployeePtr = std::shared_ptr<InternalEmployee>;
-
 struct InteractionResult {
     enum class ResultStatus : uint8_t {
         Success,
