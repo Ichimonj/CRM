@@ -17,7 +17,7 @@ Payment::Payment(
     const DatePtr&             creation_date,
     const PaymentStatus&       status,
     const OptionalStr&         payment_method,
-    const WDealPtr&            deal,
+    const WeakDealPtr&            deal,
     const PersonPtr&           payer,
     const CompanyPtr&          payer_company,
     const OptionalStr&         invoice_number,
@@ -62,7 +62,7 @@ auto Payment::getReceivedDate() const -> const DatePtr& { return this->received_
 auto Payment::getCreationDate() const -> const DatePtr& { return this->creation_date; }
 auto Payment::getPaymentStatus() const -> PaymentStatus { return this->status; }
 auto Payment::getPaymentMethod() const -> const OptionalStr& { return this->payment_method; }
-auto Payment::getDeal() const -> const WDealPtr& { return this->deal; }
+auto Payment::getDeal() const -> const WeakDealPtr& { return this->deal; }
 auto Payment::getPayer() const -> const PersonPtr& { return this->payer; }
 auto Payment::getPayerCompany() const -> const CompanyPtr& { return this->payer_company; }
 auto Payment::getInvoiceNumber() const -> const OptionalStr& { return this->invoice_number; }
@@ -295,7 +295,7 @@ bool Payment::setPaymentMethod(
     return false;
 }
 
-bool Payment::setDeal(const WDealPtr& deal, const InternalEmployeePtr& changer)
+bool Payment::setDeal(const WeakDealPtr& deal, const InternalEmployeePtr& changer)
 {
     auto old_deal = this->deal.lock();
     auto new_deal = deal.lock();

@@ -3,11 +3,8 @@
 #include "Note/note.hpp"
 #include "Person/person.hpp"
 #include "DateTime/time_duration.hpp"
+#include "Usings/type_usings.hpp"
 
-struct BaseInteraction;
-using InteractionPtr = std::shared_ptr<BaseInteraction>;
-using StringPair     = std::pair<std::string, std::string>;
-using DealPtr        = std::shared_ptr<Deal>;
 class Client : public Person {
 public:
     enum class ClientType : uint8_t {

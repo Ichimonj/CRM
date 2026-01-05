@@ -4,9 +4,6 @@
 #include "DateTime/date.hpp"
 #include "campaign.hpp"
 
-using CampaignPtr = std::shared_ptr<Campaign>;
-using ClientPtr   = std::shared_ptr<Client>;
-using DatePtr     = std::shared_ptr<Date>;
 
 class CampaignLead {
 public:

@@ -2,7 +2,6 @@
 #include "base_interaction.hpp"
 #include "meeting.hpp"
 
-using ClientPtr = std::shared_ptr<Client>;
 struct MeetingThread : public BaseInteraction {
     MeetingThread(const BigUint& id);
 

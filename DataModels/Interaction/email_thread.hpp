@@ -1,11 +1,6 @@
 #pragma once
 #include "base_interaction.hpp"
 
-class Client;
-struct EmailLetter;
-using EmailLetterPtr = std::shared_ptr<EmailLetter>;
-using ClientPtr      = std::shared_ptr<Client>;
-
 struct EmailThread : public BaseInteraction {
     EmailThread(const BigUint& id);
 

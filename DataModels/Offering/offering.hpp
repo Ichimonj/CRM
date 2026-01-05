@@ -1,12 +1,7 @@
 #pragma once
 #include <stdint.h>
-
-#include <memory>
-#include <optional>
-#include <string>
-
 #include "BigNum/big_uint.hpp"
-using OptionalStr = std::optional<std::string>;
+#include "Usings/type_usings.hpp"
 
 struct Offer {
     Offer(

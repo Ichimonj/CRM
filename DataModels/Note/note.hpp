@@ -1,11 +1,6 @@
 #pragma once
-#include <memory>
-
 #include "DateTime/date.hpp"
-class InternalEmployee;
-class Person;
-using InternalEmployeePtr = std::shared_ptr<InternalEmployee>;
-using PersonPtr           = std::shared_ptr<Person>;
+#include "Usings/type_usings.hpp"
 
 class Note {
 public:

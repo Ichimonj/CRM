@@ -1,20 +1,10 @@
 #pragma once
-#include <memory>
 #include <vector>
 
 #include "BigNum/big_uint.hpp"
 #include "DateTime/date.hpp"
 #include "Person/person.hpp"
-
-class InternalEmployee;
-class ChangeLog;
-class FileMetadata;
-
-using DatePtr             = std::shared_ptr<Date>;
-using PersonPtr           = std::shared_ptr<Person>;
-using ChangeLogPtr        = std::shared_ptr<ChangeLog>;
-using InternalEmployeePtr = std::shared_ptr<InternalEmployee>;
-using FilePtr             = std::shared_ptr<FileMetadata>;
+#include "Usings/type_usings.hpp"
 struct Document {
 public:
     enum DocumentStatus : uint8_t { Draft, Active, Expired, Archived, COUNT };

@@ -1,9 +1,6 @@
 #pragma once
 #include "base_interaction.hpp"
 
-struct EmailLetter;
-using EmailLetterPtr = std::shared_ptr<EmailLetter>;
-
 struct EmailLetter : public BaseInteraction {
     enum class EmailStatus : uint8_t {
         Sent,

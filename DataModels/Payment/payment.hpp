@@ -1,16 +1,13 @@
 #pragma once
-#include <memory>
-
 #include "BigNum/big_uint.hpp"
+#include "BigNum/money.hpp"
 #include "Company/company.hpp"
 #include "Currencies/currencies.hpp"
 #include "DateTime/date.hpp"
 #include "Document/document.hpp"
-#include "BigNum/money.hpp"
 #include "Person/person.hpp"
+#include "Usings/type_usings.hpp"
 
-class ChangeLog;
-struct Deal;
 enum class PaymentStatus {
     pending,    // Ожидает оплаты
     completed,  // Завершён
@@ -21,10 +18,6 @@ enum class PaymentStatus {
     COUNT
 };
 
-using MoneyPtr            = std::shared_ptr<Money>;
-using WDealPtr            = std::weak_ptr<Deal>;
-using CompanyPtr          = std::shared_ptr<Company>;
-using InternalEmployeePtr = std::shared_ptr<InternalEmployee>;
 struct Payment {
     Payment(const BigUint& id);
     Payment(
@@ -39,7 +32,7 @@ struct Payment {
         const DatePtr&             creation_date,
         const PaymentStatus&       status,
         const OptionalStr&         payment_method,
-        const WDealPtr&            deal,
+        const WeakDealPtr&         deal,
         const PersonPtr&           payer,
         const CompanyPtr&          payer_company,
         const OptionalStr&         invoice_number,
@@ -63,7 +56,7 @@ struct Payment {
     auto getCreationDate() const -> const DatePtr&;
     auto getPaymentStatus() const -> PaymentStatus;
     auto getPaymentMethod() const -> const OptionalStr&;
-    auto getDeal() const -> const WDealPtr&;
+    auto getDeal() const -> const WeakDealPtr&;
     auto getPayer() const -> const PersonPtr&;
     auto getPayerCompany() const -> const CompanyPtr&;
     auto getInvoiceNumber() const -> const OptionalStr&;
@@ -87,7 +80,7 @@ struct Payment {
     bool setCreationDate(const DatePtr& creation_date, const InternalEmployeePtr& changer);
     bool setPaymentStatus(const PaymentStatus status, const InternalEmployeePtr& changer);
     bool setPaymentMethod(const OptionalStr& payment_method, const InternalEmployeePtr& changer);
-    bool setDeal(const WDealPtr& deal, const InternalEmployeePtr& changer);
+    bool setDeal(const WeakDealPtr& deal, const InternalEmployeePtr& changer);
     bool setPayer(const PersonPtr& payer, const InternalEmployeePtr& changer);
     bool setPayerCompany(const CompanyPtr& payer_company, const InternalEmployeePtr& changer);
     bool setInvoiceNumber(const OptionalStr& invoice_number, const InternalEmployeePtr& changer);
@@ -117,7 +110,7 @@ private:
 
     OptionalStr   payment_method;
 
-    WDealPtr      deal;
+    WeakDealPtr   deal;
 
     PersonPtr     payer;
 

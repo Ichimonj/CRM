@@ -16,7 +16,7 @@ Deal::Deal(
     std::vector<BuyerShare>                buyers,
     const Money&                           total_amount,
     const Money&                           paid_amount,
-    const PaymentArr&                      payment_transactions,
+    const std::vector<PaymentPtr>&                      payment_transactions,
     const Status&                          status,
     const OptionalStr&                     other_status,
     const Priority&                        deal_priority,
@@ -66,7 +66,7 @@ auto Deal::getTags() const -> const std::vector<std::string>& { return tags; }
 auto Deal::getBuyers() const -> const std::vector<BuyerShare>& { return buyers; }
 auto Deal::getTotalAmount() const -> const Money& { return total_amount; }
 auto Deal::getPaidAmount() const -> const Money& { return paid_amount; }
-auto Deal::getPaymentTransactions() const -> const PaymentArr& { return payment_transactions; }
+auto Deal::getPaymentTransactions() const -> const std::vector<PaymentPtr>& { return payment_transactions; }
 auto Deal::getStatus() const -> const Status& { return status; }
 auto Deal::getOtherStatus() const -> const OptionalStr& { return other_status; }
 auto Deal::getDealPriority() const -> const Priority& { return deal_priority; }

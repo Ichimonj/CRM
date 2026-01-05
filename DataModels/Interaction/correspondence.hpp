@@ -1,9 +1,6 @@
 #pragma once
-#include "base_interaction.hpp"
 #include "DateTime/date.hpp"
-
-struct Message;
-using MessagePtr = std::shared_ptr<Message>;
+#include "base_interaction.hpp"
 
 struct Correspondence : public BaseInteraction {
     Correspondence(const BigUint& id);

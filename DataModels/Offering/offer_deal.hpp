@@ -1,15 +1,7 @@
 #pragma once
-#include <memory>
-#include <optional>
-
 #include "BigNum/big_uint.hpp"
 #include "BigNum/money.hpp"
-
-struct Offer;
-struct Deal;
-
-using OfferPtr = std::shared_ptr<Offer>;
-using DealPtr  = std::shared_ptr<Deal>;
+#include "Usings/type_usings.hpp"
 
 class OfferDeal {
 public:

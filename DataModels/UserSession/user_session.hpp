@@ -1,19 +1,9 @@
 #pragma once
-#include <memory>
-#include <optional>
-#include <string>
 #include <vector>
 
 #include "DateTime/date.hpp"
 #include "DateTime/time_duration.hpp"
-
-class InternalEmployee;
-class ChangeLog;
-
-using DatePtr             = std::shared_ptr<Date>;
-using InternalEmployeePtr = std::shared_ptr<InternalEmployee>;
-using OptionalStr         = std::optional<std::string>;
-using ChangeLogPtr        = std::shared_ptr<ChangeLog>;
+#include "Usings/type_usings.hpp"
 
 class UserSession {
 public:

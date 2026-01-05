@@ -1,15 +1,9 @@
 #pragma once
-#include <memory>
-#include <string>
 #include <vector>
 
 #include "BigNum/big_uint.hpp"
 #include "DateTime/date.hpp"
-
-class ChangeLog;
-class InternalEmployee;
-
-using ChangeLogPtr = std::shared_ptr<ChangeLog>;
+#include "Usings/type_usings.hpp"
 
 class FileMetadata {
 public:

@@ -2,6 +2,7 @@
 #include <stdint.h>
 
 #include <string>
+
 class TimeDuration {
 public:
     TimeDuration() = default;

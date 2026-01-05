@@ -1,9 +1,6 @@
 #pragma once
-#include "base_interaction.hpp"
 #include "DateTime/date.hpp"
-
-struct CommentarySocialNetworks;
-using CommentarySocialNetworksPtr = std::shared_ptr<CommentarySocialNetworks>;
+#include "base_interaction.hpp"
 
 struct CommentarySocialNetworks : public BaseInteraction {
 public:

@@ -1,6 +1,4 @@
 #pragma once
-#include <memory>
-#include <optional>
 #include <vector>
 
 #include "BigNum/big_uint.hpp"
@@ -9,21 +7,7 @@
 #include "FileMetadata/file_metadata.hpp"
 #include "Interaction/priority.hpp"
 #include "Note/note.hpp"
-
-class ChangeLog;
-class InternalEmployee;
-class Person;
-class Task;
-class FileMetadata;
-using TaskPtr             = std::shared_ptr<Task>;
-using ChangeLogPtr        = std::shared_ptr<ChangeLog>;
-using OptionalStr         = std::optional<std::string>;
-using DatePtr             = std::shared_ptr<Date>;
-using DurationPtr         = std::shared_ptr<TimeDuration>;
-using InternalEmployeePtr = std::shared_ptr<InternalEmployee>;
-using PersonPtr           = std::shared_ptr<Person>;
-using StringPair          = std::pair<std::string, std::string>;
-using FilePtr             = std::shared_ptr<FileMetadata>;
+#include "Usings/type_usings.hpp"
 
 class Task {
 public:

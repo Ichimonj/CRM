@@ -5,6 +5,7 @@
 
 #include "location.hpp"
 #include "stdexcept"
+
 BigUint::BigUint(const std::string& num)
 {
     if (num.size() == 0) {
