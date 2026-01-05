@@ -9,7 +9,7 @@ Report::Report(
     std::vector<std::string>       data,
     const DatePtr&                 generated_date,
     const std::vector<StringPair>& parameters,
-    const InternalEmployeePtr&     creator,
+    const WeakInternalEmployee&    creator,
     const ExportFormat&            export_format
 )
     : id(id)
@@ -35,7 +35,7 @@ auto Report::getGeneratedDate() const -> const DatePtr& { return this->generated
 
 auto Report::getParameters() const -> const std::vector<StringPair>& { return this->parameters; }
 
-auto Report::getCreator() const -> const InternalEmployeePtr& { return this->creator; }
+auto Report::getCreator() const -> const WeakInternalEmployee& { return this->creator; }
 
 auto Report::getExportFormat() const -> ExportFormat { return this->export_format; }
 
@@ -160,16 +160,16 @@ bool Report::delParameter(size_t index, const InternalEmployeePtr& changer)
     return false;
 }
 
-bool Report::setCreator(const InternalEmployeePtr& creator, const InternalEmployeePtr& changer)
+bool Report::setCreator(const WeakInternalEmployee& creator, const InternalEmployeePtr& changer)
 {
-    if (this->creator != creator) {
+    if (this->creator.owner_before(creator) || creator.owner_before(this->creator)) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
-            PTR_TO_OPTIONAL(this->creator),
-            PTR_TO_OPTIONAL(creator),
+            WEAK_PTR_TO_OPTIONAL(this->creator),
+            WEAK_PTR_TO_OPTIONAL(creator),
             ReportFields::Creator,
-            this->creator ? ChangeLog::FieldType::InternalEmployee : ChangeLog::FieldType::null,
-            creator ? ChangeLog::FieldType::InternalEmployee : ChangeLog::FieldType::null,
+            this->creator.lock() ? ChangeLog::FieldType::InternalEmployee : ChangeLog::FieldType::null,
+            creator.lock() ? ChangeLog::FieldType::InternalEmployee : ChangeLog::FieldType::null,
             ChangeLog::Action::Change
         ));
         this->creator = creator;
