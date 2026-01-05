@@ -116,7 +116,7 @@ public:
     bool addParticipants(const PersonPtr& participant, const InternalEmployeePtr& changer);
     bool delParticipants(const size_t index, const InternalEmployeePtr& changer);
 
-    bool addCampaign(const CampaignWPTR& campaign, const InternalEmployeePtr& changer);
+    bool addCampaign(const WeakCampaignPtr& campaign, const InternalEmployeePtr& changer);
     bool delCampaign(size_t index, const InternalEmployeePtr& changer);
 
     bool setType(const InteractionType& type, const InternalEmployeePtr& changer);
@@ -151,7 +151,7 @@ private:
     std::vector<InteractionPtr>    related_interactions;
     std::vector<FilePtr>           attachment_files;
 
-    std::vector<CampaignWPTR>      campaigns;
+    std::vector<WeakCampaignPtr>      campaigns;
 
 protected:
     std::vector<ChangeLogPtr> change_logs;
