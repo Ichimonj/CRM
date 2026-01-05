@@ -26,7 +26,7 @@ public:
         std::vector<std::string>       data,
         const DatePtr&                 generated_date,
         const std::vector<StringPair>& parameters,
-        const InternalEmployeePtr&     creator,
+        const WeakInternalEmployee&     creator,
         const ExportFormat&            export_format
     );
 
@@ -38,7 +38,7 @@ public:
     auto getData() const -> const std::vector<std::string>&;
     auto getGeneratedDate() const -> const DatePtr&;
     auto getParameters() const -> const std::vector<StringPair>&;
-    auto getCreator() const -> const InternalEmployeePtr&;
+    auto getCreator() const -> const WeakInternalEmployee&;
     auto getExportFormat() const -> ExportFormat;
     /// @}
 
@@ -53,7 +53,7 @@ public:
     bool addParameter(const StringPair& parameter, const InternalEmployeePtr& changer);
     bool delParameter(size_t index, const InternalEmployeePtr& changer);
 
-    bool setCreator(const InternalEmployeePtr& creator, const InternalEmployeePtr& changer);
+    bool setCreator(const WeakInternalEmployee& creator, const InternalEmployeePtr& changer);
     bool setExportFormat(ExportFormat export_format, const InternalEmployeePtr& changer);
     /// @}
 
@@ -64,7 +64,7 @@ private:
     std::vector<std::string>  data;
     DatePtr                   generated_date;
     std::vector<StringPair>   parameters;
-    InternalEmployeePtr       creator;
+    WeakInternalEmployee      creator;
     ExportFormat              export_format = ExportFormat::JSON;
 
     std::vector<ChangeLogPtr> change_logs;
