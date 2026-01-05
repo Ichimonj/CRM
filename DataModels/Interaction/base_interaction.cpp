@@ -567,13 +567,13 @@ bool BaseInteraction::delParticipants(const size_t index, const InternalEmployee
     return false;
 }
 
-bool BaseInteraction::addCampaign(const CampaignWPTR& campaign, const InternalEmployeePtr& changer)
+bool BaseInteraction::addCampaign(const WeakCampaignPtr& campaign, const InternalEmployeePtr& changer)
 {
     auto campaign_ptr = campaign.lock();
     auto is_unique    = std::find_if(
                          this->campaigns.begin(),
                          this->campaigns.end(),
-                         [campaign_ptr](const CampaignWPTR& _campaign) {
+                         [campaign_ptr](const WeakCampaignPtr& _campaign) {
                              return campaign_ptr == _campaign.lock();
                          }
                      ) == this->campaigns.end();
