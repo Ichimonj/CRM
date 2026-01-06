@@ -77,7 +77,7 @@ void ClientDataBase::add(const ClientPtr& client)
     }
 }
 
-void ClientDataBase::remove(const BigUint& id)
+void ClientDataBase::soft_remove(const BigUint& id, const Date& remove_date)
 {
     auto id_it = by_id.find(id);
     if (id_it == by_id.end()) {
@@ -91,9 +91,7 @@ void ClientDataBase::remove(const BigUint& id)
     std::transform(lower_name.begin(), lower_name.end(), lower_name.begin(), ::tolower);
 
     safeRemoveFromMap(by_name, name, client, __LINE__, "by_name");
-    safeRemoveFromMap(
-        by_name_substr_search, lower_name, client, __LINE__, "by_name_substr_search"
-    );
+    safeRemoveFromMap(by_name_substr_search, lower_name, client, __LINE__, "by_name_substr_search");
 
     if (client->getEmail().has_value()) {
         const std::string& email       = client->getEmail().value();
@@ -169,7 +167,16 @@ void ClientDataBase::remove(const BigUint& id)
         safeRemoveFromVector(by_lead_status, status, client, __LINE__, "by_lead_status");
     }
 
+    this->removed.push_back({remove_date, client});
+
     by_id.erase(id_it);
+}
+
+void ClientDataBase::hard_remove(const size_t index)
+{
+    if (index < this->removed.size()) {
+        this->removed.erase(this->removed.begin() + index);
+    }
 }
 
 auto ClientDataBase::size() const -> size_t { return this->by_id.size(); }

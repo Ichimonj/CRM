@@ -80,7 +80,7 @@ void InternalEmployeeDataBase::add(const InternalEmployeePtr& employee)
     }
 }
 
-void InternalEmployeeDataBase::remove(const BigUint& id)
+void InternalEmployeeDataBase::soft_remove(const BigUint& id, const Date& remove_date)
 {
     auto employee_it = by_id.find(id);
     if (employee_it == by_id.end()) {
@@ -141,9 +141,7 @@ void InternalEmployeeDataBase::remove(const BigUint& id)
 
     if (employee->getDepartment()) {
         const std::string& department = employee->getDepartment().value();
-        safeRemoveFromMap(
-            this->by_department, department, employee, __LINE__, "by_department"
-        );
+        safeRemoveFromMap(this->by_department, department, employee, __LINE__, "by_department");
     }
 
     if (employee->getStatus() != EmployeeStatus::other) {
@@ -183,7 +181,16 @@ void InternalEmployeeDataBase::remove(const BigUint& id)
             this->by_sales_territory, territory, employee, __LINE__, "by_sales_territory"
         );
     }
+    this->removed.push_back({remove_date, employee});
+
     by_id.erase(employee_it);
+}
+
+void InternalEmployeeDataBase::hard_remove(const size_t index)
+{
+    if (index < this->removed.size()) {
+        this->removed.erase(this->removed.begin() + index);
+    }
 }
 
 auto InternalEmployeeDataBase::size() const -> size_t { return this->by_id.size(); }

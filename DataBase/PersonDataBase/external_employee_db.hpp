@@ -10,7 +10,8 @@ public:
     ExternalEmployeeDataBase() = default;
 
     void add(const ExternalEmployeePtr& employee);
-    void remove(const BigUint& id);
+    void soft_remove(const BigUint& id, const Date& remove_date);
+    void hard_remove(const size_t index);
 
     /// @name Getters
     /// @{
@@ -123,6 +124,7 @@ private:
 
     std::unordered_multimap<std::string, ExternalEmployeePtr> by_job_title;
     std::unordered_multimap<std::string, ExternalEmployeePtr> by_department;
+    std::vector<std::pair<Date, ExternalEmployeePtr>>         removed;
     //
     void safeRemoveFromMap(
         auto&                      map,
