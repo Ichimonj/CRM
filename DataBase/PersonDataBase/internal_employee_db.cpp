@@ -161,10 +161,14 @@ void InternalEmployeeDataBase::soft_remove(const BigUint& id, const Date& remove
             this->by_other_access_role, role, employee, __LINE__, "by_other_access_role"
         );
     }
-
     safeRemoveFromVector(
         this->by_time_zone, employee->getTimeZone(), employee, __LINE__, "by_time_zone"
     );
+
+    auto manager_it = this->by_manager.find(employee->getId());
+    if (manager_it != this->by_manager.end()) {
+        this->by_manager.erase(manager_it);
+    }
 
     if (employee->getPosition()) {
         const std::string& position = employee->getPosition().value();
