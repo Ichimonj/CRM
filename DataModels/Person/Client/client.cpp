@@ -23,7 +23,7 @@ Client::Client(
     const AddressPtr&                address,
     const OptionalStr&               email,
     const Gender&                    gender,
-    const InternalEmployeePtr&       owner,
+    const WeakInternalEmployee&      owner,
     const ClientType&                type,
     const OptionalStr&               other_type,
     const LeadSource&                lead_source,
@@ -85,7 +85,7 @@ Client::Client(
 {
 }
 
-auto Client::getOwner() const -> const InternalEmployeePtr& { return this->owner; }
+auto Client::getOwner() const -> const WeakInternalEmployee& { return this->owner; }
 auto Client::getType() const -> ClientType { return this->type; }
 auto Client::getOtherType() const -> const OptionalStr& { return this->other_type; }
 auto Client::getLeadSource() const -> LeadSource { return this->lead_source; }
@@ -117,18 +117,19 @@ auto Client::getLifetimeValue() const -> const std::optional<Money>&
 
 auto Client::getOwnedDeals() const -> const std::vector<DealPtr>& { return this->owned_deals; }
 
-bool Client::setOwner(const InternalEmployeePtr& owner, const InternalEmployeePtr& changer)
+bool Client::setOwner(const WeakInternalEmployee& owner, const InternalEmployeePtr& changer)
 {
-    if (this->owner != owner) {
+    if (this->owner.owner_before(owner) || owner.owner_before(this->owner)) {
         Date update = Date();
 
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
-            PTR_TO_OPTIONAL(this->owner),
-            PTR_TO_OPTIONAL(owner),
+            WEAK_PTR_TO_OPTIONAL(this->owner),
+            WEAK_PTR_TO_OPTIONAL(owner),
             ClientFields::Owner,
-            this->owner ? ChangeLog::FieldType::InternalEmployee : ChangeLog::FieldType::null,
-            owner ? ChangeLog::FieldType::InternalEmployee : ChangeLog::FieldType::null,
+            !this->owner.expired() ? ChangeLog::FieldType::InternalEmployee
+                                   : ChangeLog::FieldType::null,
+            !owner.expired() ? ChangeLog::FieldType::InternalEmployee : ChangeLog::FieldType::null,
             ChangeLog::Action::Change,
             update
         ));

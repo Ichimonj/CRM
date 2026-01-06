@@ -4,6 +4,7 @@
 #include <string>
 
 #include "Logger/events_log.hpp"
+#include "TenantContext/tenant_context.hpp"
 
 const std::vector<InternalEmployeePtr> InternalEmployeeDataBase::empty_vector;
 
@@ -165,10 +166,7 @@ void InternalEmployeeDataBase::soft_remove(const BigUint& id, const Date& remove
         this->by_time_zone, employee->getTimeZone(), employee, __LINE__, "by_time_zone"
     );
 
-    auto manager_it = this->by_manager.find(employee->getId());
-    if (manager_it != this->by_manager.end()) {
-        this->by_manager.erase(manager_it);
-    }
+    this->by_manager.erase(employee->getId());
 
     if (employee->getPosition()) {
         const std::string& position = employee->getPosition().value();
@@ -190,9 +188,13 @@ void InternalEmployeeDataBase::soft_remove(const BigUint& id, const Date& remove
     by_id.erase(employee_it);
 }
 
-void InternalEmployeeDataBase::hard_remove(const size_t index)
+void InternalEmployeeDataBase::hard_remove(const size_t index, TenantContext& context)
 {
     if (index < this->removed.size()) {
+        const auto& employee = removed[index].second;
+        auto employee_id = employee->getId();
+        context.client_data_base.removeOwner(employee_id);
+
         this->removed.erase(this->removed.begin() + index);
     }
 }

@@ -50,8 +50,8 @@ void ClientDataBase::add(const ClientPtr& client)
         this->by_phone_substr_search.emplace(number.getNumber(), client);
     }
 
-    if (client->getOwner()) {
-        this->by_owner[client->getOwner()->getId()].push_back(client);
+    if (!client->getOwner().expired()) {
+        this->by_owner[client->getOwner().lock()->getId()].push_back(client);
     }
 
     if (client->getType() != Client::ClientType::other) {
@@ -134,8 +134,8 @@ void ClientDataBase::soft_remove(const BigUint& id, const Date& remove_date)
         );
     }
 
-    if (client->getOwner()) {
-        BigUint owner_id = client->getOwner()->getId();
+    if (!client->getOwner().expired()) {
+        BigUint owner_id = client->getOwner().lock()->getId();
         safeRemoveFromVector(by_owner, owner_id, client, __LINE__, "by_owner");
     }
 
@@ -580,7 +580,7 @@ void ClientDataBase::delMorePhone(
 }
 
 void ClientDataBase::changeOwner(
-    const BigUint& id, const InternalEmployeePtr& owner, const InternalEmployeePtr& changer
+    const BigUint& id, const WeakInternalEmployee& owner, const InternalEmployeePtr& changer
 )
 {
     auto id_it = this->by_id.find(id);
@@ -591,11 +591,13 @@ void ClientDataBase::changeOwner(
     auto      old_owner = client->getOwner();
 
     if (client->setOwner(owner, changer)) {
-        if (old_owner) {
-            safeRemoveFromVector(this->by_owner, old_owner->getId(), client, __LINE__, "by_owner");
+        if (!old_owner.expired()) {
+            safeRemoveFromVector(
+                this->by_owner, old_owner.lock()->getId(), client, __LINE__, "by_owner"
+            );
         }
-        if (owner) {
-            this->by_owner[owner->getId()].push_back(client);
+        if (!owner.expired()) {
+            this->by_owner[owner.lock()->getId()].push_back(client);
         }
     }
 }
@@ -759,6 +761,8 @@ void ClientDataBase::changeLeadStatus(
         }
     }
 }
+
+void ClientDataBase::removeOwner(const BigUint& id) { this->by_owner.erase(id); }
 
 void ClientDataBase::safeRemoveFromMap(
     auto&              map,

@@ -11,7 +11,7 @@ class InternalEmployeeDataBase {
 public:
     void add(const InternalEmployeePtr& person);
     void soft_remove(const BigUint& id, const Date& remove_date);
-    void hard_remove(const size_t index);
+    void hard_remove(const size_t index, TenantContext& context);
 
     /// @name Getters
     /// @{

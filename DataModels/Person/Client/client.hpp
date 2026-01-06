@@ -1,8 +1,8 @@
 #pragma once
+#include "DateTime/time_duration.hpp"
 #include "Deal/deal.hpp"
 #include "Note/note.hpp"
 #include "Person/person.hpp"
-#include "DateTime/time_duration.hpp"
 #include "Usings/type_usings.hpp"
 
 class Client : public Person {
@@ -52,7 +52,7 @@ public:
         const AddressPtr&                address,
         const OptionalStr&               email,
         const Gender&                    gender,
-        const InternalEmployeePtr&       owner,
+        const WeakInternalEmployee&      owner,
         const ClientType&                type,
         const OptionalStr&               other_type,
         const LeadSource&                lead_source,
@@ -80,7 +80,7 @@ public:
 
     /// @name Getters
     /// @{
-    auto getOwner() const -> const InternalEmployeePtr&;
+    auto getOwner() const -> const WeakInternalEmployee&;
     auto getType() const -> ClientType;
     auto getOtherType() const -> const OptionalStr&;
     auto getLeadSource() const -> LeadSource;
@@ -101,7 +101,7 @@ public:
     /// @{
     // functions called only from the database
 private:
-    bool setOwner(const InternalEmployeePtr& owner, const InternalEmployeePtr& changer);
+    bool setOwner(const WeakInternalEmployee& owner, const InternalEmployeePtr& changer);
     bool setType(const ClientType type, const InternalEmployeePtr& changer);
     bool setOtherType(const std::string& other_type, const InternalEmployeePtr& changer);
     bool setLeadSource(const LeadSource lead_source, const InternalEmployeePtr& changer);
@@ -136,15 +136,15 @@ public:
     /// @}
 
 private:
-    InternalEmployeePtr owner;
-    ClientType          type;
-    OptionalStr         other_type;
+    WeakInternalEmployee owner;
+    ClientType           type;
+    OptionalStr          other_type;
 
-    LeadSource          lead_source;
-    OptionalStr         other_lead_source;
-    bool                marketing_consent;
-    OptionalStr         preferred_communication_channel;
-    OptionalStr         referral_code;
+    LeadSource           lead_source;
+    OptionalStr          other_lead_source;
+    bool                 marketing_consent;
+    OptionalStr          preferred_communication_channel;
+    OptionalStr          referral_code;
     //
     std::optional<Money>      customer_acquisition_cost;
     std::optional<LeadStatus> lead_status;

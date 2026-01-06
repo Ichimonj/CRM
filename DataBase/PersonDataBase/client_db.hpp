@@ -1,4 +1,5 @@
 #pragma once
+#pragma once
 #include <map>
 #include <unordered_map>
 
@@ -68,7 +69,7 @@ public:
     void delMorePhone(const BigUint& id, size_t index, const InternalEmployeePtr& changer);
 
     void changeOwner(
-        const BigUint& id, const InternalEmployeePtr& owner, const InternalEmployeePtr& changer
+        const BigUint& id, const WeakInternalEmployee& owner, const InternalEmployeePtr& changer
     );
     void changeType(
         const BigUint& id, const Client::ClientType type, const InternalEmployeePtr& changer
@@ -90,6 +91,11 @@ public:
         const std::optional<Client::LeadStatus> status,
         const InternalEmployeePtr&              changer
     );
+    /// @}
+    
+    /// @name Auxiliary functions
+    /// @{
+    void removeOwner(const BigUint& id);
     /// @}
 
 private:

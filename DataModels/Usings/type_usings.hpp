@@ -33,6 +33,7 @@ class Company;
 class ExternalCompany;
 class InternalEmployeeDataBase;
 class UserSession;
+struct TenantContext;
 
 using UserSessionPtr              = std::shared_ptr<UserSession>;
 using DurationPtr                 = std::shared_ptr<TimeDuration>;
