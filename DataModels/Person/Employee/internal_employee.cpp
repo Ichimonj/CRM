@@ -16,48 +16,48 @@ InternalEmployee::InternalEmployee(
 }
 
 InternalEmployee::InternalEmployee(
-    const BigUint&                   id,
-    const std::string&               name,
-    const std::string&               surname,
-    const OptionalStr&               patronymic,
-    const OptionalStr&               preferred_language,
-    const DatePtr&                   birthday,
-    const PhoneNumberPtr&            phone_number,
-    const AddressPtr&                address,
-    const OptionalStr&               email,
-    const Gender&                    gender,
-    const InternalEmployeePtr&       manager,
-    const OptionalStr&               position,
-    const OptionalStr&               department,
-    const AccessRole&                access_role,
-    const OptionalStr&               other_role,
-    const EmployeeStatus&            status,
-    const OptionalStr&               other_status,
-    const OptionalStr&               sales_territory,
-    const DatePtr&                   last_login_date,
-    const DatePtr&                   last_action_date,
-    int                              time_zone,
-    const std::optional<double>&     commission_rate,
-    const MoneyPtr&                  base_salary,
-    const std::optional<double>&     performance_score,
-    const DatePtr&                   next_review_date,
-    const DatePtr&                   hire_date,
-    const DatePtr&                   dismissal_date,
-    std::vector<ClientPtr>           leads,
-    std::vector<Note>                notes,
-    std::vector<Money>               monthly_quota,
-    std::vector<TaskPtr>             tasks,
-    std::vector<DocumentPtr>         documents,
-    std::vector<std::string>         skills,
-    std::vector<InternalEmployeePtr> direct_reports,
-    std::vector<SocialNetwork>       social_networks,
-    std::vector<PhoneNumber>         more_phone_numbers,
-    std::vector<Address>             more_addresses,
-    std::vector<std::string>         more_emails,
-    std::vector<DocumentPtr>         other_documents,
-    std::vector<FileMetadataPtr>     other_files,
-    std::vector<InteractionPtr>      interaction_history,
-    std::vector<std::string>         tags
+    const BigUint&                    id,
+    const std::string&                name,
+    const std::string&                surname,
+    const OptionalStr&                patronymic,
+    const OptionalStr&                preferred_language,
+    const DatePtr&                    birthday,
+    const PhoneNumberPtr&             phone_number,
+    const AddressPtr&                 address,
+    const OptionalStr&                email,
+    const Gender&                     gender,
+    const WeakInternalEmployee&       manager,
+    const OptionalStr&                position,
+    const OptionalStr&                department,
+    const AccessRole&                 access_role,
+    const OptionalStr&                other_role,
+    const EmployeeStatus&             status,
+    const OptionalStr&                other_status,
+    const OptionalStr&                sales_territory,
+    const DatePtr&                    last_login_date,
+    const DatePtr&                    last_action_date,
+    int                               time_zone,
+    const std::optional<double>&      commission_rate,
+    const MoneyPtr&                   base_salary,
+    const std::optional<double>&      performance_score,
+    const DatePtr&                    next_review_date,
+    const DatePtr&                    hire_date,
+    const DatePtr&                    dismissal_date,
+    std::vector<WeakClientPtr>        leads,
+    std::vector<Note>                 notes,
+    std::vector<Money>                monthly_quota,
+    std::vector<TaskPtr>              tasks,
+    std::vector<DocumentPtr>          documents,
+    std::vector<std::string>          skills,
+    std::vector<WeakInternalEmployee> direct_reports,
+    std::vector<SocialNetwork>        social_networks,
+    std::vector<PhoneNumber>          more_phone_numbers,
+    std::vector<Address>              more_addresses,
+    std::vector<std::string>          more_emails,
+    std::vector<DocumentPtr>          other_documents,
+    std::vector<FileMetadataPtr>      other_files,
+    std::vector<InteractionPtr>       interaction_history,
+    std::vector<std::string>          tags
 )
     : Person(
           id,
@@ -107,7 +107,7 @@ InternalEmployee::InternalEmployee(
 {
 }
 
-auto InternalEmployee::getManager() const -> const InternalEmployeePtr& { return this->manager; }
+auto InternalEmployee::getManager() const -> const WeakInternalEmployee& { return this->manager; }
 auto InternalEmployee::getPosition() const -> const OptionalStr& { return this->position; }
 auto InternalEmployee::getDepartment() const -> const OptionalStr& { return this->department; }
 auto InternalEmployee::getAccessRole() const -> AccessRole { return this->access_role; }
@@ -154,7 +154,7 @@ auto InternalEmployee::getPerformanceScore() const -> const std::optional<double
 {
     return this->performance_score;
 }
-auto InternalEmployee::getLeads() const -> const std::vector<ClientPtr>& { return this->leads; }
+auto InternalEmployee::getLeads() const -> const std::vector<WeakClientPtr>& { return this->leads; }
 auto InternalEmployee::getMonthlyQuota() const -> const std::vector<Money>&
 {
     return this->monthly_quota;
@@ -165,23 +165,25 @@ auto InternalEmployee::getDocuments() const -> const std::vector<DocumentPtr>&
     return this->documents;
 }
 auto InternalEmployee::getSkills() const -> const std::vector<std::string>& { return this->skills; }
-auto InternalEmployee::getDirectReports() const -> const std::vector<InternalEmployeePtr>&
+auto InternalEmployee::getDirectReports() const -> const std::vector<WeakInternalEmployee>&
 {
     return this->direct_reports;
 }
 bool InternalEmployee::setManager(
-    const InternalEmployeePtr& manager, const InternalEmployeePtr& changer
+    const WeakInternalEmployee& manager, const InternalEmployeePtr& changer
 )
 {
-    if (this->manager != manager) {
+    if (this->manager.owner_before(manager) || manager.owner_before(this->manager)) {
         Date update = Date();
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
-            PTR_TO_OPTIONAL(this->manager),
-            PTR_TO_OPTIONAL(manager),
+            WEAK_PTR_TO_OPTIONAL(this->manager),
+            WEAK_PTR_TO_OPTIONAL(manager),
             InternalEmployeeFields::Manager,
-            this->manager ? ChangeLog::FieldType::InternalEmployee : ChangeLog::FieldType::null,
-            manager ? ChangeLog::FieldType::InternalEmployee : ChangeLog::FieldType::null,
+            !this->manager.expired() ? ChangeLog::FieldType::InternalEmployee
+                                     : ChangeLog::FieldType::null,
+            !manager.expired() ? ChangeLog::FieldType::InternalEmployee
+                               : ChangeLog::FieldType::null,
             ChangeLog::Action::Change,
             update
         ));
@@ -717,9 +719,15 @@ bool InternalEmployee::delProposedOffer(size_t index, const InternalEmployeePtr&
     return false;
 }
 
-bool InternalEmployee::addLead(const ClientPtr& lead, const InternalEmployeePtr& changer)
+bool InternalEmployee::addLead(const WeakClientPtr& lead, const InternalEmployeePtr& changer)
 {
-    if (std::find(this->leads.begin(), this->leads.end(), lead) == this->leads.end()) {
+    if (std::find_if(
+            this->leads.begin(),
+            this->leads.end(),
+            [&lead](const WeakClientPtr& other_lead) {
+                return !(lead.owner_before(other_lead) || other_lead.owner_before(lead));
+            }
+        ) == this->leads.end()) {
         Date update = Date();
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
@@ -930,11 +938,16 @@ bool InternalEmployee::delSkill(size_t index, const InternalEmployeePtr& changer
 }
 
 bool InternalEmployee::addDirectReport(
-    const InternalEmployeePtr& report, const InternalEmployeePtr& changer
+    const WeakInternalEmployee& report, const InternalEmployeePtr& changer
 )
 {
-    if (std::find(this->direct_reports.begin(), this->direct_reports.end(), report) ==
-        this->direct_reports.end()) {
+    if (std::find_if(
+            this->direct_reports.begin(),
+            this->direct_reports.end(),
+            [&report](const WeakInternalEmployee& employee) {
+                return !(report.owner_before(employee) || employee.owner_before(report));
+            }
+        ) == this->direct_reports.end()) {
         Date update = Date();
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
