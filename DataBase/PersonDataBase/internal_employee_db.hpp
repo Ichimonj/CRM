@@ -1,4 +1,5 @@
 #pragma once
+#pragma once
 #include <map>
 #include <unordered_map>
 
@@ -9,7 +10,8 @@ using InternalEmployeePtr = std::shared_ptr<InternalEmployee>;
 class InternalEmployeeDataBase {
 public:
     void add(const InternalEmployeePtr& person);
-    void remove(const BigUint& id);
+    void soft_remove(const BigUint& id, const Date& remove_date);
+    void hard_remove(const size_t index);
 
     /// @name Getters
     /// @{
@@ -121,7 +123,7 @@ private:
     std::unordered_multimap<std::string, InternalEmployeePtr>            by_position;
     std::unordered_map<bool, std::vector<InternalEmployeePtr>>           by_is_active;
     std::unordered_multimap<std::string, InternalEmployeePtr>            by_sales_territory;
-
+    std::vector<std::pair<Date, InternalEmployeePtr>>                    removed;
     //
     void safeRemoveFromMap(
         auto&                      map,

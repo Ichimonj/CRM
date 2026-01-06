@@ -9,8 +9,8 @@ using ClientPtr = std::shared_ptr<Client>;
 class ClientDataBase {
 public:
     void add(const ClientPtr& client);
-    void remove(const BigUint& id);
-
+    void soft_remove(const BigUint& id, const Date& remove_date);
+    void hard_remove(const size_t index);
     /// @name Getters
     /// @{
     auto size() const -> size_t;
@@ -110,6 +110,7 @@ private:
     std::unordered_map<std::string, std::vector<ClientPtr>>        by_other_lead_source;
     std::unordered_map<bool, std::vector<ClientPtr>>               by_marketing_consent;
     std::unordered_map<Client::LeadStatus, std::vector<ClientPtr>> by_lead_status;
+    std::vector<std::pair<Date, ClientPtr>>                        removed;
     //
     void safeRemoveFromMap(
         auto&              map,
