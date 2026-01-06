@@ -92,7 +92,7 @@ public:
         const BigUint& id, const OptionalStr& position, const InternalEmployeePtr& changer
     );
     void changeManager(
-        const BigUint& id, const InternalEmployeePtr& manager, const InternalEmployeePtr& changer
+        const BigUint& id, const WeakInternalEmployee& manager, const InternalEmployeePtr& changer
     );
     void changeIsActive(
         const BigUint& id, const bool is_active, const InternalEmployeePtr& changer
