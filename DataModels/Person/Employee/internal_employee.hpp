@@ -3,11 +3,11 @@
 #include <string>
 
 #include "BigNum/big_uint.hpp"
+#include "BigNum/money.hpp"
 #include "DateTime/date.hpp"
 #include "Deal/deal.hpp"
-#include "Person/Employee/employee_enums.hpp"
-#include "BigNum/money.hpp"
 #include "Note/note.hpp"
+#include "Person/Employee/employee_enums.hpp"
 #include "Person/person.hpp"
 #include "Task/task.hpp"
 
@@ -20,54 +20,54 @@ public:
         const OptionalStr& patronymic
     );
     InternalEmployee(
-        const BigUint&                   id,
-        const std::string&               name,
-        const std::string&               surname,
-        const OptionalStr&               patronymic,
-        const OptionalStr&               preferred_language,
-        const DatePtr&                   birthday,
-        const PhoneNumberPtr&            phone_number,
-        const AddressPtr&                address,
-        const OptionalStr&               email,
-        const Gender&                    gender,
-        const InternalEmployeePtr&       manager,
-        const OptionalStr&               position,
-        const OptionalStr&               department,
-        const AccessRole&                access_role,
-        const OptionalStr&               other_role,
-        const EmployeeStatus&            status,
-        const OptionalStr&               other_status,
-        const OptionalStr&               sales_territory,
-        const DatePtr&                   last_login_date,
-        const DatePtr&                   last_action_date,
-        int                              time_zone,
-        const std::optional<double>&     commission_rate,
-        const MoneyPtr&                  base_salary,
-        const std::optional<double>&     performance_score,
-        const DatePtr&                   next_review_date,
-        const DatePtr&                   hire_date,
-        const DatePtr&                   dismissal_date,
-        std::vector<ClientPtr>           leads,
-        std::vector<Note>                notes,
-        std::vector<Money>               monthly_quota,
-        std::vector<TaskPtr>             tasks,
-        std::vector<DocumentPtr>         documents,
-        std::vector<std::string>         skills,
-        std::vector<InternalEmployeePtr> direct_reports,
-        std::vector<SocialNetwork>       social_networks,
-        std::vector<PhoneNumber>         more_phone_numbers,
-        std::vector<Address>             more_addresses,
-        std::vector<std::string>         more_emails,
-        std::vector<DocumentPtr>         other_documents,
-        std::vector<FileMetadataPtr>     other_files,
-        std::vector<InteractionPtr>      interaction_history,
-        std::vector<std::string>         tags
+        const BigUint&                    id,
+        const std::string&                name,
+        const std::string&                surname,
+        const OptionalStr&                patronymic,
+        const OptionalStr&                preferred_language,
+        const DatePtr&                    birthday,
+        const PhoneNumberPtr&             phone_number,
+        const AddressPtr&                 address,
+        const OptionalStr&                email,
+        const Gender&                     gender,
+        const WeakInternalEmployee&       manager,
+        const OptionalStr&                position,
+        const OptionalStr&                department,
+        const AccessRole&                 access_role,
+        const OptionalStr&                other_role,
+        const EmployeeStatus&             status,
+        const OptionalStr&                other_status,
+        const OptionalStr&                sales_territory,
+        const DatePtr&                    last_login_date,
+        const DatePtr&                    last_action_date,
+        int                               time_zone,
+        const std::optional<double>&      commission_rate,
+        const MoneyPtr&                   base_salary,
+        const std::optional<double>&      performance_score,
+        const DatePtr&                    next_review_date,
+        const DatePtr&                    hire_date,
+        const DatePtr&                    dismissal_date,
+        std::vector<WeakClientPtr>        leads,
+        std::vector<Note>                 notes,
+        std::vector<Money>                monthly_quota,
+        std::vector<TaskPtr>              tasks,
+        std::vector<DocumentPtr>          documents,
+        std::vector<std::string>          skills,
+        std::vector<WeakInternalEmployee> direct_reports,
+        std::vector<SocialNetwork>        social_networks,
+        std::vector<PhoneNumber>          more_phone_numbers,
+        std::vector<Address>              more_addresses,
+        std::vector<std::string>          more_emails,
+        std::vector<DocumentPtr>          other_documents,
+        std::vector<FileMetadataPtr>      other_files,
+        std::vector<InteractionPtr>       interaction_history,
+        std::vector<std::string>          tags
     );
     virtual ~InternalEmployee() noexcept = default;
 
     /// @name Getters
     /// @{
-    auto getManager() const -> const InternalEmployeePtr&;
+    auto getManager() const -> const WeakInternalEmployee&;
     auto getPosition() const -> const OptionalStr&;
     auto getDepartment() const -> const OptionalStr&;
     auto getAccessRole() const -> AccessRole;
@@ -88,25 +88,25 @@ public:
     auto getCommissionRate() const -> const std::optional<double>&;
     auto getBaseSalary() const -> const MoneyPtr&;
     auto getPerformanceScore() const -> const std::optional<double>&;
-    auto getLeads() const -> const std::vector<ClientPtr>&;
+    auto getLeads() const -> const std::vector<WeakClientPtr>&;
     auto getMonthlyQuota() const -> const std::vector<Money>&;
     auto getTasks() const -> const std::vector<TaskPtr>&;
     auto getDocuments() const -> const std::vector<DocumentPtr>&;
     auto getSkills() const -> const std::vector<std::string>&;
-    auto getDirectReports() const -> const std::vector<InternalEmployeePtr>&;
+    auto getDirectReports() const -> const std::vector<WeakInternalEmployee>&;
     /// @}
 
     /// @name Change functions
     /// @{
     // functions called only from the database
 private:
+    bool setManager(const WeakInternalEmployee& manager, const InternalEmployeePtr& changer);
     bool setDepartment(const OptionalStr& department, const InternalEmployeePtr& changer);
     bool setStatus(const EmployeeStatus status, const InternalEmployeePtr& changer);
     bool setOtherStatus(const OptionalStr& status, const InternalEmployeePtr& changer);
     bool setAccessRole(const AccessRole role, const InternalEmployeePtr& changer);
     bool setOtherRole(const OptionalStr& role, const InternalEmployeePtr& changer);
     bool setTimeZone(const int time_zone, const InternalEmployeePtr& changer);
-    bool setManager(const InternalEmployeePtr& manager, const InternalEmployeePtr& changer);
     bool setPosition(const OptionalStr& position, const InternalEmployeePtr& changer);
     bool setIsActive(bool is_active, const InternalEmployeePtr& changer);
     bool setSalesTerritory(const OptionalStr& sales_territory, const InternalEmployeePtr& changer);
@@ -133,7 +133,7 @@ public:
     bool addProposedOffer(const OfferPtr& offer, const InternalEmployeePtr& changer);
     bool delProposedOffer(size_t index, const InternalEmployeePtr& changer);
 
-    bool addLead(const ClientPtr& lead, const InternalEmployeePtr& changer);
+    bool addLead(const WeakClientPtr& lead, const InternalEmployeePtr& changer);
     bool delLead(size_t index, const InternalEmployeePtr& changer);
 
     bool addMonthlyQuota(const Money& quota, const InternalEmployeePtr& changer);
@@ -148,74 +148,83 @@ public:
     bool addSkill(const std::string& skill, const InternalEmployeePtr& changer);
     bool delSkill(size_t index, const InternalEmployeePtr& changer);
 
-    bool addDirectReport(const InternalEmployeePtr& report, const InternalEmployeePtr& changer);
+    bool addDirectReport(const WeakInternalEmployee& report, const InternalEmployeePtr& changer);
     bool delDirectReport(size_t index, const InternalEmployeePtr& changer);
     /// @}
 
 private:
-    InternalEmployeePtr manager;
-    OptionalStr         position;
-    OptionalStr         department;
-    AccessRole          access_role;
-    OptionalStr         other_role;
-    EmployeeStatus      status;
-    OptionalStr         other_status;
-    OptionalStr         sales_territory;
-    DatePtr             last_login_date;
-    DatePtr             last_action_date;
-    int                 time_zone;  /// UTC +/-
-    bool                is_active;
-    DatePtr             next_review_date;
-    DatePtr             hire_date;
-    DatePtr             dismissal_date;
-    MoneyPtr            base_salary;
+    WeakInternalEmployee manager;
+    OptionalStr          position;
+    OptionalStr          department;
+    AccessRole           access_role;
+    OptionalStr          other_role;
+    EmployeeStatus       status;
+    OptionalStr          other_status;
+    OptionalStr          sales_territory;
+    DatePtr              last_login_date;
+    DatePtr              last_action_date;
+    int                  time_zone;  /// UTC +/-
+    bool                 is_active;
+    DatePtr              next_review_date;
+    DatePtr              hire_date;
+    DatePtr              dismissal_date;
+    MoneyPtr             base_salary;
 
     //
-    std::vector<DealPtr>             managed_deals;
-    std::vector<OfferPtr>            proposed_offers;
-    std::optional<double>            commission_rate;
-    std::optional<double>            performance_score;
-    std::vector<ClientPtr>           leads;
-    std::vector<Money>               monthly_quota;
-    std::vector<TaskPtr>             tasks;
-    std::vector<DocumentPtr>         documents;
-    std::vector<std::string>         skills;
-    std::vector<InternalEmployeePtr> direct_reports;
+    std::vector<DealPtr>              managed_deals;
+    std::vector<OfferPtr>             proposed_offers;
+    std::optional<double>             commission_rate;
+    std::optional<double>             performance_score;
+    std::vector<WeakClientPtr>        leads;
+    std::vector<Money>                monthly_quota;
+    std::vector<TaskPtr>              tasks;
+    std::vector<DocumentPtr>          documents;
+    std::vector<std::string>          skills;
+    std::vector<WeakInternalEmployee> direct_reports;
 
     friend InternalEmployeeDataBase;
 
 #ifdef _TESTING
 public:
-    bool _setDepartment(const OptionalStr& department, const InternalEmployeePtr& changer) {
+    bool _setDepartment(const OptionalStr& department, const InternalEmployeePtr& changer)
+    {
         return this->setDepartment(department, changer);
     }
-    bool _setStatus(const EmployeeStatus status, const InternalEmployeePtr& changer) {
+    bool _setStatus(const EmployeeStatus status, const InternalEmployeePtr& changer)
+    {
         return this->setStatus(status, changer);
     }
-    bool _setOtherStatus(const OptionalStr& status, const InternalEmployeePtr& changer) {
+    bool _setOtherStatus(const OptionalStr& status, const InternalEmployeePtr& changer)
+    {
         return this->setOtherStatus(status, changer);
     }
-    bool _setAccessRole(const AccessRole role, const InternalEmployeePtr& changer) {
+    bool _setAccessRole(const AccessRole role, const InternalEmployeePtr& changer)
+    {
         return this->setAccessRole(role, changer);
     }
-    bool _setOtherRole(const OptionalStr& role, const InternalEmployeePtr& changer) {
+    bool _setOtherRole(const OptionalStr& role, const InternalEmployeePtr& changer)
+    {
         return this->setOtherRole(role, changer);
     }
-    bool _setTimeZone(const int time_zone, const InternalEmployeePtr& changer) {
+    bool _setTimeZone(const int time_zone, const InternalEmployeePtr& changer)
+    {
         return this->setTimeZone(time_zone, changer);
     }
-    bool _setManager(const InternalEmployeePtr& manager, const InternalEmployeePtr& changer) {
+    bool _setManager(const InternalEmployeePtr& manager, const InternalEmployeePtr& changer)
+    {
         return this->setManager(manager, changer);
     }
-    bool _setPosition(const OptionalStr& position, const InternalEmployeePtr& changer) {
+    bool _setPosition(const OptionalStr& position, const InternalEmployeePtr& changer)
+    {
         return this->setPosition(position, changer);
     }
-    bool _setIsActive(bool is_active, const InternalEmployeePtr& changer) {
+    bool _setIsActive(bool is_active, const InternalEmployeePtr& changer)
+    {
         return this->setIsActive(is_active, changer);
     }
-    bool _setSalesTerritory(const OptionalStr& sales_territory, const InternalEmployeePtr& changer) {
+    bool _setSalesTerritory(const OptionalStr& sales_territory, const InternalEmployeePtr& changer)
+    {
         return this->setSalesTerritory(sales_territory, changer);
     }
-#endif // _TESTING
-
+#endif  // _TESTING
 };

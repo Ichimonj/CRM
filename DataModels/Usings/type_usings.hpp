@@ -49,6 +49,7 @@ using WeakPersonPtr               = std::weak_ptr<Person>;
 using PersonPtr                   = std::shared_ptr<Person>;
 using MeetingPtr                  = std::shared_ptr<Meeting>;
 using AddressPtr                  = std::shared_ptr<Address>;
+using WeakClientPtr               = std::weak_ptr<Client>;
 using ClientPtr                   = std::shared_ptr<Client>;
 using DocumentPtr                 = std::shared_ptr<Document>;
 using FilePtr                     = std::shared_ptr<FileMetadata>;
