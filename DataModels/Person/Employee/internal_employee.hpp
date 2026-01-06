@@ -152,6 +152,12 @@ public:
     bool delDirectReport(size_t index, const InternalEmployeePtr& changer);
     /// @}
 
+    /// @name Auxiliary functions
+    /// @{
+    void clearLeads();
+    void clearDirectReports();
+    /// @}
+
 private:
     WeakInternalEmployee manager;
     OptionalStr          position;

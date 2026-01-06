@@ -986,3 +986,25 @@ bool InternalEmployee::delDirectReport(size_t index, const InternalEmployeePtr& 
     }
     return false;
 }
+
+void InternalEmployee::clearLeads()
+{
+    leads.erase(
+        std::remove_if(
+            leads.begin(), leads.end(), [](const WeakClientPtr& client) { return client.expired(); }
+        ),
+        leads.end()
+    );
+}
+
+void InternalEmployee::clearDirectReports()
+{
+    direct_reports.erase(
+        std::remove_if(
+            direct_reports.begin(),
+            direct_reports.end(),
+            [](const WeakInternalEmployee& weak) { return weak.expired(); }
+        ),
+        direct_reports.end()
+    );
+}
