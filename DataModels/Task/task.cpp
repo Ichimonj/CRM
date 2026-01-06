@@ -246,18 +246,19 @@ bool Task::setATS(const DurationPtr& ATS, const InternalEmployeePtr& changer)
 
 bool Task::setManager(const WeakInternalEmployee& weak_manager, const InternalEmployeePtr& changer)
 {
-    if (this->manager.owner_before(manager) || manager.owner_before(this->manager)) {
+    if (this->manager.owner_before(weak_manager) || weak_manager.owner_before(this->manager)) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
             WEAK_PTR_TO_OPTIONAL(this->manager),
-            WEAK_PTR_TO_OPTIONAL(manager),
+            WEAK_PTR_TO_OPTIONAL(weak_manager),
             TaskFields::Manager,
             this->manager.lock() ? ChangeLog::FieldType::InternalEmployee
                                  : ChangeLog::FieldType::null,
-            manager.lock() ? ChangeLog::FieldType::InternalEmployee : ChangeLog::FieldType::null,
+            weak_manager.lock() ? ChangeLog::FieldType::InternalEmployee
+                                : ChangeLog::FieldType::null,
             ChangeLog::Action::Change
         ));
-        this->manager = manager;
+        this->manager = weak_manager;
         return true;
     }
     return false;
@@ -419,7 +420,7 @@ bool Task::delMoreData(size_t index, const InternalEmployeePtr& changer)
 bool Task::addTeemMember(const WeakPersonPtr& member, const InternalEmployeePtr& changer)
 {
     if (std::find_if(this->teem.begin(), this->teem.end(), [&member](const WeakPersonPtr& person) {
-            return member.owner_before(person) || person.owner_before(member);
+            return !(member.owner_before(person) || person.owner_before(member));
         }) == this->teem.end()) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
