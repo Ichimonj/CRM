@@ -67,8 +67,8 @@ void InternalEmployeeDataBase::add(const InternalEmployeePtr& employee)
 
     this->by_time_zone[employee->getTimeZone()].push_back(employee);
 
-    if (employee->getManager()) {
-        this->by_manager[employee->getManager()->getId()].push_back(employee);
+    if (!employee->getManager().expired()) {
+        this->by_manager[employee->getManager().lock()->getId()].push_back(employee);
     }
     if (employee->getPosition()) {
         this->by_position.emplace(employee->getPosition().value(), employee);
@@ -763,7 +763,7 @@ void InternalEmployeeDataBase::changePosition(
 }
 
 void InternalEmployeeDataBase::changeManager(
-    const BigUint& id, const InternalEmployeePtr& manager, const InternalEmployeePtr& changer
+    const BigUint& id, const WeakInternalEmployee& manager, const InternalEmployeePtr& changer
 )
 {
     auto id_it = by_id.find(id);
@@ -774,13 +774,13 @@ void InternalEmployeeDataBase::changeManager(
     const auto          old_manager = employee->getManager();
 
     if (employee->setManager(manager, changer)) {
-        if (old_manager) {
+        if (!old_manager.expired()) {
             safeRemoveFromVector(
-                this->by_manager, old_manager->getId(), employee, __LINE__, "by_manager"
+                this->by_manager, old_manager.lock()->getId(), employee, __LINE__, "by_manager"
             );
         }
-        if (manager) {
-            this->by_manager[manager->getId()].push_back(employee);
+        if (!manager.expired()) {
+            this->by_manager[manager.lock()->getId()].push_back(employee);
         }
     }
 }
