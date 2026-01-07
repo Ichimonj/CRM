@@ -49,7 +49,8 @@ public:
         Person,
         CallType,
         Meeting,
-        Client,
+        WeakClient,
+        Client, //DEL
         WeakInternalEmployee,
         InternalEmployee, //DEL
         ExternalEmployee,
@@ -148,7 +149,8 @@ public:
         std::shared_ptr<Date>,
         WeakPersonPtr,
         std::shared_ptr<Person>, // DEL
-        std::shared_ptr<Client>,
+        WeakClientPtr, 
+        std::shared_ptr<Client>, // DEL
         std::shared_ptr<Meeting>,
         WeakInternalEmployee,
         std::shared_ptr<InternalEmployee>,  // DEL

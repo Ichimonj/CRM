@@ -18,6 +18,11 @@ namespace errors {
     inline std::string negative_date_range     = "Negative date range";
 
 }  // namespace errors
+
+namespace warning {
+    inline std::string employee_removed = "Internal employee has been removed from the database";
+    inline std::string client_removed = "Client has been removed from the database";
+}
 namespace names_str {
     inline std::string addDock     = "New document";
     inline std::string delDock     = "Delete document";

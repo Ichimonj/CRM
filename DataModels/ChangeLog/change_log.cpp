@@ -89,6 +89,16 @@ StringPtr ChangeLog::valueToStr(FieldType type, ValueVariant value, StringPtr& s
             str = std::make_shared<std::string>(client->getName() + ' ' + client->getSurname());
             return str;
         }
+        case FieldType::WeakClient: {
+            auto& client_weak = std::get<std::weak_ptr<Client>>(value);
+            if (!client_weak.expired()) {
+                auto client = client_weak.lock();
+                str = std::make_shared<std::string>(client->getName() + ' ' + client->getSurname());
+            } else {
+                str = std::make_shared<std::string>(warning::client_removed);
+            }
+            return str;
+        }
         case FieldType::InternalEmployee: {
             auto& employee = std::get<std::shared_ptr<InternalEmployee>>(value);
             str = std::make_shared<std::string>(employee->getName() + ' ' + employee->getSurname());
