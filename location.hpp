@@ -20,9 +20,13 @@ namespace errors {
 }  // namespace errors
 
 namespace warning {
-    inline std::string employee_removed = "Internal employee has been removed from the database";
+    inline std::string internal_employee_removed =
+        "Internal employee has been removed from the database";
+    inline std::string external_employee_removed =
+        "External employee has been removed from the database";
     inline std::string client_removed = "Client has been removed from the database";
-}
+    inline std::string person_removed = "Person has been removed from the database";
+}  // namespace warning
 namespace names_str {
     inline std::string addDock     = "New document";
     inline std::string delDock     = "Delete document";

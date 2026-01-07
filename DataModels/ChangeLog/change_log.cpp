@@ -73,6 +73,16 @@ StringPtr ChangeLog::valueToStr(FieldType type, ValueVariant value, StringPtr& s
             str = std::make_shared<std::string>(person->getName() + ' ' + person->getSurname());
             return str;
         }
+        case FieldType::WeakPerson: {
+            auto& person_weak = std::get<std::weak_ptr<Person>>(value);
+            if (!person_weak.expired()) {
+                auto person = person_weak.lock();
+                str = std::make_shared<std::string>(person->getName() + ' ' + person->getSurname());
+            } else {
+                str = std::make_shared<std::string>(warning::person_removed);
+            }
+            return str;
+        }
         case FieldType::CallType: {
             str = std::make_shared<std::string>(
                 this->callTypeToStr(std::get<PhoneCallData::CallType>(value))
@@ -112,7 +122,7 @@ StringPtr ChangeLog::valueToStr(FieldType type, ValueVariant value, StringPtr& s
                     employee->getName() + ' ' + employee->getSurname()
                 );
             } else {
-                str = std::make_shared<std::string>(warning::employee_removed);
+                str = std::make_shared<std::string>(warning::internal_employee_removed);
             }
 
             return str;
@@ -121,6 +131,17 @@ StringPtr ChangeLog::valueToStr(FieldType type, ValueVariant value, StringPtr& s
             auto& employee = std::get<std::shared_ptr<ExternalEmployee>>(value);
             str = std::make_shared<std::string>(employee->getName() + ' ' + employee->getSurname());
             return str;
+        }
+        case FieldType::WeakExternalEmployee: {
+            auto& employee_weak = std::get<std::weak_ptr<ExternalEmployee>>(value);
+            if (!employee_weak.expired()) {
+                auto employee = employee_weak.lock();
+                str           = std::make_shared<std::string>(
+                    employee->getName() + ' ' + employee->getSurname()
+                );
+            } else {
+                str = std::make_shared<std::string>(warning::external_employee_removed);
+            }
         }
         case FieldType::Bool: {
             str = std::get<bool>(value) ? std::make_shared<std::string>("True")
