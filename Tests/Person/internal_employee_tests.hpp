@@ -45,18 +45,17 @@ namespace unit {
         EXPECT_TRUE(ie.getSkills().empty());
         EXPECT_TRUE(ie.getDirectReports().empty());
 
-        EXPECT_EQ(ie.getManager(), nullptr);
+        EXPECT_EQ(ie.getManager().lock(), nullptr);
     }
 
+    InternalEmployee manager(BigUint("100"), "Ivan", "StaryBoss", std::nullopt);
+    auto             manager_ptr = std::make_shared<InternalEmployee>(manager);
     TEST(InternalEmployeeTest, SetManager)
     {
-        InternalEmployee manager(BigUint("100"), "Ivan", "StaryBoss", std::nullopt);
-        auto             manager_ptr = std::make_shared<InternalEmployee>(manager);
-
         ie._setManager(manager_ptr, changer);
 
         SCOPED_TRACE("Value check");
-        EXPECT_EQ(ie.getManager(), manager_ptr);
+        EXPECT_EQ(ie.getManager().lock(), manager_ptr);
 
         SCOPED_TRACE("ChangeLogs size");
         ASSERT_EQ(ie.getChangeLogs().size(), 1);
@@ -64,7 +63,7 @@ namespace unit {
         auto& log = ie.getChangeLogs().back();
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
 
         SCOPED_TRACE("Old value");
         EXPECT_FALSE(log->getOldValue().has_value());
@@ -73,9 +72,9 @@ namespace unit {
 
         SCOPED_TRACE("New value");
         ASSERT_TRUE(log->getNewValue().has_value());
-        EXPECT_EQ(log->getNewValueFieldType(), ChangeLog::FieldType::InternalEmployee);
-        auto new_value = std::get<std::shared_ptr<InternalEmployee>>(log->getNewValue().value());
-        EXPECT_EQ(new_value, manager_ptr);
+        EXPECT_EQ(log->getNewValueFieldType(), ChangeLog::FieldType::WeakInternalEmployee);
+        auto new_value = std::get<std::weak_ptr<InternalEmployee>>(log->getNewValue().value());
+        EXPECT_EQ(new_value.lock(), manager_ptr);
         EXPECT_EQ(*log->getNewValueStr(), std::string("Ivan StaryBoss"));
 
         SCOPED_TRACE("Field");
@@ -85,15 +84,14 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
     }
 
+    InternalEmployee manager2(BigUint("101"), "Dima", "White", std::nullopt);
+    auto             manager2_ptr = std::make_shared<InternalEmployee>(manager2);
     TEST(InternalEmployeeTest, SwapManager)
     {
-        InternalEmployee manager2(BigUint("101"), "Dima", "White", std::nullopt);
-        auto             manager2_ptr = std::make_shared<InternalEmployee>(manager2);
-
         ie._setManager(manager2_ptr, changer);
 
         SCOPED_TRACE("Value check");
-        EXPECT_EQ(ie.getManager(), manager2_ptr);
+        EXPECT_EQ(ie.getManager().lock(), manager2_ptr);
 
         SCOPED_TRACE("ChangeLogs size");
         ASSERT_EQ(ie.getChangeLogs().size(), 2);
@@ -101,20 +99,20 @@ namespace unit {
         auto& log = ie.getChangeLogs().back();
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
 
         SCOPED_TRACE("Old value");
         EXPECT_TRUE(log->getOldValue().has_value());
-        EXPECT_EQ(log->getOldValueFieldType(), ChangeLog::FieldType::InternalEmployee);
-        auto old_value = std::get<InternalEmployeePtr>(log->getOldValue().value());
-        EXPECT_EQ(old_value->getId(), "100");
+        EXPECT_EQ(log->getOldValueFieldType(), ChangeLog::FieldType::WeakInternalEmployee);
+        auto old_value = std::get<std::weak_ptr<InternalEmployee>>(log->getOldValue().value());
+        EXPECT_EQ(old_value.lock()->getId(), "100");
         EXPECT_EQ(*log->getOldValueStr(), std::string("Ivan StaryBoss"));
 
         SCOPED_TRACE("New value");
         ASSERT_TRUE(log->getNewValue().has_value());
-        EXPECT_EQ(log->getNewValueFieldType(), ChangeLog::FieldType::InternalEmployee);
-        auto new_value = std::get<std::shared_ptr<InternalEmployee>>(log->getNewValue().value());
-        EXPECT_EQ(new_value, manager2_ptr);
+        EXPECT_EQ(log->getNewValueFieldType(), ChangeLog::FieldType::WeakInternalEmployee);
+        auto new_value = std::get<std::weak_ptr<InternalEmployee>>(log->getNewValue().value());
+        EXPECT_EQ(new_value.lock(), manager2_ptr);
         EXPECT_EQ(*log->getNewValueStr(), std::string("Dima White"));
 
         SCOPED_TRACE("Field");
@@ -129,7 +127,7 @@ namespace unit {
         ie._setManager(nullptr, changer);
 
         SCOPED_TRACE("Value check");
-        EXPECT_EQ(ie.getManager(), nullptr);
+        EXPECT_EQ(ie.getManager().lock(), nullptr);
 
         SCOPED_TRACE("ChangeLogs size");
         ASSERT_EQ(ie.getChangeLogs().size(), 3);
@@ -137,13 +135,13 @@ namespace unit {
         auto& log = ie.getChangeLogs().back();
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
 
         SCOPED_TRACE("Old value");
         EXPECT_TRUE(log->getOldValue().has_value());
-        EXPECT_EQ(log->getOldValueFieldType(), ChangeLog::FieldType::InternalEmployee);
-        auto old_value = std::get<std::shared_ptr<InternalEmployee>>(log->getOldValue().value());
-        EXPECT_EQ(old_value->getId(), "101");
+        EXPECT_EQ(log->getOldValueFieldType(), ChangeLog::FieldType::WeakInternalEmployee);
+        auto old_value = std::get<std::weak_ptr<InternalEmployee>>(log->getOldValue().value());
+        EXPECT_EQ(old_value.lock()->getId(), "101");
         EXPECT_EQ(*log->getOldValueStr(), std::string("Dima White"));
 
         SCOPED_TRACE("New value");
@@ -191,7 +189,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(InternalEmployeeTest, SwapPosition)
@@ -229,7 +227,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(InternalEmployeeTest, DelPosition)
@@ -264,7 +262,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(InternalEmployeeTest, SetDepartment)
@@ -300,7 +298,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(InternalEmployeeTest, SwapDepartment)
@@ -338,7 +336,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(InternalEmployeeTest, DelDepartment)
@@ -373,7 +371,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(InternalEmployeeTest, SetRole)
@@ -410,7 +408,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(InternalEmployeeTest, SetOtherRole)
@@ -448,7 +446,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(InternalEmployeeTest, SetStatus)
@@ -485,7 +483,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(InternalEmployeeTest, SetOtherStatus)
@@ -523,7 +521,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(InternalEmployeeTest, SetSalesTerritory_FromNulloptToValue_LogsNewValue)
@@ -559,7 +557,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(InternalEmployeeTest, SwapSalesTerritory)
@@ -597,7 +595,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(InternalEmployeeTest, DelSalesTerritory)
@@ -632,7 +630,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(InternalEmployeeTest, SetLastLoginDate)
@@ -667,7 +665,7 @@ namespace unit {
 
         SCOPED_TRACE("Action & Changer");
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
     TEST(InternalEmployeeTest, SwapLastLoginDate)
     {
@@ -703,7 +701,7 @@ namespace unit {
 
         SCOPED_TRACE("Action & Changer");
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(InternalEmployeeTest, DelLastLoginDate)
@@ -736,7 +734,7 @@ namespace unit {
 
         SCOPED_TRACE("Action & Changer");
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
     TEST(InternalEmployeeTest, SetLastActionDate)
     {
@@ -771,7 +769,7 @@ namespace unit {
 
         SCOPED_TRACE("Action & Changer");
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
     TEST(InternalEmployeeTest, SwapLastActionDate)
     {
@@ -808,7 +806,7 @@ namespace unit {
 
         SCOPED_TRACE("Action & Changer");
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
     TEST(InternalEmployeeTest, DelLastActionDate)
     {
@@ -840,7 +838,7 @@ namespace unit {
 
         SCOPED_TRACE("Action & Changer");
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(InternalEmployeeTest, SetTimeZone)
@@ -875,7 +873,7 @@ namespace unit {
 
         SCOPED_TRACE("Action & Changer");
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
     TEST(InternalEmployeeTest, SwapTimeZone)
     {
@@ -909,7 +907,7 @@ namespace unit {
 
         SCOPED_TRACE("Action & Changer");
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(InternalEmployeeTest, SetIsActive)
@@ -944,7 +942,7 @@ namespace unit {
 
         SCOPED_TRACE("Action & Changer");
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(InternalEmployeeTest, SetNextReviewDate)
@@ -980,7 +978,7 @@ namespace unit {
 
         SCOPED_TRACE("Action & Changer");
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(InternalEmployeeTest, SwapNextReviewDate)
@@ -1018,7 +1016,7 @@ namespace unit {
 
         SCOPED_TRACE("Action & Changer");
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(InternalEmployeeTest, DelNextReviewDate)
@@ -1051,7 +1049,7 @@ namespace unit {
 
         SCOPED_TRACE("Action & Changer");
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(InternalEmployeeTest, SetHireDate)
@@ -1087,7 +1085,7 @@ namespace unit {
 
         SCOPED_TRACE("Action & Changer");
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(InternalEmployeeTest, SwapHireDate)
@@ -1125,7 +1123,7 @@ namespace unit {
 
         SCOPED_TRACE("Action & Changer");
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(InternalEmployeeTest, DelHireDate)
@@ -1158,7 +1156,7 @@ namespace unit {
 
         SCOPED_TRACE("Action & Changer");
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
     TEST(InternalEmployeeTest, SetDismissalDate)
     {
@@ -1193,7 +1191,7 @@ namespace unit {
 
         SCOPED_TRACE("Action & Changer");
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(InternalEmployeeTest, SwapDismissalDate)
@@ -1231,7 +1229,7 @@ namespace unit {
 
         SCOPED_TRACE("Action & Changer");
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(InternalEmployeeTest, DelDismissalDate)
@@ -1264,7 +1262,7 @@ namespace unit {
 
         SCOPED_TRACE("Action & Changer");
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(InternalEmployeeTest, SetCommissionRate)
@@ -1298,7 +1296,7 @@ namespace unit {
 
         SCOPED_TRACE("Action & Changer");
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(InternalEmployeeTest, SwapCommissionRate)
@@ -1334,7 +1332,7 @@ namespace unit {
 
         SCOPED_TRACE("Action & Changer");
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(InternalEmployeeTest, DelCommissionRate)
@@ -1367,7 +1365,7 @@ namespace unit {
 
         SCOPED_TRACE("Action & Changer");
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(InternalEmployeeTest, SetBaseSalary)
@@ -1403,7 +1401,7 @@ namespace unit {
 
         SCOPED_TRACE("Action & Changer");
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(InternalEmployeeTest, SetPerformanceScore)
@@ -1437,7 +1435,7 @@ namespace unit {
 
         SCOPED_TRACE("Action & Changer");
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(InternalEmployeeTest, SwapPerformanceScore)
@@ -1473,7 +1471,7 @@ namespace unit {
 
         SCOPED_TRACE("Action & Changer");
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
     TEST(InternalEmployeeTest, DelPerformanceScore)
     {
@@ -1505,7 +1503,7 @@ namespace unit {
 
         SCOPED_TRACE("Action & Changer");
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(InternalEmployeeTest, AddManagerDeal)
@@ -1537,7 +1535,7 @@ namespace unit {
 
         EXPECT_EQ(log_person->getField(), ChangeLog::FieldVariant(PersonFields::RelatedDeals));
         EXPECT_EQ(log_person->getAction(), ChangeLog::Action::Add);
-        EXPECT_EQ(log_person->getChanger(), changer);
+        EXPECT_EQ(log_person->getChanger().lock(), changer);
 
         auto log_manager = ie.getChangeLogs()[ie.getChangeLogs().size() - 2];
 
@@ -1555,7 +1553,7 @@ namespace unit {
             log_manager->getField(), ChangeLog::FieldVariant(InternalEmployeeFields::ManagerDeals)
         );
         EXPECT_EQ(log_manager->getAction(), ChangeLog::Action::Add);
-        EXPECT_EQ(log_manager->getChanger(), changer);
+        EXPECT_EQ(log_manager->getChanger().lock(), changer);
     }
 
     TEST(InternalEmployeeTest, SwapManagerDeal)
@@ -1588,7 +1586,7 @@ namespace unit {
         SCOPED_TRACE("Field & Action");
         EXPECT_EQ(log_person->getField(), ChangeLog::FieldVariant(PersonFields::RelatedDeals));
         EXPECT_EQ(log_person->getAction(), ChangeLog::Action::Add);
-        EXPECT_EQ(log_person->getChanger(), changer);
+        EXPECT_EQ(log_person->getChanger().lock(), changer);
 
         auto log_manager = ie.getChangeLogs()[ie.getChangeLogs().size() - 2];
 
@@ -1608,7 +1606,7 @@ namespace unit {
             log_manager->getField(), ChangeLog::FieldVariant(InternalEmployeeFields::ManagerDeals)
         );
         EXPECT_EQ(log_manager->getAction(), ChangeLog::Action::Add);
-        EXPECT_EQ(log_manager->getChanger(), changer);
+        EXPECT_EQ(log_manager->getChanger().lock(), changer);
     }
 
     TEST(InternalEmployeeTest, DelManagerDeal)
@@ -1638,7 +1636,7 @@ namespace unit {
         SCOPED_TRACE("Field & Action");
         EXPECT_EQ(log_person->getField(), ChangeLog::FieldVariant(PersonFields::RelatedDeals));
         EXPECT_EQ(log_person->getAction(), ChangeLog::Action::Remove);
-        EXPECT_EQ(log_person->getChanger(), changer);
+        EXPECT_EQ(log_person->getChanger().lock(), changer);
 
         auto log_manager = ie.getChangeLogs()[ie.getChangeLogs().size() - 2];
 
@@ -1658,7 +1656,7 @@ namespace unit {
             log_manager->getField(), ChangeLog::FieldVariant(InternalEmployeeFields::ManagerDeals)
         );
         EXPECT_EQ(log_manager->getAction(), ChangeLog::Action::Remove);
-        EXPECT_EQ(log_manager->getChanger(), changer);
+        EXPECT_EQ(log_manager->getChanger().lock(), changer);
     }
 
     TEST(InternalEmployeeTest, AddProposedOffer)
@@ -1695,7 +1693,7 @@ namespace unit {
 
         SCOPED_TRACE("Action & Changer");
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Add);
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(InternalEmployeeTest, SwapProposedOffer)
@@ -1731,7 +1729,7 @@ namespace unit {
 
         SCOPED_TRACE("Action & Changer");
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Add);
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(InternalEmployeeTest, DelProposedOffer)
@@ -1763,18 +1761,17 @@ namespace unit {
 
         SCOPED_TRACE("Action & Changer");
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Remove);
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
+    auto lead = std::make_shared<Client>(BigUint("919"), "Alexander", "Petrov", std::nullopt);
     TEST(InternalEmployeeTest, AddLead)
     {
-        auto lead = std::make_shared<Client>(BigUint("919"), "Alexander", "Petrov", std::nullopt);
-
         ie.addLead(lead, changer);
 
         SCOPED_TRACE("Value check");
         ASSERT_EQ(ie.getLeads().size(), 1);
-        EXPECT_EQ(ie.getLeads()[0], lead);
+        EXPECT_EQ(ie.getLeads()[0].lock(), lead);
 
         SCOPED_TRACE("Change logs size");
         EXPECT_EQ(ie.getChangeLogs().size(), 51);
@@ -1787,9 +1784,9 @@ namespace unit {
 
         SCOPED_TRACE("New value");
         EXPECT_TRUE(log->getNewValue().has_value());
-        EXPECT_EQ(log->getNewValueFieldType(), ChangeLog::FieldType::Client);
-        auto stored_lead = std::get<ClientPtr>(log->getNewValue().value());
-        EXPECT_EQ(stored_lead, lead);
+        EXPECT_EQ(log->getNewValueFieldType(), ChangeLog::FieldType::WeakClient);
+        auto stored_lead = std::get<WeakClientPtr>(log->getNewValue().value());
+        EXPECT_EQ(stored_lead.lock(), lead);
         EXPECT_EQ(*log->getNewValueStr(), std::string("Alexander Petrov"));
 
         SCOPED_TRACE("Field");
@@ -1798,10 +1795,10 @@ namespace unit {
 
         SCOPED_TRACE("Action & Changer");
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Add);
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
-    TEST(InternalEmployeeTest, SwapLead)
+    TEST(InternalEmployeeTest, AddLead2)
     {
         auto new_lead = std::make_shared<Client>(BigUint("12"), "Victoria", "Sidorova", "Ivanovna");
 
@@ -1809,7 +1806,7 @@ namespace unit {
 
         SCOPED_TRACE("Value check");
         EXPECT_EQ(ie.getLeads().size(), 2);
-        EXPECT_EQ(ie.getLeads()[1], new_lead);
+        EXPECT_EQ(ie.getLeads()[1].lock(), new_lead);
 
         SCOPED_TRACE("Change logs size");
         EXPECT_EQ(ie.getChangeLogs().size(), 52);
@@ -1822,9 +1819,9 @@ namespace unit {
 
         SCOPED_TRACE("New value");
         EXPECT_TRUE(log->getNewValue().has_value());
-        EXPECT_EQ(log->getNewValueFieldType(), ChangeLog::FieldType::Client);
-        auto stored_lead = std::get<ClientPtr>(log->getNewValue().value());
-        EXPECT_EQ(stored_lead, new_lead);
+        EXPECT_EQ(log->getNewValueFieldType(), ChangeLog::FieldType::WeakClient);
+        auto stored_lead = std::get<WeakClientPtr>(log->getNewValue().value());
+        EXPECT_EQ(stored_lead.lock(), new_lead);
         EXPECT_EQ(*log->getNewValueStr(), std::string("Victoria Sidorova"));
 
         SCOPED_TRACE("Field");
@@ -1833,7 +1830,7 @@ namespace unit {
 
         SCOPED_TRACE("Action & Changer");
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Add);
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(InternalEmployeeTest, DelLead)
@@ -1842,7 +1839,6 @@ namespace unit {
 
         SCOPED_TRACE("Value check");
         EXPECT_EQ(ie.getLeads().size(), 1);
-        EXPECT_EQ(ie.getLeads()[0]->getName(), "Victoria");
 
         SCOPED_TRACE("Change logs size");
         EXPECT_EQ(ie.getChangeLogs().size(), 53);
@@ -1851,10 +1847,10 @@ namespace unit {
 
         SCOPED_TRACE("Old value");
         EXPECT_TRUE(log->getOldValue().has_value());
-        EXPECT_EQ(log->getOldValueFieldType(), ChangeLog::FieldType::Client);
-        auto stored_lead = std::get<ClientPtr>(log->getOldValue().value());
-        EXPECT_EQ(stored_lead->getName(), "Alexander");
-        EXPECT_EQ(*log->getOldValueStr(), std::string("Alexander Petrov"));
+        EXPECT_EQ(log->getOldValueFieldType(), ChangeLog::FieldType::WeakClient);
+        auto stored_lead = std::get<WeakClientPtr>(log->getOldValue().value());
+        EXPECT_EQ(stored_lead.lock(), lead);
+        EXPECT_EQ(*log->getOldValueStr(), "Alexander Petrov");
 
         SCOPED_TRACE("New value");
         EXPECT_FALSE(log->getNewValue().has_value());
@@ -1866,7 +1862,7 @@ namespace unit {
 
         SCOPED_TRACE("Action & Changer");
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Remove);
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(InternalEmployeeTest, AddMonthlyQuota)
@@ -1901,7 +1897,7 @@ namespace unit {
 
         SCOPED_TRACE("Action & Changer");
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Add);
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
     TEST(InternalEmployeeTest, AddMonthlyQuota2)
     {
@@ -1935,7 +1931,7 @@ namespace unit {
 
         SCOPED_TRACE("Action & Changer");
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Add);
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
     TEST(InternalEmployeeTest, DelMonthlyQuota)
     {
@@ -1967,7 +1963,7 @@ namespace unit {
 
         SCOPED_TRACE("Action & Changer");
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Remove);
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(InternalEmployeeTest, AddTask)
@@ -1984,10 +1980,10 @@ namespace unit {
             nullptr,
             nullptr,
             changer,
-            nullptr,
+            WeakInternalEmployee{},
             std::vector<Note>{},
             std::vector<StringPair>{},
-            std::vector<PersonPtr>{}
+            std::vector<WeakPersonPtr>{}
         );
 
         ie.addTask(task, changer);
@@ -2020,7 +2016,7 @@ namespace unit {
 
         SCOPED_TRACE("Action & Changer");
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Add);
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
     TEST(InternalEmployeeTest, AddTask2)
     {
@@ -2036,10 +2032,10 @@ namespace unit {
             nullptr,
             nullptr,
             changer,
-            nullptr,
+            WeakInternalEmployee{},
             std::vector<Note>{},
             std::vector<StringPair>{},
-            std::vector<PersonPtr>{}
+            std::vector<WeakPersonPtr>{}
         );
 
         ie.addTask(new_task, changer);
@@ -2071,7 +2067,7 @@ namespace unit {
 
         SCOPED_TRACE("Action & Changer");
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Add);
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(InternalEmployeeTest, DelTask)
@@ -2104,7 +2100,7 @@ namespace unit {
 
         SCOPED_TRACE("Action & Changer");
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Remove);
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(InternalEmployeeTest, AddDocument)
@@ -2142,7 +2138,7 @@ namespace unit {
 
         SCOPED_TRACE("Action & Changer");
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Add);
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(InternalEmployeeTest, AddDocument2)
@@ -2179,7 +2175,7 @@ namespace unit {
 
         SCOPED_TRACE("Action & Changer");
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Add);
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(InternalEmployeeTest, DelDocument)
@@ -2212,7 +2208,7 @@ namespace unit {
 
         SCOPED_TRACE("Action & Changer");
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Remove);
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(InternalEmployeeTest, AddSkill)
@@ -2245,7 +2241,7 @@ namespace unit {
 
         SCOPED_TRACE("Action & Changer");
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Add);
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
     TEST(InternalEmployeeTest, AddSkill2)
     {
@@ -2277,7 +2273,7 @@ namespace unit {
 
         SCOPED_TRACE("Action & Changer");
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Add);
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
     TEST(InternalEmployeeTest, DelSkill)
     {
@@ -2309,19 +2305,18 @@ namespace unit {
 
         SCOPED_TRACE("Action & Changer");
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Remove);
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
+    auto report =
+        std::make_shared<InternalEmployee>(BigUint("501"), "Alexey", "Ivanov", std::nullopt);
     TEST(InternalEmployeeTest, AddDirectReport)
     {
-        auto report =
-            std::make_shared<InternalEmployee>(BigUint("501"), "Alexey", "Ivanov", std::nullopt);
-
         ie.addDirectReport(report, changer);
 
         SCOPED_TRACE("Value check");
         ASSERT_EQ(ie.getDirectReports().size(), 1);
-        EXPECT_EQ(ie.getDirectReports()[0], report);
-        EXPECT_EQ(ie.getDirectReports()[0]->getName(), "Alexey");
+        EXPECT_EQ(ie.getDirectReports()[0].lock(), report);
+        EXPECT_EQ(ie.getDirectReports()[0].lock()->getName(), "Alexey");
 
         SCOPED_TRACE("Change logs size");
         EXPECT_EQ(ie.getChangeLogs().size(), 66);
@@ -2334,11 +2329,11 @@ namespace unit {
 
         SCOPED_TRACE("New value");
         EXPECT_TRUE(log->getNewValue().has_value());
-        EXPECT_EQ(log->getNewValueFieldType(), ChangeLog::FieldType::InternalEmployee);
-        auto stored_report = std::get<InternalEmployeePtr>(log->getNewValue().value());
-        EXPECT_EQ(stored_report, report);
-        EXPECT_EQ(stored_report->getName(), "Alexey");
-        EXPECT_EQ(stored_report->getSurname(), "Ivanov");
+        EXPECT_EQ(log->getNewValueFieldType(), ChangeLog::FieldType::WeakInternalEmployee);
+        auto stored_report = std::get<WeakInternalEmployee>(log->getNewValue().value());
+        EXPECT_EQ(stored_report.lock(), report);
+        EXPECT_EQ(stored_report.lock()->getName(), "Alexey");
+        EXPECT_EQ(stored_report.lock()->getSurname(), "Ivanov");
         EXPECT_EQ(*log->getNewValueStr(), std::string("Alexey Ivanov"));
 
         SCOPED_TRACE("Field");
@@ -2347,19 +2342,18 @@ namespace unit {
 
         SCOPED_TRACE("Action & Changer");
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Add);
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
+    auto new_report =
+        std::make_shared<InternalEmployee>(BigUint("502"), "Daria", "Petrova", std::nullopt);
     TEST(InternalEmployeeTest, AddDirectReport2)
     {
-        auto new_report =
-            std::make_shared<InternalEmployee>(BigUint("502"), "Daria", "Petrova", std::nullopt);
-
         ie.addDirectReport(new_report, changer);
 
         SCOPED_TRACE("Value check");
         EXPECT_EQ(ie.getDirectReports().size(), 2);
-        EXPECT_EQ(ie.getDirectReports()[1]->getName(), "Daria");
+        EXPECT_EQ(ie.getDirectReports()[1].lock()->getName(), "Daria");
 
         SCOPED_TRACE("Change logs size");
         EXPECT_EQ(ie.getChangeLogs().size(), 67);
@@ -2372,11 +2366,11 @@ namespace unit {
 
         SCOPED_TRACE("New value");
         EXPECT_TRUE(log->getNewValue().has_value());
-        EXPECT_EQ(log->getNewValueFieldType(), ChangeLog::FieldType::InternalEmployee);
-        auto stored_report = std::get<InternalEmployeePtr>(log->getNewValue().value());
-        EXPECT_EQ(stored_report, new_report);
-        EXPECT_EQ(stored_report->getName(), "Daria");
-        EXPECT_EQ(stored_report->getSurname(), "Petrova");
+        EXPECT_EQ(log->getNewValueFieldType(), ChangeLog::FieldType::WeakInternalEmployee);
+        auto stored_report = std::get<WeakInternalEmployee>(log->getNewValue().value());
+        EXPECT_EQ(stored_report.lock(), new_report);
+        EXPECT_EQ(stored_report.lock()->getName(), "Daria");
+        EXPECT_EQ(stored_report.lock()->getSurname(), "Petrova");
         EXPECT_EQ(*log->getNewValueStr(), std::string("Daria Petrova"));
 
         SCOPED_TRACE("Field");
@@ -2385,7 +2379,7 @@ namespace unit {
 
         SCOPED_TRACE("Action & Changer");
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Add);
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
     TEST(InternalEmployeeTest, DelDirectReport)
     {
@@ -2393,7 +2387,7 @@ namespace unit {
 
         SCOPED_TRACE("Value check");
         EXPECT_EQ(ie.getDirectReports().size(), 1);
-        EXPECT_EQ(ie.getDirectReports()[0]->getName(), "Daria");
+        EXPECT_EQ(ie.getDirectReports()[0].lock()->getName(), "Daria");
 
         SCOPED_TRACE("Change logs size");
         EXPECT_EQ(ie.getChangeLogs().size(), 68);
@@ -2402,10 +2396,10 @@ namespace unit {
 
         SCOPED_TRACE("Old value");
         EXPECT_TRUE(log->getOldValue().has_value());
-        EXPECT_EQ(log->getOldValueFieldType(), ChangeLog::FieldType::InternalEmployee);
-        auto stored_report = std::get<InternalEmployeePtr>(log->getOldValue().value());
-        EXPECT_EQ(stored_report->getName(), "Alexey");
-        EXPECT_EQ(stored_report->getSurname(), "Ivanov");
+        EXPECT_EQ(log->getOldValueFieldType(), ChangeLog::FieldType::WeakInternalEmployee);
+        auto stored_report = std::get<WeakInternalEmployee>(log->getOldValue().value());
+        EXPECT_EQ(stored_report.lock()->getName(), "Alexey");
+        EXPECT_EQ(stored_report.lock()->getSurname(), "Ivanov");
         EXPECT_EQ(*log->getOldValueStr(), std::string("Alexey Ivanov"));
 
         SCOPED_TRACE("New value");
@@ -2418,6 +2412,6 @@ namespace unit {
 
         SCOPED_TRACE("Action & Changer");
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Remove);
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 }  // namespace unit

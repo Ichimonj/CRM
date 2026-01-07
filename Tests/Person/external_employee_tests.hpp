@@ -82,7 +82,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(ExternalEmployeeTest, SetCompany_ChangeCompany)
@@ -122,7 +122,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(ExternalEmployeeTest, SetCompany_ClearWithNullptr)
@@ -159,7 +159,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(ExternalEmployeeTest, setJobTitle_SetFirstTitle)
@@ -195,7 +195,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(ExternalEmployeeTest, setJobTitle_ChangeTitle)
@@ -233,7 +233,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(ExternalEmployeeTest, setJobTitle_ClearWithNullopt)
@@ -268,7 +268,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(ExternalEmployeeTest, SetDepartment_SetFirstDepartment)
@@ -304,7 +304,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(ExternalEmployeeTest, SetDepartment_ChangeDepartment)
@@ -342,7 +342,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(ExternalEmployeeTest, SetDepartment_ClearWithNullopt)
@@ -377,7 +377,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(ExternalEmployeeTest, SetStatus_SetStandardStatus)
@@ -415,7 +415,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(ExternalEmployeeTest, SetOtherStatus_SwitchToCustom)
@@ -454,7 +454,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(ExternalEmployeeTest, SetStatus_BackToStandardAfterCustom)
@@ -492,7 +492,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(ExternalEmployeeTest, SetCurrentInteraction_SetFirstInteraction)
@@ -531,7 +531,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(ExternalEmployeeTest, SetCurrentInteraction_ChangeInteraction)
@@ -572,7 +572,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(ExternalEmployeeTest, SetCurrentInteraction_ClearWithNullptr)
@@ -607,7 +607,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(ExternalEmployeeTest, SetLastContactDate_SetFirstDate)
@@ -647,7 +647,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(ExternalEmployeeTest, SetLastContactDate_UpdateToNewerDate)
@@ -689,7 +689,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(ExternalEmployeeTest, SetLastContactDate_ClearWithNullptr)
@@ -726,7 +726,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(ExternalEmployeeTest, SetTimeZone_SetFirstTimeZone)
@@ -763,7 +763,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(ExternalEmployeeTest, SetTimeZone_ChangeToNewYork)
@@ -800,7 +800,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(ExternalEmployeeTest, SetTimeZone_ChangeToTokyo)
@@ -837,7 +837,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(ExternalEmployeeTest, SetPreferredContactTime_SetFirstTime)
@@ -873,7 +873,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(ExternalEmployeeTest, SetPreferredContactTime_ChangeToEvening)
@@ -911,7 +911,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(ExternalEmployeeTest, SetPreferredContactTime_ClearWithNullopt)
@@ -946,7 +946,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(ExternalEmployeeTest, SetDecisionInfluence_SetHighInfluence)
@@ -982,7 +982,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(ExternalEmployeeTest, SetDecisionInfluence_ChangeToCritical)
@@ -1020,7 +1020,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(ExternalEmployeeTest, SetDecisionInfluence_DowngradeToLow)
@@ -1058,7 +1058,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(ExternalEmployeeTest, SetDecisionInfluence_ClearWithNullopt)
@@ -1093,7 +1093,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(ExternalEmployeeTest, SetInfluenceScore_SetFirstScore)
@@ -1129,7 +1129,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(ExternalEmployeeTest, SetInfluenceScore_UpdateToHigher)
@@ -1167,7 +1167,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(ExternalEmployeeTest, SetInfluenceScore_ClearWithNullopt)
@@ -1202,7 +1202,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(ExternalEmployeeTest, SetBudgetAuthority_SetFirstAuthority)
@@ -1240,7 +1240,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(ExternalEmployeeTest, SetBudgetAuthority_IncreaseAuthority)
@@ -1280,7 +1280,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(ExternalEmployeeTest, SetBudgetAuthority_ClearWithNullptr)
@@ -1315,7 +1315,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(ExternalEmployeeTest, SetSalary_SetFirstSalary)
@@ -1353,7 +1353,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(ExternalEmployeeTest, SetSalary_RaiseSalary)
@@ -1393,7 +1393,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(ExternalEmployeeTest, SetSalary_ClearWithNullptr)
@@ -1428,7 +1428,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(ExternalEmployeeTest, AddPainPoint_FirstPain)
@@ -1465,7 +1465,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Add);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(ExternalEmployeeTest, AddPainPoint_SecondPain)
@@ -1501,7 +1501,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Add);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(ExternalEmployeeTest, DelPainPoint_RemoveFirstPain)
@@ -1537,7 +1537,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Remove);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(ExternalEmployeeTest, AddAssignedDeal_FirstDeal)
@@ -1578,7 +1578,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Add);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
 
         log = ee.getChangeLogs()[ee.getChangeLogs().size() - 2];
 
@@ -1602,7 +1602,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Add);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(ExternalEmployeeTest, AddAssignedDeal_SecondDeal)
@@ -1641,7 +1641,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Add);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
 
         log = ee.getChangeLogs()[ee.getChangeLogs().size() - 2];
 
@@ -1665,7 +1665,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Add);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(ExternalEmployeeTest, DelAssignedDeal_RemoveFirstDeal)
@@ -1701,7 +1701,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Remove);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
 
         log = ee.getChangeLogs()[ee.getChangeLogs().size() - 2];
 
@@ -1725,7 +1725,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Remove);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(ExternalEmployeeTest, AddCompletedDeal_FirstDeal)
@@ -1766,7 +1766,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Add);
 
         SCOPED_TRACE("RelatedDeals log - Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
 
         log = ee.getChangeLogs()[ee.getChangeLogs().size() - 2];
 
@@ -1790,7 +1790,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Add);
 
         SCOPED_TRACE("CompletedDeals log - Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(ExternalEmployeeTest, DelCompletedDeal_RemoveOnlyDeal)
@@ -1825,7 +1825,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Remove);
 
         SCOPED_TRACE("RelatedDeals remove log - Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
 
         log = ee.getChangeLogs()[ee.getChangeLogs().size() - 2];
 
@@ -1849,7 +1849,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Remove);
 
         SCOPED_TRACE("CompletedDeals remove log - Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(ExternalEmployeeTest, AddCompletedTask_FirstTask)
@@ -1890,7 +1890,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Add);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(ExternalEmployeeTest, AddCompletedTask_SecondTask)
@@ -1929,7 +1929,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Add);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(ExternalEmployeeTest, DelCompletedTask_RemoveFirstTask)
@@ -1965,6 +1965,6 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Remove);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 }  // namespace unit

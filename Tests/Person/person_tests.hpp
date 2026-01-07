@@ -65,7 +65,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(PersonTest, Surname)
@@ -102,7 +102,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(PersonTest, Patronymic)
@@ -139,7 +139,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
 
         // del value
         person.setPatronymic(std::nullopt, changer);
@@ -171,7 +171,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(PersonTest, PreferredLanguage)
@@ -208,7 +208,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
 
         // del value
         person.setPreferredLanguage(std::nullopt, changer);
@@ -240,7 +240,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(PersonTest, SetBirthday)
@@ -278,7 +278,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
 
         // del value
         person.setBirthday(nullptr, changer);
@@ -312,7 +312,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(PersonTest, SetPhoneNumber)
@@ -350,7 +350,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
 
         // Del value
         person._setPhoneNumber(nullptr, changer);
@@ -382,7 +382,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(PersonTest, SetAddress)
@@ -421,7 +421,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
 
         // del value
         person.setAddress(nullptr, changer);
@@ -453,7 +453,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(PersonTest, SetEmail)
@@ -489,7 +489,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
 
         // del value
         person._setEmail(std::nullopt, changer);
@@ -521,7 +521,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(PersonTest, SetGender)
@@ -560,7 +560,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(PersonTest, AddDelRelatedDeals)
@@ -598,7 +598,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Add);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
 
         person.delRelatedDeals(deal_ptr, changer);
 
@@ -626,7 +626,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Remove);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(PersonTest, AddDelMorePhoneNumber)
@@ -662,7 +662,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Add);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
 
         person._delMorePhoneNumber(0, changer);
 
@@ -693,7 +693,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Remove);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(PersonTest, AddDelMoreAddress)
@@ -736,7 +736,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Add);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
 
         person.delMoreAddress(0, changer);
 
@@ -769,7 +769,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Remove);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(PersonTest, AddDelMoreEmails)
@@ -804,7 +804,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Add);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
 
         person._delMoreEmails(0, changer);
 
@@ -835,7 +835,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Remove);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(PersonTest, AddDelMoreDocument)
@@ -873,7 +873,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Add);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
 
         person.delOtherDocument(0, changer);
 
@@ -904,7 +904,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Remove);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(PersonTest, AddDelOtherFile)
@@ -942,7 +942,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Add);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
 
         person.delOtherFile(0, changer);
 
@@ -973,7 +973,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Remove);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(PersonTest, AddDelInteraction)
@@ -1011,7 +1011,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Add);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
 
         person.delInteraction(0, changer);
 
@@ -1042,7 +1042,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Remove);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(PersonTest, AddDelTag)
@@ -1077,7 +1077,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Add);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
 
         person.delTag(0, changer);
 
@@ -1108,7 +1108,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Remove);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(PersonTest, AddDelNote)
@@ -1145,7 +1145,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Add);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
 
         person.delNote(0, changer);
 
@@ -1177,6 +1177,6 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Remove);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 }  // namespace unit

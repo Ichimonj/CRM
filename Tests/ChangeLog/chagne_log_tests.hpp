@@ -22,9 +22,9 @@ namespace unit {
             change_date
         );
 
-        EXPECT_EQ(change.getChanger(), changer);
-        EXPECT_EQ(change.getOldValue(), old_value);
-        EXPECT_EQ(change.getNewValue(), new_value);
+        EXPECT_EQ(change.getChanger().lock(), changer);
+        EXPECT_EQ(std::get<int>(change.getOldValue().value()), 1);
+        EXPECT_EQ(std::get<double>(change.getNewValue().value()), 1.11);
         EXPECT_EQ(change.getField(), field);
         EXPECT_EQ(change.getOldValueFieldType(), ChangeLog::FieldType::Int);
         EXPECT_EQ(change.getNewValueFieldType(), ChangeLog::FieldType::Double);

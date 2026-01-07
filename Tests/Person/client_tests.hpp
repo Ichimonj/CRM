@@ -11,7 +11,7 @@ namespace unit {
         EXPECT_EQ(client2.getName(), "Name");
         EXPECT_EQ(client2.getSurname(), "Surname");
         EXPECT_EQ(client2.getPatronymic(), std::nullopt);
-        EXPECT_EQ(client2.getOwner(), nullptr);
+        EXPECT_TRUE(client2.getOwner().expired());
 
         EXPECT_EQ(client2.getType(), Client::ClientType::other);
         EXPECT_EQ(client2.getOtherType(), std::nullopt);
@@ -34,11 +34,10 @@ namespace unit {
         client2._setOwner(owner, changer);
 
         SCOPED_TRACE("Value check");
-        EXPECT_EQ(client2.getOwner(), owner);
+        EXPECT_EQ(client2.getOwner().lock(), owner);
 
         SCOPED_TRACE("Change logs size");
         EXPECT_EQ(client2.getChangeLogs().size(), 1);
-
         auto log = client2.getChangeLogs().back();
 
         SCOPED_TRACE("Old value");
@@ -48,9 +47,9 @@ namespace unit {
 
         SCOPED_TRACE("New value");
         EXPECT_TRUE(log->getNewValue().has_value());
-        EXPECT_EQ(log->getNewValueFieldType(), ChangeLog::FieldType::InternalEmployee);
-        auto new_value = std::get<std::shared_ptr<InternalEmployee>>(log->getNewValue().value());
-        EXPECT_EQ(new_value, owner);
+        EXPECT_EQ(log->getNewValueFieldType(), ChangeLog::FieldType::WeakInternalEmployee);
+        auto new_value = std::get<std::weak_ptr<InternalEmployee>>(log->getNewValue().value());
+        EXPECT_EQ(new_value.lock(), owner);
         EXPECT_EQ(*log->getNewValueStr(), std::string("Owner Owner"));
 
         SCOPED_TRACE("Field");
@@ -61,12 +60,12 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
 
-        client2._setOwner(nullptr, changer);
+        client2._setOwner({}, changer);
 
         SCOPED_TRACE("Value check");
-        EXPECT_EQ(client2.getOwner(), nullptr);
+        EXPECT_EQ(client2.getOwner().lock(), nullptr);
 
         SCOPED_TRACE("Change logs size");
         EXPECT_EQ(client2.getChangeLogs().size(), 2);
@@ -75,9 +74,9 @@ namespace unit {
 
         SCOPED_TRACE("Old value");
         EXPECT_TRUE(log->getOldValue().has_value());
-        EXPECT_EQ(log->getOldValueFieldType(), ChangeLog::FieldType::InternalEmployee);
-        auto old_value = std::get<std::shared_ptr<InternalEmployee>>(log->getOldValue().value());
-        EXPECT_EQ(old_value, owner);
+        EXPECT_EQ(log->getOldValueFieldType(), ChangeLog::FieldType::WeakInternalEmployee);
+        auto old_value = std::get<std::weak_ptr<InternalEmployee>>(log->getOldValue().value());
+        EXPECT_EQ(old_value.lock(), owner);
         EXPECT_EQ(*log->getOldValueStr(), std::string("Owner Owner"));
 
         SCOPED_TRACE("New value");
@@ -92,7 +91,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(ClientTest, SetType)
@@ -130,7 +129,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(ClientTest, SetOtherType_SwitchToCustom)
@@ -168,7 +167,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(ClientTest, SetType_AfterCustom)
@@ -206,7 +205,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(ClientTest, SetLeadSource)
@@ -244,7 +243,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(ClientTest, SetOtherLeadSource)
@@ -282,7 +281,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(ClientTest, SetLeadSourceAfter)
@@ -320,7 +319,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(ClientTest, SetMarketingConsent)
@@ -357,7 +356,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(ClientTest, SetCommunicationChannel_SetValue)
@@ -393,7 +392,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(ClientTest, SetCommunicationChannel_Null)
@@ -428,7 +427,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(ClientTest, SetReferralCode_SetValue)
@@ -464,7 +463,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(ClientTest, SetReferralCode_Null)
@@ -499,7 +498,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(ClientTest, SetCustomerAcquisitionCost_SetValue)
@@ -535,7 +534,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(ClientTest, SetCustomerAcquisitionCost_Null)
@@ -570,7 +569,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(ClientTest, SetLeadStatus_SetValue)
@@ -606,7 +605,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(ClientTest, SetLeadStatus_ChangeToLost)
@@ -644,7 +643,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(ClientTest, SetLeadStatus_ClearWithNullopt)
@@ -679,7 +678,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(ClientTest, SetLeadScore_SetValue)
@@ -715,7 +714,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(ClientTest, SetLeadScore_UpdateValue)
@@ -753,7 +752,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(ClientTest, SetLeadScore_ClearWithNullopt)
@@ -788,7 +787,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(ClientTest, SetAnnualRevenue_SetValue)
@@ -824,7 +823,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(ClientTest, SetAnnualRevenue_UpdateValue)
@@ -862,7 +861,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(ClientTest, SetAnnualRevenue_ClearWithNullopt)
@@ -897,7 +896,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(ClientTest, SetLifetimeValue_SetValue)
@@ -933,7 +932,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(ClientTest, SetLifetimeValue_UpdateValue)
@@ -971,7 +970,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(ClientTest, SetLifetimeValue_ClearWithNullopt)
@@ -1006,7 +1005,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Change);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(ClientTest, AddOwnedDeal_FirstDeal)
@@ -1045,7 +1044,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Add);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
 
         log = client2.getChangeLogs()[client2.getChangeLogs().size() - 2];
 
@@ -1069,7 +1068,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Add);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
     TEST(ClientTest, AddOwnedDeal_SecondDeal)
     {
@@ -1106,7 +1105,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Add);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
 
         log = client2.getChangeLogs()[client2.getChangeLogs().size() - 2];
 
@@ -1130,7 +1129,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Add);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(ClientTest, DelOwnedDeal_RemoveFirstDeal)
@@ -1164,7 +1163,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Remove);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(ClientTest, AddInterestedOffer_FirstOffer)
@@ -1209,7 +1208,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Add);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(ClientTest, AddInterestedOffer_SecondOffer)
@@ -1248,7 +1247,7 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Add);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
     TEST(ClientTest, DelInterestedOffer_RemoveFirstOffer)
@@ -1283,6 +1282,6 @@ namespace unit {
         EXPECT_EQ(log->getAction(), ChangeLog::Action::Remove);
 
         SCOPED_TRACE("Changer");
-        EXPECT_EQ(log->getChanger(), changer);
+        EXPECT_EQ(log->getChanger().lock(), changer);
     }
 }  // namespace unit
