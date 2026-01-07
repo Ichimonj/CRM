@@ -445,7 +445,7 @@ bool Task::delTeemMember(size_t index, const InternalEmployeePtr& changer)
             std::make_optional(this->teem[index]),
             std::nullopt,
             TaskFields::Teem,
-            ChangeLog::FieldType::Person,
+            ChangeLog::FieldType::WeakPerson,
             ChangeLog::FieldType::null,
             ChangeLog::Action::Remove
         ));
