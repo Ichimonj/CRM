@@ -454,3 +454,13 @@ bool Task::delTeemMember(size_t index, const InternalEmployeePtr& changer)
     }
     return false;
 }
+
+void Task::clearTeem()
+{
+    teem.erase(
+        std::remove_if(
+            teem.begin(), teem.end(), [](const WeakPersonPtr& person) { return person.expired(); }
+        ),
+        teem.end()
+    );
+}

@@ -87,6 +87,11 @@ public:
     bool delTeemMember(size_t index, const InternalEmployeePtr& changer);
     /// @}
 
+    /// @name Auxiliary functions
+    /// @{
+    void clearTeem();
+    /// @}
+
 private:
     BigUint              id;
     std::string          title;
