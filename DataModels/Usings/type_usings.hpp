@@ -69,6 +69,7 @@ using ChangeLogPtr                = std::shared_ptr<ChangeLog>;
 using CampaignPtr                 = std::shared_ptr<Campaign>;
 using PhoneNumberPtr              = std::shared_ptr<PhoneNumber>;
 using ExternalEmployeePtr         = std::shared_ptr<ExternalEmployee>;
+using WeakExternalEmployee        = std::weak_ptr<ExternalEmployee>;
 using TaskPtr                     = std::shared_ptr<Task>;
 using BuyerShare                  = std::pair<std::shared_ptr<Person>, Money>;
 using PaymentPtr                  = std::shared_ptr<Payment>;
