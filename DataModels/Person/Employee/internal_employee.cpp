@@ -180,9 +180,9 @@ bool InternalEmployee::setManager(
             WEAK_PTR_TO_OPTIONAL(this->manager),
             WEAK_PTR_TO_OPTIONAL(manager),
             InternalEmployeeFields::Manager,
-            !this->manager.expired() ? ChangeLog::FieldType::InternalEmployee
+            !this->manager.expired() ? ChangeLog::FieldType::WeakInternalEmployee
                                      : ChangeLog::FieldType::null,
-            !manager.expired() ? ChangeLog::FieldType::InternalEmployee
+            !manager.expired() ? ChangeLog::FieldType::WeakInternalEmployee
                                : ChangeLog::FieldType::null,
             ChangeLog::Action::Change,
             update
@@ -735,7 +735,7 @@ bool InternalEmployee::addLead(const WeakClientPtr& lead, const InternalEmployee
             std::make_optional(lead),
             InternalEmployeeFields::Leads,
             ChangeLog::FieldType::null,
-            ChangeLog::FieldType::Client,
+            ChangeLog::FieldType::WeakClient,
             ChangeLog::Action::Add,
             update
         ));
@@ -755,7 +755,7 @@ bool InternalEmployee::delLead(size_t index, const InternalEmployeePtr& changer)
             std::make_optional(this->leads[index]),
             std::nullopt,
             InternalEmployeeFields::Leads,
-            ChangeLog::FieldType::Client,
+            ChangeLog::FieldType::WeakClient,
             ChangeLog::FieldType::null,
             ChangeLog::Action::Remove,
             update
@@ -955,7 +955,7 @@ bool InternalEmployee::addDirectReport(
             std::make_optional(report),
             InternalEmployeeFields::DirectReports,
             ChangeLog::FieldType::null,
-            ChangeLog::FieldType::InternalEmployee,
+            ChangeLog::FieldType::WeakInternalEmployee,
             ChangeLog::Action::Add,
             update
         ));
@@ -975,7 +975,7 @@ bool InternalEmployee::delDirectReport(size_t index, const InternalEmployeePtr& 
             std::make_optional(this->direct_reports[index]),
             std::nullopt,
             InternalEmployeeFields::DirectReports,
-            ChangeLog::FieldType::InternalEmployee,
+            ChangeLog::FieldType::WeakInternalEmployee,
             ChangeLog::FieldType::null,
             ChangeLog::Action::Remove,
             update
