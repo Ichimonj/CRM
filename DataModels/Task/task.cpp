@@ -252,9 +252,9 @@ bool Task::setManager(const WeakInternalEmployee& weak_manager, const InternalEm
             WEAK_PTR_TO_OPTIONAL(this->manager),
             WEAK_PTR_TO_OPTIONAL(weak_manager),
             TaskFields::Manager,
-            this->manager.lock() ? ChangeLog::FieldType::InternalEmployee
+            this->manager.lock() ? ChangeLog::FieldType::WeakInternalEmployee
                                  : ChangeLog::FieldType::null,
-            weak_manager.lock() ? ChangeLog::FieldType::InternalEmployee
+            weak_manager.lock() ? ChangeLog::FieldType::WeakInternalEmployee
                                 : ChangeLog::FieldType::null,
             ChangeLog::Action::Change
         ));
@@ -428,7 +428,7 @@ bool Task::addTeemMember(const WeakPersonPtr& member, const InternalEmployeePtr&
             std::make_optional(member),
             TaskFields::Teem,
             ChangeLog::FieldType::null,
-            ChangeLog::FieldType::Person,
+            ChangeLog::FieldType::WeakPerson,
             ChangeLog::Action::Add
         ));
         this->teem.push_back(member);
