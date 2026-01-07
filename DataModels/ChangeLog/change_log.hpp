@@ -50,7 +50,8 @@ public:
         CallType,
         Meeting,
         Client,
-        InternalEmployee,
+        WeakInternalEmployee,
+        InternalEmployee, //DEL
         ExternalEmployee,
         Bool,
         MeetingStatus,
