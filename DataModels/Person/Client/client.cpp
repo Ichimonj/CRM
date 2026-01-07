@@ -127,9 +127,10 @@ bool Client::setOwner(const WeakInternalEmployee& owner, const InternalEmployeeP
             WEAK_PTR_TO_OPTIONAL(this->owner),
             WEAK_PTR_TO_OPTIONAL(owner),
             ClientFields::Owner,
-            !this->owner.expired() ? ChangeLog::FieldType::InternalEmployee
+            !this->owner.expired() ? ChangeLog::FieldType::WeakInternalEmployee
                                    : ChangeLog::FieldType::null,
-            !owner.expired() ? ChangeLog::FieldType::InternalEmployee : ChangeLog::FieldType::null,
+            !owner.expired() ? ChangeLog::FieldType::WeakInternalEmployee
+                             : ChangeLog::FieldType::null,
             ChangeLog::Action::Change,
             update
         ));

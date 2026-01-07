@@ -158,7 +158,7 @@ private:
 
 #ifdef _TESTING
 public:
-    bool _setOwner(const InternalEmployeePtr& owner, const InternalEmployeePtr& changer)
+    bool _setOwner(const WeakInternalEmployee& owner, const InternalEmployeePtr& changer)
     {
         return this->setOwner(owner, changer);
     }
