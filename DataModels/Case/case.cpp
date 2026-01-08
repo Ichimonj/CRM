@@ -12,8 +12,8 @@ Case::Case(
     const Priority&                 priority,
     const Date&                     create_date,
     const DatePtr&                  resolved_date,
-    const InternalEmployeePtr&      assigned_to,
-    const ClientPtr&                related_client,
+    const WeakInternalEmployee&     assigned_to,
+    const WeakClientPtr&            related_client,
     std::vector<Note>               notes,
     std::vector<BaseInteractionPtr> related_interactions
 )
@@ -37,8 +37,8 @@ auto Case::getStatus() const -> CaseStatus { return this->status; }
 auto Case::getPriority() const -> Priority { return this->priority; }
 auto Case::getCreatedDate() const -> const Date& { return this->create_date; }
 auto Case::getResolvedDate() const -> const DatePtr& { return this->resolved_date; }
-auto Case::getAssignedTo() const -> const InternalEmployeePtr& { return this->assigned_to; }
-auto Case::getRelatedClient() const -> const ClientPtr& { return this->related_client; }
+auto Case::getAssignedTo() const -> const WeakInternalEmployee& { return this->assigned_to; }
+auto Case::getRelatedClient() const -> const WeakClientPtr& { return this->related_client; }
 auto Case::getNotes() const -> const std::vector<Note>& { return this->notes; }
 auto Case::getRelatedInteractions() const -> const std::vector<BaseInteractionPtr>&
 {
@@ -141,16 +141,21 @@ bool Case::setResolvedDate(const DatePtr& resolved_date, const InternalEmployeeP
     return true;
 }
 
-bool Case::setAssignedTo(const InternalEmployeePtr& assigned_to, const InternalEmployeePtr& changer)
+bool Case::setAssignedTo(
+    const WeakInternalEmployee& assigned_to, const InternalEmployeePtr& changer
+)
 {
-    if (this->assigned_to != assigned_to) {
+    if (this->assigned_to.owner_before(assigned_to) ||
+        assigned_to.owner_before(this->assigned_to)) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
-            PTR_TO_OPTIONAL(this->assigned_to),
-            PTR_TO_OPTIONAL(assigned_to),
+            WEAK_PTR_TO_OPTIONAL(this->assigned_to),
+            WEAK_PTR_TO_OPTIONAL(assigned_to),
             CaseField::AssignedTo,
-            this->assigned_to ? ChangeLog::FieldType::InternalEmployee : ChangeLog::FieldType::null,
-            assigned_to ? ChangeLog::FieldType::InternalEmployee : ChangeLog::FieldType::null,
+            !this->assigned_to.expired() ? ChangeLog::FieldType::WeakInternalEmployee
+                                         : ChangeLog::FieldType::null,
+            !assigned_to.expired() ? ChangeLog::FieldType::WeakInternalEmployee
+                                   : ChangeLog::FieldType::null,
             ChangeLog::Action::Change
         ));
         this->assigned_to = assigned_to;
@@ -159,16 +164,19 @@ bool Case::setAssignedTo(const InternalEmployeePtr& assigned_to, const InternalE
     return false;
 }
 
-bool Case::setRelatedClient(const ClientPtr& related_client, const InternalEmployeePtr& changer)
+bool Case::setRelatedClient(const WeakClientPtr& related_client, const InternalEmployeePtr& changer)
 {
-    if (this->related_client != related_client) {
+    if (this->related_client.owner_before(related_client) ||
+        related_client.owner_before(this->related_client)) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
-            PTR_TO_OPTIONAL(this->related_client),
-            PTR_TO_OPTIONAL(related_client),
+            WEAK_PTR_TO_OPTIONAL(this->related_client),
+            WEAK_PTR_TO_OPTIONAL(related_client),
             CaseField::RelatedClient,
-            this->related_client ? ChangeLog::FieldType::Client : ChangeLog::FieldType::null,
-            related_client ? ChangeLog::FieldType::Client : ChangeLog::FieldType::null,
+            !this->related_client.expired() ? ChangeLog::FieldType::WeakClient
+                                            : ChangeLog::FieldType::null,
+            !related_client.expired() ? ChangeLog::FieldType::WeakClient
+                                      : ChangeLog::FieldType::null,
             ChangeLog::Action::Change
         ));
         this->related_client = related_client;

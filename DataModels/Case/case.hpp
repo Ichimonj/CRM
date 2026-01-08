@@ -1,10 +1,11 @@
 #pragma once
+#pragma once
 #include <vector>
 
 #include "BigNum/big_uint.hpp"
 #include "DateTime/date.hpp"
-#include "Note/note.hpp"
 #include "Interaction/priority.hpp"
+#include "Note/note.hpp"
 #include "Usings/type_usings.hpp"
 
 enum class CaseStatus : uint8_t { Open, InProgress, Resolved, Closed, COUNT };
@@ -20,8 +21,8 @@ public:
         const Priority&                 priority,
         const Date&                     create_date,
         const DatePtr&                  resolved_date,
-        const InternalEmployeePtr&      assigned_to,
-        const ClientPtr&                related_client,
+        const WeakInternalEmployee&     assigned_to,
+        const WeakClientPtr&            related_client,
         std::vector<Note>               notes,
         std::vector<BaseInteractionPtr> related_interactions
     );
@@ -35,8 +36,8 @@ public:
     auto getPriority() const -> Priority;
     auto getCreatedDate() const -> const Date&;
     auto getResolvedDate() const -> const DatePtr&;
-    auto getAssignedTo() const -> const InternalEmployeePtr&;
-    auto getRelatedClient() const -> const ClientPtr&;
+    auto getAssignedTo() const -> const WeakInternalEmployee&;
+    auto getRelatedClient() const -> const WeakClientPtr&;
     auto getNotes() const -> const std::vector<Note>&;
     auto getRelatedInteractions() const -> const std::vector<BaseInteractionPtr>&;
     auto getChangeLogs() const -> const std::vector<ChangeLogPtr>&;
@@ -49,8 +50,8 @@ public:
     bool setStatus(const CaseStatus& status, const InternalEmployeePtr& changer);
     bool setPriority(const Priority& priority, const InternalEmployeePtr& changer);
     bool setResolvedDate(const DatePtr& resolved_date, const InternalEmployeePtr& changer);
-    bool setAssignedTo(const InternalEmployeePtr& assigned_to, const InternalEmployeePtr& changer);
-    bool setRelatedClient(const ClientPtr& related_client, const InternalEmployeePtr& changer);
+    bool setAssignedTo(const WeakInternalEmployee& assigned_to, const InternalEmployeePtr& changer);
+    bool setRelatedClient(const WeakClientPtr& related_client, const InternalEmployeePtr& changer);
     bool addNote(const Note& note, const InternalEmployeePtr& changer);
     bool delNote(size_t index, const InternalEmployeePtr& changer);
     bool addRelatedInteraction(
@@ -59,16 +60,16 @@ public:
     bool delRelatedInteraction(size_t index, const InternalEmployeePtr& changer);
     /// @}
 private:
-    BigUint             id;
-    std::string         title;
-    OptionalStr         description;
-    CaseStatus          status;
-    Priority            priority;
-    Date                create_date = Date();
-    DatePtr             resolved_date;
-    InternalEmployeePtr assigned_to;
-    ClientPtr           related_client;
-    std::vector<Note>   notes;
+    BigUint              id;
+    std::string          title;
+    OptionalStr          description;
+    CaseStatus           status;
+    Priority             priority;
+    Date                 create_date = Date();
+    DatePtr              resolved_date;
+    WeakInternalEmployee assigned_to;
+    WeakClientPtr        related_client;
+    std::vector<Note>    notes;
     //
     std::vector<BaseInteractionPtr> related_interactions;
     std::vector<ChangeLogPtr>       change_logs;
