@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.20)
 
-project(Crm LANGUAGES CXX VERSION 0.0.1)
+project(Crm LANGUAGES CXX VERSION 0.0.2)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -15,7 +15,7 @@ add_executable(${PROJECT_NAME} main.cpp)
 target_link_libraries(${PROJECT_NAME} PRIVATE DataModels)
 
 if(BUILD_TESTING)
-    add_subdirectory(external/gtest EXCLUDE_FROM_ALL)  # или без EXCLUDE_FROM_ALL
+    add_subdirectory(external/gtest EXCLUDE_FROM_ALL)
     enable_testing()
 
     add_executable(Tests Tests/tests_main.cpp)
