@@ -17,7 +17,7 @@ void                       DealDataBase::add(const DealPtr& deal)
 
     this->by_id[deal->getId()] = deal;
 
-    auto deal_manager = deal->getDealManager().lock();
+    auto deal_manager = deal->getManager().lock();
     if (deal_manager) {
         this->by_manager[deal_manager->getId()].push_back(deal);
     }
@@ -66,7 +66,7 @@ void DealDataBase::remove(const BigUint& id)
 
     DealPtr deal = deal_it->second;
 
-    auto    deal_manager = deal->getDealManager().lock();
+    auto    deal_manager = deal->getManager().lock();
     if (deal_manager) {
         auto manager_id = deal_manager->getId();
         safeRemoveFromVector(by_manager, manager_id, deal, __LINE__, "by_manager");
@@ -322,9 +322,9 @@ auto DealDataBase::changeManager(
 
     DealPtr deal = deal_it->second;
 
-    auto    old_manager = deal->getDealManager().lock();
+    auto    old_manager = deal->getManager().lock();
     auto    new_manager = manager.lock();
-    if (deal->setDealManager(manager, changer)) {
+    if (deal->setManager(manager, changer)) {
         if (old_manager) {
             auto old_manager_id = old_manager->getId();
             safeRemoveFromVector(this->by_manager, old_manager_id, deal, __LINE__, "by_manager");
@@ -369,7 +369,7 @@ auto DealDataBase::changeTotalAmount(
 
     auto    old_amount = deal->getTotalAmount();
 
-    if (deal->updateTotalAmount(total_amount, changer)) {
+    if (deal->changeTotalAmount(total_amount, changer)) {
         safeRemoveFromMap(this->by_total_amount, old_amount, deal, __LINE__, "by_total_amount");
         this->by_total_amount.emplace(total_amount, deal);
     }
@@ -386,7 +386,7 @@ auto DealDataBase::changePaidAmount(
 
     auto    old_amount = deal->getPaidAmount();
 
-    if (deal->updatePaidAmount(paid_amount, changer)) {
+    if (deal->changePaidAmount(paid_amount, changer)) {
         safeRemoveFromMap(this->by_paid_amount, old_amount, deal, __LINE__, "by_paid_amount");
         this->by_paid_amount.emplace(paid_amount, deal);
     }
