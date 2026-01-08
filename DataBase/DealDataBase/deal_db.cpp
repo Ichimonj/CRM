@@ -57,7 +57,7 @@ void                       DealDataBase::add(const DealPtr& deal)
     }
 }
 
-void DealDataBase::remove(const BigUint& id)
+void DealDataBase::soft_remove(const BigUint& id)
 {
     auto deal_it = by_id.find(id);
     if (deal_it == by_id.end()) {
@@ -113,7 +113,16 @@ void DealDataBase::remove(const BigUint& id)
         std::transform(lower_title.begin(), lower_title.end(), lower_title.begin(), ::tolower);
         safeRemoveFromMap(by_title_substr_search, lower_title, deal, __LINE__, "by_title_substr");
     }
-    safeRemoveFromMap(by_id, deal->getId(), deal, __LINE__, "by_id");
+
+    this->removed.push_back({Date(), deal});
+    this->by_id.erase(deal->getId());
+}
+
+void DealDataBase::hard_remove(const size_t index)
+{
+    if (index < this->removed.size()) {
+        this->removed.erase(this->removed.begin() + index);
+    }
 }
 
 auto DealDataBase::getAll() const -> const std::unordered_map<BigUint, DealPtr>&

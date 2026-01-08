@@ -10,8 +10,8 @@ using DealPtr = std::shared_ptr<Deal>;
 class DealDataBase {
 public:
     void add(const DealPtr& deal);
-    void remove(const BigUint& id);
-
+    void soft_remove(const BigUint& id);
+    void hard_remove(const size_t index);
     /// @name Get functions
     /// @{
     auto getAll() const -> const std::unordered_map<BigUint, DealPtr>&;
@@ -114,7 +114,7 @@ private:
     //
     std::unordered_map<std::string, DealPtr> by_contract_number;
     std::multimap<std::string, DealPtr>      by_title_substr_search;
-
+    std::vector<std::pair<Date, DealPtr>>    removed;
     //
     void safeRemoveFromMap(
         auto&              map,
