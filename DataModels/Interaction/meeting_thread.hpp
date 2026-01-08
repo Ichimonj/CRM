@@ -26,16 +26,16 @@ struct MeetingThread : public BaseInteraction {
         std::vector<FilePtr>               attachment_files,
         std::vector<WeakPersonPtr>         participants,
         std::vector<MeetingPtr>            meetings,
-        std::vector<ClientPtr>             clients,
-        std::vector<InternalEmployeePtr>   employees
+        std::vector<WeakClientPtr>         clients,
+        std::vector<WeakInternalEmployee>  employees
     );
 
 public:
     /// @name Getters
     /// @{
-    auto getMeetings() const -> const std::vector<MeetingPtr>;
-    auto getClients() const -> const std::vector<ClientPtr>;
-    auto getEmployees() const -> const std::vector<InternalEmployeePtr>;
+    auto getMeetings() const -> const std::vector<MeetingPtr>&;
+    auto getClients() const -> const std::vector<WeakClientPtr>&;
+    auto getEmployees() const -> const std::vector<WeakInternalEmployee>&;
     /// @}
 
     /// @name Change functions
@@ -43,15 +43,15 @@ public:
     bool addMeeting(const MeetingPtr& meeting, const InternalEmployeePtr& changer);
     bool delMeeting(const size_t id, const InternalEmployeePtr& changer);
 
-    bool addClient(const ClientPtr& client, const InternalEmployeePtr& changer);
+    bool addClient(const WeakClientPtr& client, const InternalEmployeePtr& changer);
     bool delClient(const size_t id, const InternalEmployeePtr& changer);
 
-    bool addEmployee(const InternalEmployeePtr& employee, const InternalEmployeePtr& changer);
+    bool addEmployee(const WeakInternalEmployee& employee, const InternalEmployeePtr& changer);
     bool delEmployee(const size_t id, const InternalEmployeePtr& changer);
     /// @}
 
 private:
-    std::vector<MeetingPtr>          meetings;   ///< Collection of meetings in the thread or series
-    std::vector<ClientPtr>           clients;    ///< Clients associated with the meeting thread
-    std::vector<InternalEmployeePtr> employees;  ///< Employees involved in the meeting thread
+    std::vector<MeetingPtr>           meetings;  ///< Collection of meetings in the thread or series
+    std::vector<WeakClientPtr>        clients;   ///< Clients associated with the meeting thread
+    std::vector<WeakInternalEmployee> employees;  ///< Employees involved in the meeting thread
 };
