@@ -203,7 +203,7 @@ void EmailThread::clearEmployees()
         std::remove_if(
             this->employees.begin(),
             this->employees.end(),
-            [](const WeakClientPtr& client) { return client.expired(); }
+            [](const WeakInternalEmployee& employee) { return employee.expired(); }
         ),
         this->employees.end()
     );
