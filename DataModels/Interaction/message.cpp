@@ -25,7 +25,7 @@ Message::Message(
     std::vector<FilePtr>               attachment_files,
     std::vector<WeakPersonPtr>         participants,
     const std::string&                 nickname,
-    const PersonPtr&                   author,
+    const WeakPersonPtr&               author,
     const std::string&                 message,
     const std::string&                 platform,
     const Date&                        date_sending
@@ -60,7 +60,7 @@ Message::Message(
 }
 
 auto Message::getNickname() const -> const std::string& { return nickname; }
-auto Message::getAuthor() const -> const PersonPtr { return author; }
+auto Message::getAuthor() const -> const WeakPersonPtr& { return author; }
 auto Message::getMessage() const -> const std::string& { return message; }
 auto Message::getPlatform() const -> const std::string& { return platform; }
 auto Message::getDateSending() const -> const Date& { return date_sending; }
@@ -84,16 +84,16 @@ bool Message::setNickname(const std::string& nickname, const InternalEmployeePtr
     return false;
 }
 
-bool Message::setAuthor(const PersonPtr& author, const InternalEmployeePtr& changer)
+bool Message::setAuthor(const WeakPersonPtr& author, const InternalEmployeePtr& changer)
 {
-    if (this->author != author) {
+    if (this->author.owner_before(author) || author.owner_before(this->author)) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
-            PTR_TO_OPTIONAL(this->author),
-            PTR_TO_OPTIONAL(author),
+            WEAK_PTR_TO_OPTIONAL(this->author),
+            WEAK_PTR_TO_OPTIONAL(author),
             MessageFields::Author,
-            this->author ? ChangeLog::FieldType::Person : ChangeLog::FieldType::null,
-            author ? ChangeLog::FieldType::Person : ChangeLog::FieldType::null,
+            !this->author.expired() ? ChangeLog::FieldType::WeakPerson : ChangeLog::FieldType::null,
+            !author.expired() ? ChangeLog::FieldType::WeakPerson : ChangeLog::FieldType::null,
             ChangeLog::Action::Change
         ));
         this->author = author;

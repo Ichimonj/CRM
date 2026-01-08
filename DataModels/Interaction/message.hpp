@@ -25,7 +25,7 @@ struct Message : public BaseInteraction {
         std::vector<FilePtr>               attachment_files,
         std::vector<WeakPersonPtr>         participants,
         const std::string&                 nickname,
-        const PersonPtr&                   author,
+        const WeakPersonPtr&               author,
         const std::string&                 message,
         const std::string&                 platform,
         const Date&                        date_sending
@@ -34,7 +34,7 @@ struct Message : public BaseInteraction {
     /// @name Getters
     /// @{
     auto getNickname() const -> const std::string&;
-    auto getAuthor() const -> const PersonPtr;
+    auto getAuthor() const -> const WeakPersonPtr&;
     auto getMessage() const -> const std::string&;
     auto getPlatform() const -> const std::string&;
     auto getDateSending() const -> const Date&;
@@ -43,16 +43,16 @@ struct Message : public BaseInteraction {
     /// @name Change functions
     /// @{
     bool setNickname(const std::string& nickname, const InternalEmployeePtr& changer);
-    bool setAuthor(const PersonPtr& author, const InternalEmployeePtr& changer);
+    bool setAuthor(const WeakPersonPtr& author, const InternalEmployeePtr& changer);
     bool setMessage(const std::string& message, const InternalEmployeePtr& changer);
     bool setPlatform(const std::string& platform, const InternalEmployeePtr& changer);
     bool setDateSending(const Date& date, const InternalEmployeePtr& changer);
     /// @}
 
 private:
-    std::string nickname;
-    PersonPtr   author;
-    std::string message;
-    std::string platform;
-    Date        date_sending;
+    std::string   nickname;
+    WeakPersonPtr author;
+    std::string   message;
+    std::string   platform;
+    Date          date_sending;
 };
