@@ -5,7 +5,7 @@
 class Note {
 public:
     Note(
-        const InternalEmployeePtr& creator,
+        const WeakInternalEmployee& creator,
         const PersonPtr&           author,
         const std::string&         title,
         const std::string&         text
@@ -15,7 +15,7 @@ public:
     bool operator!=(const Note& other) const;
 
     auto getCreatedDate() const -> const Date&;
-    auto getCreator() const -> const InternalEmployeePtr&;
+    auto getCreator() const -> const WeakInternalEmployee&;
     auto getAuthor() const -> const PersonPtr&;
     auto getTitle() const -> const std::string&;
     auto getText() const -> const std::string&;
@@ -24,9 +24,9 @@ public:
     auto setText(const std::string& text);
 
 private:
-    Date                created_date;
-    InternalEmployeePtr creator;
-    PersonPtr           author;
-    std::string         title;
-    std::string         text;
+    Date                 created_date;
+    WeakInternalEmployee creator;
+    PersonPtr            author;
+    std::string          title;
+    std::string          text;
 };
