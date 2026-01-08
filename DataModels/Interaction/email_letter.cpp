@@ -38,8 +38,8 @@ EmailLetter::EmailLetter(
     const EmailStatus&                 email_status,
     std::vector<std::string>           cc_email_addresses,
     std::vector<std::string>           bcc_email_addresses,
-    const PersonPtr&                   sender,
-    const PersonPtr&                   recipient,
+    const WeakPersonPtr&               sender,
+    const WeakPersonPtr&               recipient,
     const std::string&                 body,
     const DatePtr&                     send_date,
     const DatePtr&                     received_date,
@@ -106,8 +106,8 @@ auto EmailLetter::getBccEmailAddresses() const -> const std::vector<std::string>
 {
     return this->bcc_email_addresses;
 }
-auto EmailLetter::getSender() const -> const PersonPtr { return this->sender; }
-auto EmailLetter::getRecipient() const -> const PersonPtr { return this->recipient; }
+auto EmailLetter::getSender() const -> const WeakPersonPtr& { return this->sender; }
+auto EmailLetter::getRecipient() const -> const WeakPersonPtr& { return this->recipient; }
 auto EmailLetter::getBody() const -> const std::string& { return this->body; }
 auto EmailLetter::getSendDate() const -> const DatePtr { return this->send_date; }
 auto EmailLetter::getReceivedDate() const -> const DatePtr { return this->received_date; }
@@ -275,16 +275,16 @@ bool EmailLetter::delBccEmailAddress(const size_t id, const InternalEmployeePtr&
     return false;
 }
 
-bool EmailLetter::setSender(const PersonPtr& sender, const InternalEmployeePtr& changer)
+bool EmailLetter::setSender(const WeakPersonPtr& sender, const InternalEmployeePtr& changer)
 {
-    if (this->sender != sender) {
+    if (this->sender.owner_before(sender) || sender.owner_before(this->sender)) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
-            PTR_TO_OPTIONAL(this->sender),
-            PTR_TO_OPTIONAL(sender),
+            WEAK_PTR_TO_OPTIONAL(this->sender),
+            WEAK_PTR_TO_OPTIONAL(sender),
             EmailLetterFields::Sender,
-            this->sender ? ChangeLog::FieldType::Person : ChangeLog::FieldType::null,
-            sender ? ChangeLog::FieldType::Person : ChangeLog::FieldType::null,
+            !this->sender.expired() ? ChangeLog::FieldType::WeakPerson : ChangeLog::FieldType::null,
+            !sender.expired() ? ChangeLog::FieldType::WeakPerson : ChangeLog::FieldType::null,
             ChangeLog::Action::Change
         ));
         this->sender = sender;
@@ -293,16 +293,17 @@ bool EmailLetter::setSender(const PersonPtr& sender, const InternalEmployeePtr& 
     return false;
 }
 
-bool EmailLetter::setRecipient(const PersonPtr& recipient, const InternalEmployeePtr& changer)
+bool EmailLetter::setRecipient(const WeakPersonPtr& recipient, const InternalEmployeePtr& changer)
 {
-    if (this->recipient != recipient) {
+    if (this->recipient.owner_before(recipient) || recipient.owner_before(this->recipient)) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
-            PTR_TO_OPTIONAL(this->recipient),
-            PTR_TO_OPTIONAL(recipient),
+            WEAK_PTR_TO_OPTIONAL(this->recipient),
+            WEAK_PTR_TO_OPTIONAL(recipient),
             EmailLetterFields::Recipient,
-            this->recipient ? ChangeLog::FieldType::Person : ChangeLog::FieldType::null,
-            recipient ? ChangeLog::FieldType::Person : ChangeLog::FieldType::null,
+            !this->recipient.expired() ? ChangeLog::FieldType::WeakPerson
+                                       : ChangeLog::FieldType::null,
+            !recipient.expired() ? ChangeLog::FieldType::WeakPerson : ChangeLog::FieldType::null,
             ChangeLog::Action::Change
         ));
         this->recipient = recipient;

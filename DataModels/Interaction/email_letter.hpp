@@ -42,8 +42,8 @@ struct EmailLetter : public BaseInteraction {
         const EmailStatus&                 email_status,
         std::vector<std::string>           cc_email_addresses,
         std::vector<std::string>           bcc_email_addresses,
-        const PersonPtr&                   sender,
-        const PersonPtr&                   recipient,
+        const WeakPersonPtr&               sender,
+        const WeakPersonPtr&               recipient,
         const std::string&                 body,
         const DatePtr&                     send_date,
         const DatePtr&                     received_date,
@@ -64,8 +64,8 @@ public:
     auto getEmailStatus() const -> EmailStatus;
     auto getCcEmailAddresses() const -> const std::vector<std::string>&;
     auto getBccEmailAddresses() const -> const std::vector<std::string>&;
-    auto getSender() const -> const PersonPtr;
-    auto getRecipient() const -> const PersonPtr;
+    auto getSender() const -> const WeakPersonPtr&;
+    auto getRecipient() const -> const WeakPersonPtr&;
     auto getBody() const -> const std::string&;
     auto getSendDate() const -> const DatePtr;
     auto getReceivedDate() const -> const DatePtr;
@@ -90,8 +90,8 @@ public:
     bool addBccEmailAddress(const std::string& address, const InternalEmployeePtr& changer);
     bool delBccEmailAddress(size_t id, const InternalEmployeePtr& changer);
 
-    bool setSender(const PersonPtr& sender, const InternalEmployeePtr& changer);
-    bool setRecipient(const PersonPtr& recipient, const InternalEmployeePtr& changer);
+    bool setSender(const WeakPersonPtr& sender, const InternalEmployeePtr& changer);
+    bool setRecipient(const WeakPersonPtr& recipient, const InternalEmployeePtr& changer);
     bool setBody(const std::string& body, const InternalEmployeePtr& changer);
     bool setSendDate(const DatePtr& date, const InternalEmployeePtr& changer);
     bool setReceivedDate(const DatePtr& date, const InternalEmployeePtr& changer);
@@ -113,8 +113,8 @@ private:
     std::vector<std::string> cc_email_addresses;
     std::vector<std::string> bcc_email_addresses;
 
-    PersonPtr                sender;
-    PersonPtr                recipient;
+    WeakPersonPtr            sender;
+    WeakPersonPtr            recipient;
 
     std::string              body;
 
