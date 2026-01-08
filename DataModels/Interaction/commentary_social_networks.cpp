@@ -29,7 +29,7 @@ CommentarySocialNetworks::CommentarySocialNetworks(
     std::vector<FilePtr>               attachment_files,
     std::vector<WeakPersonPtr>         participants,
     const std::string&                 nickname,
-    const PersonPtr&                   author,
+    const WeakPersonPtr&               author,
     const std::string&                 commentary,
     const CommentarySocialNetworksPtr& answer_to,
     const CommentarySocialNetworksPtr& answer,
@@ -68,7 +68,7 @@ CommentarySocialNetworks::CommentarySocialNetworks(
 }
 
 auto CommentarySocialNetworks::getNickname() const -> const std::string& { return nickname; }
-auto CommentarySocialNetworks::getAuthor() const -> const PersonPtr { return author; }
+auto CommentarySocialNetworks::getAuthor() const -> const WeakPersonPtr& { return author; }
 auto CommentarySocialNetworks::getCommentary() const -> const std::string& { return commentary; }
 auto CommentarySocialNetworks::getAnswerTo() const -> const CommentarySocialNetworksPtr
 {
@@ -103,17 +103,17 @@ bool CommentarySocialNetworks::setNickname(
 }
 
 bool CommentarySocialNetworks::setAuthor(
-    const PersonPtr& author, const InternalEmployeePtr& changer
+    const WeakPersonPtr& author, const InternalEmployeePtr& changer
 )
 {
-    if (this->author != author) {
+    if (this->author.owner_before(author) || author.owner_before(this->author)) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
-            std::make_optional<ChangeLog::ValueVariant>(this->author),
-            std::make_optional<ChangeLog::ValueVariant>(author),
+            WEAK_PTR_TO_OPTIONAL(this->author),
+            WEAK_PTR_TO_OPTIONAL(author),
             CommentarySocialNetworksFields::Author,
-            ChangeLog::FieldType::Person,
-            ChangeLog::FieldType::Person,
+            !this->author.expired() ? ChangeLog::FieldType::WeakPerson : ChangeLog::FieldType::null,
+            !author.expired() ? ChangeLog::FieldType::WeakPerson : ChangeLog::FieldType::null,
             ChangeLog::Action::Change
         ));
         this->author = author;

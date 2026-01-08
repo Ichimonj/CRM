@@ -27,7 +27,7 @@ public:
         std::vector<FilePtr>               attachment_files,
         std::vector<WeakPersonPtr>         participants,
         const std::string&                 nickname,
-        const PersonPtr&                   author,
+        const WeakPersonPtr&               author,
         const std::string&                 commentary,
         const CommentarySocialNetworksPtr& answer_to,
         const CommentarySocialNetworksPtr& answer,
@@ -38,7 +38,7 @@ public:
     /// @name Getters
     /// @{
     auto getNickname() const -> const std::string&;
-    auto getAuthor() const -> const PersonPtr;
+    auto getAuthor() const -> const WeakPersonPtr&;
     auto getCommentary() const -> const std::string&;
     auto getAnswerTo() const -> const CommentarySocialNetworksPtr;
     auto getAnswer() const -> const CommentarySocialNetworksPtr;
@@ -49,7 +49,7 @@ public:
     /// @name Change functions
     /// @{
     bool setNickname(const std::string& nickname, const InternalEmployeePtr& changer);
-    bool setAuthor(const PersonPtr& author, const InternalEmployeePtr& changer);
+    bool setAuthor(const WeakPersonPtr& author, const InternalEmployeePtr& changer);
     bool setCommentary(const std::string& commentary, const InternalEmployeePtr& changer);
     bool setAnswerTo(
         const CommentarySocialNetworksPtr& answer_to, const InternalEmployeePtr& changer
@@ -61,7 +61,7 @@ public:
 
 private:
     std::string                 nickname;
-    PersonPtr                   author;
+    WeakPersonPtr               author;
     std::string                 commentary;
 
     CommentarySocialNetworksPtr answer_to;
