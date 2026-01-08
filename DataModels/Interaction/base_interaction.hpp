@@ -124,6 +124,11 @@ public:
 
     void addChangeLog(const ChangeLogPtr& changeLog);
 
+    /// @name Auxiliary functions
+    /// @{
+    void clearParticipants();
+    void clearCampaigns();
+    /// @}
 private:
     BigUint                        id;
     std::string                    title;

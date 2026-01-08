@@ -651,3 +651,27 @@ void BaseInteraction::addChangeLog(const ChangeLogPtr& changeLog)
         this->change_logs.push_back(changeLog);
     }
 }
+
+void BaseInteraction::clearParticipants()
+{
+    this->participants.erase(
+        std::remove_if(
+            this->participants.begin(),
+            this->participants.end(),
+            [](const WeakPersonPtr& person) { return person.expired(); }
+        ),
+        this->participants.end()
+    );
+}
+
+void BaseInteraction::clearCampaigns()
+{
+    this->campaigns.erase(
+        std::remove_if(
+            this->campaigns.begin(),
+            this->campaigns.end(),
+            [](const WeakCampaignPtr& campaign) { return campaign.expired(); }
+        ),
+        this->campaigns.end()
+    );
+}
