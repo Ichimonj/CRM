@@ -57,9 +57,9 @@ struct Meeting : public BaseInteraction {
         std::vector<std::string>           other_outcomes,
         const std::string&                 other_type,
         const std::string&                 record,
-        std::vector<ClientPtr>             clients,
-        std::vector<InternalEmployeePtr>   employees,
-        std::vector<PersonPtr>             invitees,
+        std::vector<WeakClientPtr>         clients,
+        std::vector<WeakInternalEmployee>  employees,
+        std::vector<WeakPersonPtr>         invitees,
         const MeetingPtr&                  previous_meeting,
         const MeetingPtr&                  next_meeting,
         const Date&                        created_date,
@@ -77,9 +77,9 @@ public:
     auto getOtherOutcomes() const -> const std::vector<std::string>&;
     auto getOtherType() const -> const std::string&;
     auto getRecord() const -> const std::string&;
-    auto getClients() const -> const std::vector<ClientPtr>&;
-    auto getEmployees() const -> const std::vector<InternalEmployeePtr>&;
-    auto getInvitees() const -> const std::vector<PersonPtr>&;
+    auto getClients() const -> const std::vector<WeakClientPtr>&;
+    auto getEmployees() const -> const std::vector<WeakInternalEmployee>&;
+    auto getInvitees() const -> const std::vector<WeakPersonPtr>&;
     auto getPreviousMeeting() const -> const MeetingPtr;
     auto getNextMeeting() const -> const MeetingPtr;
     auto getCreatedDate() const -> const Date&;
@@ -102,13 +102,13 @@ public:
     bool setOtherType(const std::string& type, const InternalEmployeePtr& changer);
     bool setRecord(const std::string& record, const InternalEmployeePtr& changer);
 
-    bool addClient(const ClientPtr& client, const InternalEmployeePtr& changer);
+    bool addClient(const WeakClientPtr& client, const InternalEmployeePtr& changer);
     bool delClient(size_t id, const InternalEmployeePtr& changer);
 
-    bool addEmployee(const InternalEmployeePtr& employee, const InternalEmployeePtr& changer);
+    bool addEmployee(const WeakInternalEmployee& employee, const InternalEmployeePtr& changer);
     bool delEmployee(size_t id, const InternalEmployeePtr& changer);
 
-    bool addInvitee(const PersonPtr& invitee, const InternalEmployeePtr& changer);
+    bool addInvitee(const WeakPersonPtr& invitee, const InternalEmployeePtr& changer);
     bool delInvitee(size_t id, const InternalEmployeePtr& changer);
 
     bool setPreviousMeeting(const MeetingPtr& meeting, const InternalEmployeePtr& changer);
@@ -118,27 +118,27 @@ public:
     /// @}
 
 private:
-    AddressPtr                       location;
+    AddressPtr                        location;
 
-    MeetingStatus                    meeting_status;
-    MeetingType                      meeting_type;
+    MeetingStatus                     meeting_status;
+    MeetingType                       meeting_type;
 
-    std::vector<MeetingOutcome>      outcomes;
-    std::vector<std::string>         other_outcomes;
+    std::vector<MeetingOutcome>       outcomes;
+    std::vector<std::string>          other_outcomes;
 
-    std::string                      other_type;
+    std::string                       other_type;
 
-    std::string                      record;
+    std::string                       record;
 
-    std::vector<ClientPtr>           clients;
-    std::vector<InternalEmployeePtr> employees;
-    std::vector<PersonPtr>           invitees;
+    std::vector<WeakClientPtr>        clients;
+    std::vector<WeakInternalEmployee> employees;
+    std::vector<WeakPersonPtr>        invitees;
 
-    MeetingPtr                       previous_meeting;
-    MeetingPtr                       next_meeting;
+    MeetingPtr                        previous_meeting;
+    MeetingPtr                        next_meeting;
 
-    Date                             created_date;
+    Date                              created_date;
 
-    bool                             is_confirmed;
-    bool                             is_virtual;
+    bool                              is_confirmed;
+    bool                              is_virtual;
 };

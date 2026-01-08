@@ -38,9 +38,9 @@ Meeting::Meeting(
     std::vector<std::string>           other_outcomes,
     const std::string&                 other_type,
     const std::string&                 record,
-    std::vector<ClientPtr>             clients,
-    std::vector<InternalEmployeePtr>   employees,
-    std::vector<PersonPtr>             invitees,
+    std::vector<WeakClientPtr>         clients,
+    std::vector<WeakInternalEmployee>  employees,
+    std::vector<WeakPersonPtr>         invitees,
     const MeetingPtr&                  previous_meeting,
     const MeetingPtr&                  next_meeting,
     const Date&                        created_date,
@@ -96,12 +96,12 @@ auto Meeting::getOtherOutcomes() const -> const std::vector<std::string>&
 }
 auto Meeting::getOtherType() const -> const std::string& { return this->other_type; }
 auto Meeting::getRecord() const -> const std::string& { return this->record; }
-auto Meeting::getClients() const -> const std::vector<ClientPtr>& { return this->clients; }
-auto Meeting::getEmployees() const -> const std::vector<InternalEmployeePtr>&
+auto Meeting::getClients() const -> const std::vector<WeakClientPtr>& { return this->clients; }
+auto Meeting::getEmployees() const -> const std::vector<WeakInternalEmployee>&
 {
     return this->employees;
 }
-auto Meeting::getInvitees() const -> const std::vector<PersonPtr>& { return this->invitees; }
+auto Meeting::getInvitees() const -> const std::vector<WeakPersonPtr>& { return this->invitees; }
 auto Meeting::getPreviousMeeting() const -> const MeetingPtr { return this->previous_meeting; }
 auto Meeting::getNextMeeting() const -> const MeetingPtr { return this->next_meeting; }
 auto Meeting::getCreatedDate() const -> const Date& { return this->created_date; }
@@ -286,16 +286,22 @@ bool Meeting::setRecord(const std::string& record, const InternalEmployeePtr& ch
     return false;
 }
 
-bool Meeting::addClient(const ClientPtr& client, const InternalEmployeePtr& changer)
+bool Meeting::addClient(const WeakClientPtr& client, const InternalEmployeePtr& changer)
 {
-    if (std::find(this->clients.begin(), this->clients.end(), client) == this->clients.end()) {
+    if (std::find_if(
+            this->clients.begin(),
+            this->clients.end(),
+            [&client](const WeakClientPtr& other_client) {
+                return !(client.owner_before(other_client) || other_client.owner_before(client));
+            }
+        ) == this->clients.end()) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
             std::nullopt,
             std::make_optional<ChangeLog::ValueVariant>(client),
             MeetingFields::Clients,
             ChangeLog::FieldType::null,
-            ChangeLog::FieldType::Client,
+            ChangeLog::FieldType::WeakClient,
             ChangeLog::Action::Add
         ));
         this->clients.push_back(client);
@@ -312,7 +318,7 @@ bool Meeting::delClient(const size_t id, const InternalEmployeePtr& changer)
             std::make_optional<ChangeLog::ValueVariant>(this->clients[id]),
             std::nullopt,
             MeetingFields::Clients,
-            ChangeLog::FieldType::Client,
+            ChangeLog::FieldType::WeakClient,
             ChangeLog::FieldType::null,
             ChangeLog::Action::Remove
         ));
@@ -322,17 +328,24 @@ bool Meeting::delClient(const size_t id, const InternalEmployeePtr& changer)
     return false;
 }
 
-bool Meeting::addEmployee(const InternalEmployeePtr& employee, const InternalEmployeePtr& changer)
+bool Meeting::addEmployee(const WeakInternalEmployee& employee, const InternalEmployeePtr& changer)
 {
-    if (std::find(this->employees.begin(), this->employees.end(), employee) ==
-        this->employees.end()) {
+    if (std::find_if(
+            this->employees.begin(),
+            this->employees.end(),
+            [&employee](const WeakInternalEmployee& other_employee) {
+                return !(
+                    employee.owner_before(other_employee) || other_employee.owner_before(employee)
+                );
+            }
+        ) == this->employees.end()) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
             std::nullopt,
             std::make_optional<ChangeLog::ValueVariant>(employee),
             MeetingFields::Employees,
             ChangeLog::FieldType::null,
-            ChangeLog::FieldType::InternalEmployee,
+            ChangeLog::FieldType::WeakInternalEmployee,
             ChangeLog::Action::Add
         ));
         this->employees.push_back(employee);
@@ -349,7 +362,7 @@ bool Meeting::delEmployee(const size_t id, const InternalEmployeePtr& changer)
             std::make_optional<ChangeLog::ValueVariant>(this->employees[id]),
             std::nullopt,
             MeetingFields::Employees,
-            ChangeLog::FieldType::InternalEmployee,
+            ChangeLog::FieldType::WeakInternalEmployee,
             ChangeLog::FieldType::null,
             ChangeLog::Action::Remove
         ));
@@ -359,16 +372,24 @@ bool Meeting::delEmployee(const size_t id, const InternalEmployeePtr& changer)
     return false;
 }
 
-bool Meeting::addInvitee(const PersonPtr& invitee, const InternalEmployeePtr& changer)
+bool Meeting::addInvitee(const WeakPersonPtr& invitee, const InternalEmployeePtr& changer)
 {
-    if (std::find(this->invitees.begin(), this->invitees.end(), invitee) == this->invitees.end()) {
+    if (std::find_if(
+            this->invitees.begin(),
+            this->invitees.end(),
+            [&invitee](const WeakPersonPtr& other_invitee) {
+                return !(
+                    invitee.owner_before(other_invitee) || other_invitee.owner_before(invitee)
+                );
+            }
+        ) == this->invitees.end()) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
             std::nullopt,
             std::make_optional<ChangeLog::ValueVariant>(invitee),
             MeetingFields::Invitees,
             ChangeLog::FieldType::null,
-            ChangeLog::FieldType::Person,
+            ChangeLog::FieldType::WeakPerson,
             ChangeLog::Action::Add
         ));
         this->invitees.push_back(invitee);
@@ -385,7 +406,7 @@ bool Meeting::delInvitee(const size_t id, const InternalEmployeePtr& changer)
             std::make_optional<ChangeLog::ValueVariant>(this->invitees[id]),
             std::nullopt,
             MeetingFields::Invitees,
-            ChangeLog::FieldType::Person,
+            ChangeLog::FieldType::WeakPerson,
             ChangeLog::FieldType::null,
             ChangeLog::Action::Remove
         ));
