@@ -142,6 +142,11 @@ public:
     bool delDocument(size_t index, const InternalEmployeePtr& changer);
     /// @}
 
+    /// @name Auxiliary functions
+    /// @{
+    void clearContacts();
+    void clearAssociatedClients();
+    /// @}
 private:
     CompanyType          type;
     OptionalStr          other_type;

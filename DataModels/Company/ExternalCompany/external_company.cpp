@@ -529,6 +529,30 @@ bool ExternalCompany::delDocument(size_t index, const InternalEmployeePtr& chang
     return false;
 }
 
+void ExternalCompany::clearContacts()
+{
+    this->contacts.erase(
+        std::remove_if(
+            this->contacts.begin(),
+            this->contacts.end(),
+            [](const WeakExternalEmployee& contact) { return contact.expired(); }
+        ),
+        this->contacts.end()
+    );
+}
+
+void ExternalCompany::clearAssociatedClients()
+{
+    this->associated_clients.erase(
+        std::remove_if(
+            this->associated_clients.begin(),
+            this->associated_clients.end(),
+            [](const WeakExternalEmployee& contact) { return contact.expired(); }
+        ),
+        this->associated_clients.end()
+    );
+}
+
 bool ExternalCompany::setSize(const CompanySize size, const InternalEmployeePtr& changer)
 {
     if (this->size != size) {
