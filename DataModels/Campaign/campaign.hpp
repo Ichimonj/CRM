@@ -3,7 +3,6 @@
 
 #include "BigNum/big_uint.hpp"
 #include "Note/note.hpp"
-
 #include "Usings/type_usings.hpp"
 
 enum class CampaignType : uint8_t { Email, SocialAds, Webinar, Event, other, COUNT };
@@ -23,7 +22,7 @@ public:
         const MoneyPtr&              budget_spent,
         const uint32_t&              total_joined,
         const uint32_t&              total_converted,
-        const InternalEmployeePtr&   creator,
+        const WeakInternalEmployee&  creator,
         const std::optional<double>& conversion_rate,
         std::vector<Note>            notes,
         std::vector<CampaignLeadPtr> target_leads,
@@ -42,7 +41,7 @@ public:
     auto getBudgetSpent() const -> const MoneyPtr&;
     auto getTotalJoined() const -> const uint32_t&;
     auto getTotalConverted() const -> const uint32_t&;
-    auto getCreator() const -> const InternalEmployeePtr&;
+    auto getCreator() const -> const WeakInternalEmployee&;
     auto getConversionRate() const -> const std::optional<double>&;
     auto getNotes() const -> const std::vector<Note>&;
     auto getTargetLeads() const -> const std::vector<CampaignLeadPtr>&;
@@ -60,7 +59,7 @@ public:
     bool setBudgetSpent(const MoneyPtr& budget_spent, const InternalEmployeePtr& changer);
     bool setTotalJoined(uint32_t total_joined, const InternalEmployeePtr& changer);
     bool setTotalConverted(uint32_t total_converted, const InternalEmployeePtr& changer);
-    bool setCreator(const InternalEmployeePtr& creator, const InternalEmployeePtr& changer);
+    bool setCreator(const WeakInternalEmployee& creator, const InternalEmployeePtr& changer);
     bool setConversionRate(
         const std::optional<double>& conversion_rate, const InternalEmployeePtr& changer
     );
@@ -73,17 +72,17 @@ public:
     /// @}
 
 private:
-    BigUint             id;
-    std::string         name;
-    CampaignType        type;
-    OptionalStr         other_type;
-    DatePtr             start_date;
-    DatePtr             end_date;
-    MoneyPtr            budget;
-    MoneyPtr            budget_spent;
-    uint32_t            total_joined    = 0;
-    uint32_t            total_converted = 0;
-    InternalEmployeePtr creator;
+    BigUint              id;
+    std::string          name;
+    CampaignType         type;
+    OptionalStr          other_type;
+    DatePtr              start_date;
+    DatePtr              end_date;
+    MoneyPtr             budget;
+    MoneyPtr             budget_spent;
+    uint32_t             total_joined    = 0;
+    uint32_t             total_converted = 0;
+    WeakInternalEmployee creator;
     //
     std::optional<double>        conversion_rate;
     std::vector<Note>            notes;

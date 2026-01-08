@@ -2,7 +2,7 @@
 
 #include "ChangeLog/change_log.hpp"
 
-Campaign::Campaign(const BigUint& id) : id(id) {}
+Campaign::Campaign(const BigUint& id) : id(id), type(CampaignType::other) {}
 
 Campaign::Campaign(
     const BigUint&               id,
@@ -15,7 +15,7 @@ Campaign::Campaign(
     const MoneyPtr&              budget_spent,
     const uint32_t&              total_joined,
     const uint32_t&              total_converted,
-    const InternalEmployeePtr&   creator,
+    const WeakInternalEmployee&  creator,
     const std::optional<double>& conversion_rate,
     std::vector<Note>            notes,
     std::vector<CampaignLeadPtr> target_leads,
@@ -48,7 +48,7 @@ auto Campaign::getBudget() const -> const MoneyPtr& { return budget; }
 auto Campaign::getBudgetSpent() const -> const MoneyPtr& { return this->budget_spent; }
 auto Campaign::getTotalJoined() const -> const uint32_t& { return total_joined; }
 auto Campaign::getTotalConverted() const -> const uint32_t& { return total_converted; }
-auto Campaign::getCreator() const -> const InternalEmployeePtr& { return creator; }
+auto Campaign::getCreator() const -> const WeakInternalEmployee& { return creator; }
 auto Campaign::getConversionRate() const -> const std::optional<double>& { return conversion_rate; }
 auto Campaign::getNotes() const -> const std::vector<Note>& { return notes; }
 auto Campaign::getTargetLeads() const -> const std::vector<CampaignLeadPtr>&
@@ -245,16 +245,18 @@ bool Campaign::setTotalConverted(uint32_t total_converted, const InternalEmploye
     return false;
 }
 
-bool Campaign::setCreator(const InternalEmployeePtr& creator, const InternalEmployeePtr& changer)
+bool Campaign::setCreator(const WeakInternalEmployee& creator, const InternalEmployeePtr& changer)
 {
-    if (this->creator != creator) {
+    if (this->creator.owner_before(creator) || creator.owner_before(this->creator)) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
-            PTR_TO_OPTIONAL(this->creator),
-            PTR_TO_OPTIONAL(creator),
+            WEAK_PTR_TO_OPTIONAL(this->creator),
+            WEAK_PTR_TO_OPTIONAL(creator),
             CampaignFields::Creator,
-            this->creator ? ChangeLog::FieldType::InternalEmployee : ChangeLog::FieldType::null,
-            creator ? ChangeLog::FieldType::InternalEmployee : ChangeLog::FieldType::null,
+            !this->creator.expired() ? ChangeLog::FieldType::WeakInternalEmployee
+                                     : ChangeLog::FieldType::null,
+            !creator.expired() ? ChangeLog::FieldType::WeakInternalEmployee
+                               : ChangeLog::FieldType::null,
             ChangeLog::Action::Change
         ));
         this->creator = creator;
