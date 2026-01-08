@@ -1,6 +1,6 @@
 #pragma once
-#include "Interaction/base_interaction.hpp"
 #include "DateTime/date.hpp"
+#include "Interaction/base_interaction.hpp"
 
 struct Meeting : public BaseInteraction {
     enum class MeetingType : uint8_t { Negotiation, Presentation, Training, Other, COUNT };
@@ -38,17 +38,18 @@ struct Meeting : public BaseInteraction {
         const OptionalStr&                 subject,
         const std::optional<TimeDuration>& interaction_duration,
         const Priority&                    priority,
-        const InternalEmployeePtr&         manager,
+        const WeakInternalEmployee&        manager,
         const DatePtr&                     start_date,
         const DatePtr&                     end_date,
-        const InternalEmployeePtr&         checker,
+        const WeakInternalEmployee&        checker,
+        const InteractionType&             type,
         std::vector<std::string>           tags,
         std::vector<InteractionResult>     results,
         std::vector<Note>                  notes,
         std::vector<StringPair>            more_data,
         std::vector<InteractionPtr>        related_interactions,
         std::vector<FilePtr>               attachment_files,
-        std::vector<PersonPtr>             participants,
+        std::vector<WeakPersonPtr>         participants,
         const AddressPtr&                  location,
         const MeetingStatus&               meeting_status,
         const MeetingType&                 meeting_type,

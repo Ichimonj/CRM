@@ -17,10 +17,10 @@ BaseInteraction::BaseInteraction(
     const OptionalStr&                 subject,
     const std::optional<TimeDuration>& interaction_duration,
     const Priority&                    priority,
-    const InternalEmployeePtr&         manager,
+    const WeakInternalEmployee&        manager,
     const DatePtr&                     start_date,
     const DatePtr&                     end_date,
-    const InternalEmployeePtr&         checker,
+    const WeakInternalEmployee&        checker,
     const InteractionType&             type,
     std::vector<std::string>           tags,
     std::vector<InteractionResult>     results,
@@ -28,7 +28,7 @@ BaseInteraction::BaseInteraction(
     std::vector<StringPair>            more_data,
     std::vector<InteractionPtr>        related_interactions,
     std::vector<FilePtr>               attachment_files,
-    std::vector<PersonPtr>             participants
+    std::vector<WeakPersonPtr>         participants
 )
     : id(id)
     , external_id(external_id)
@@ -67,7 +67,7 @@ auto BaseInteraction::getResults() const -> const std::vector<InteractionResult>
 {
     return this->results;
 }
-auto BaseInteraction::getManager() const -> const InternalEmployeePtr& { return this->manager; }
+auto BaseInteraction::getManager() const -> const WeakInternalEmployee& { return this->manager; }
 auto BaseInteraction::getNotes() const -> const std::vector<Note>& { return this->notes; }
 auto BaseInteraction::getMoreData() const -> const std::vector<StringPair>&
 {
@@ -84,8 +84,8 @@ auto BaseInteraction::getAttachmentFiles() const -> const std::vector<FilePtr>&
 auto BaseInteraction::getCreatedDate() const -> const Date& { return this->created_date; }
 auto BaseInteraction::getStartDate() const -> const DatePtr& { return this->start_date; }
 auto BaseInteraction::getEndDate() const -> const DatePtr& { return this->end_date; }
-auto BaseInteraction::getChecker() const -> const InternalEmployeePtr& { return this->checker; }
-auto BaseInteraction::getParticipants() const -> const std::vector<PersonPtr>&
+auto BaseInteraction::getChecker() const -> const WeakInternalEmployee& { return this->checker; }
+auto BaseInteraction::getParticipants() const -> const std::vector<WeakPersonPtr>&
 {
     return this->participants;
 }
@@ -270,17 +270,19 @@ bool BaseInteraction::delResult(const size_t index, const InternalEmployeePtr& c
 }
 
 bool BaseInteraction::setManager(
-    const InternalEmployeePtr& manager, const InternalEmployeePtr& changer
+    const WeakInternalEmployee& manager, const InternalEmployeePtr& changer
 )
 {
-    if (this->manager != manager) {
+    if (this->manager.owner_before(manager) || manager.owner_before(this->manager)) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
-            PTR_TO_OPTIONAL(this->manager),
-            PTR_TO_OPTIONAL(manager),
+            WEAK_PTR_TO_OPTIONAL(this->manager),
+            WEAK_PTR_TO_OPTIONAL(manager),
             BaseInteractionFields::Manager,
-            this->manager ? ChangeLog::FieldType::InternalEmployee : ChangeLog::FieldType::null,
-            manager ? ChangeLog::FieldType::InternalEmployee : ChangeLog::FieldType::null,
+            !this->manager.expired() ? ChangeLog::FieldType::WeakInternalEmployee
+                                     : ChangeLog::FieldType::null,
+            !manager.expired() ? ChangeLog::FieldType::WeakInternalEmployee
+                               : ChangeLog::FieldType::null,
             ChangeLog::Action::Change
         ));
         this->manager = manager;
@@ -509,17 +511,19 @@ bool BaseInteraction::setEndDate(const DatePtr& date, const InternalEmployeePtr&
 }
 
 bool BaseInteraction::setChecker(
-    const InternalEmployeePtr& checker, const InternalEmployeePtr& changer
+    const WeakInternalEmployee& checker, const InternalEmployeePtr& changer
 )
 {
-    if (this->checker != checker) {
+    if (this->checker.owner_before(checker) || checker.owner_before(this->checker)) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
-            PTR_TO_OPTIONAL(this->checker),
-            PTR_TO_OPTIONAL(checker),
+            WEAK_PTR_TO_OPTIONAL(this->checker),
+            WEAK_PTR_TO_OPTIONAL(checker),
             BaseInteractionFields::Checker,
-            this->checker ? ChangeLog::FieldType::InternalEmployee : ChangeLog::FieldType::null,
-            checker ? ChangeLog::FieldType::InternalEmployee : ChangeLog::FieldType::null,
+            !this->checker.expired() ? ChangeLog::FieldType::WeakInternalEmployee
+                                     : ChangeLog::FieldType::null,
+            !checker.expired() ? ChangeLog::FieldType::WeakInternalEmployee
+                               : ChangeLog::FieldType::null,
             ChangeLog::Action::Change
         ));
         this->checker = checker;
@@ -529,18 +533,26 @@ bool BaseInteraction::setChecker(
 }
 
 bool BaseInteraction::addParticipants(
-    const PersonPtr& participant, const InternalEmployeePtr& changer
+    const WeakPersonPtr& participant, const InternalEmployeePtr& changer
 )
 {
-    if (std::find(this->participants.begin(), this->participants.end(), participant) ==
-        this->participants.end()) {
+    if (std::find_if(
+            this->participants.begin(),
+            this->participants.end(),
+            [&participant](const WeakPersonPtr& other_participant) {
+                return !(
+                    participant.owner_before(other_participant) ||
+                    other_participant.owner_before(participant)
+                );
+            }
+        ) == this->participants.end()) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
             std::nullopt,
             std::make_optional<ChangeLog::ValueVariant>(participant),
             BaseInteractionFields::Participants,
             ChangeLog::FieldType::null,
-            ChangeLog::FieldType::Person,
+            ChangeLog::FieldType::WeakPerson,
             ChangeLog::Action::Add
         ));
         this->participants.push_back(participant);
@@ -557,7 +569,7 @@ bool BaseInteraction::delParticipants(const size_t index, const InternalEmployee
             std::make_optional<ChangeLog::ValueVariant>(this->participants[index]),
             std::nullopt,
             BaseInteractionFields::Participants,
-            ChangeLog::FieldType::Person,
+            ChangeLog::FieldType::WeakPerson,
             ChangeLog::FieldType::null,
             ChangeLog::Action::Remove
         ));
@@ -567,7 +579,9 @@ bool BaseInteraction::delParticipants(const size_t index, const InternalEmployee
     return false;
 }
 
-bool BaseInteraction::addCampaign(const WeakCampaignPtr& campaign, const InternalEmployeePtr& changer)
+bool BaseInteraction::addCampaign(
+    const WeakCampaignPtr& campaign, const InternalEmployeePtr& changer
+)
 {
     auto campaign_ptr = campaign.lock();
     auto is_unique    = std::find_if(

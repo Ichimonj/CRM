@@ -33,10 +33,10 @@ struct BaseInteraction {
         const OptionalStr&                 subject,
         const std::optional<TimeDuration>& interaction_duration,
         const Priority&                    priority,
-        const InternalEmployeePtr&         manager,
+        const WeakInternalEmployee&        manager,
         const DatePtr&                     start_date,
         const DatePtr&                     end_date,
-        const InternalEmployeePtr&         checker,
+        const WeakInternalEmployee&        checker,
         const InteractionType&             type,
         std::vector<std::string>           tags,
         std::vector<InteractionResult>     results,
@@ -44,7 +44,7 @@ struct BaseInteraction {
         std::vector<StringPair>            more_data,
         std::vector<InteractionPtr>        related_interactions,
         std::vector<FilePtr>               attachment_files,
-        std::vector<PersonPtr>             participants
+        std::vector<WeakPersonPtr>         participants
     );
     virtual ~BaseInteraction() = default;
 
@@ -60,7 +60,7 @@ public:
     auto getPriority() const -> Priority;
     auto getTags() const -> const std::vector<std::string>&;
     auto getResults() const -> const std::vector<InteractionResult>&;
-    auto getManager() const -> const InternalEmployeePtr&;
+    auto getManager() const -> const WeakInternalEmployee&;
     auto getNotes() const -> const std::vector<Note>&;
     auto getMoreData() const -> const std::vector<StringPair>&;
     auto getRelatedInteractions() const -> const std::vector<InteractionPtr>&;
@@ -68,8 +68,8 @@ public:
     auto getCreatedDate() const -> const Date&;
     auto getStartDate() const -> const DatePtr&;
     auto getEndDate() const -> const DatePtr&;
-    auto getChecker() const -> const InternalEmployeePtr&;
-    auto getParticipants() const -> const std::vector<PersonPtr>&;
+    auto getChecker() const -> const WeakInternalEmployee&;
+    auto getParticipants() const -> const std::vector<WeakPersonPtr>&;
     auto getType() const -> InteractionType;
     auto getChangeLogs() const -> const std::vector<ChangeLogPtr>&;
     /// @}
@@ -90,7 +90,7 @@ public:
     bool addResult(const InteractionResult& result, const InternalEmployeePtr& changer);
     bool delResult(const size_t index, const InternalEmployeePtr& changer);
 
-    bool setManager(const InternalEmployeePtr& manager, const InternalEmployeePtr& changer);
+    bool setManager(const WeakInternalEmployee& manager, const InternalEmployeePtr& changer);
 
     bool addNote(const Note& note, const InternalEmployeePtr& changer);
     bool delNote(const size_t index, const InternalEmployeePtr& changer);
@@ -111,9 +111,9 @@ public:
     bool setSubject(const OptionalStr& subject, const InternalEmployeePtr& changer);
     bool setStartDate(const DatePtr& date, const InternalEmployeePtr& changer);
     bool setEndDate(const DatePtr& date, const InternalEmployeePtr& changer);
-    bool setChecker(const InternalEmployeePtr& checker, const InternalEmployeePtr& changer);
+    bool setChecker(const WeakInternalEmployee& checker, const InternalEmployeePtr& changer);
 
-    bool addParticipants(const PersonPtr& participant, const InternalEmployeePtr& changer);
+    bool addParticipants(const WeakPersonPtr& participant, const InternalEmployeePtr& changer);
     bool delParticipants(const size_t index, const InternalEmployeePtr& changer);
 
     bool addCampaign(const WeakCampaignPtr& campaign, const InternalEmployeePtr& changer);
@@ -141,9 +141,9 @@ private:
     std::vector<std::string>       tags;
     std::vector<StringPair>        more_data;
 
-    InternalEmployeePtr            manager;
-    InternalEmployeePtr            checker;
-    std::vector<PersonPtr>         participants;
+    WeakInternalEmployee           manager;
+    WeakInternalEmployee           checker;
+    std::vector<WeakPersonPtr>     participants;
 
     std::vector<InteractionResult> results;
     std::vector<Note>              notes;
@@ -151,7 +151,7 @@ private:
     std::vector<InteractionPtr>    related_interactions;
     std::vector<FilePtr>           attachment_files;
 
-    std::vector<WeakCampaignPtr>      campaigns;
+    std::vector<WeakCampaignPtr>   campaigns;
 
 protected:
     std::vector<ChangeLogPtr> change_logs;
