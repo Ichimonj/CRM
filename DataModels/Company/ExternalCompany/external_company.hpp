@@ -35,7 +35,7 @@ public:
         const CompanySize&                    size,
         const Rating&                         rating,
         const RiskLevel&                      risk_level,
-        const InternalEmployeePtr&            account_manager,
+        const WeakInternalEmployee&           account_manager,
         const OptionalStr&                    VAT_number,
         const DatePtr&                        last_interaction_date,
         const OptionalStr&                    preferred_contact_method,
@@ -47,8 +47,8 @@ public:
         const MoneyPtr&                       total_revenue_generated,
         const MoneyPtr&                       outstanding_balance,
         const std::optional<double>&          churn_probability,
-        std::vector<ExternalEmployeePtr>      contacts,
-        std::vector<ClientPtr>                associated_clients,
+        std::vector<WeakExternalEmployee>     contacts,
+        std::vector<WeakClientPtr>            associated_clients,
         std::vector<FilePtr>                  documents,
         std::vector<Note>                     notes,
         std::vector<TaxInfo>                  tax_rates,
@@ -64,7 +64,7 @@ public:
     auto getSize() const -> CompanySize;
     auto getRating() const -> Rating;
     auto getRiskLevel() const -> RiskLevel;
-    auto getAccountManager() const -> const InternalEmployeePtr&;
+    auto getAccountManager() const -> const WeakInternalEmployee&;
     auto getVatNumber() const -> const OptionalStr&;
     auto getLastInteractionDate() const -> const DatePtr&;
     auto getPreferredContactMethod() const -> const OptionalStr&;
@@ -74,9 +74,9 @@ public:
     auto getPreferredIntegrationTool() const -> const OptionalStr&;
     auto getIntegrationStatus() const -> const std::optional<IntegrationStatus>&;
     auto getWinRate() const -> const std::optional<double>&;
-    auto getContacts() const -> const std::vector<ExternalEmployeePtr>&;
+    auto getContacts() const -> const std::vector<WeakExternalEmployee>&;
     auto getComplianceStatus() const -> const std::optional<ComplianceLevel>&;
-    auto getAssociatedClients() const -> const std::vector<ClientPtr>&;
+    auto getAssociatedClients() const -> const std::vector<WeakClientPtr>&;
     auto getCreditLimit() const -> const MoneyPtr&;
     auto getTotalRevenueGenerated() const -> const MoneyPtr&;
     auto getOutstandingBalance() const -> const MoneyPtr&;
@@ -92,7 +92,7 @@ public:
     bool setRating(const Rating rating, const InternalEmployeePtr& changer);
     bool setRiskLevel(const RiskLevel risk_level, const InternalEmployeePtr& changer);
     bool setAccountManager(
-        const InternalEmployeePtr& account_manager, const InternalEmployeePtr& changer
+        const WeakInternalEmployee& account_manager, const InternalEmployeePtr& changer
     );
     bool setVatNumber(const OptionalStr& VAT_number, const InternalEmployeePtr& changer);
     bool setLastInteractionDate(
@@ -130,11 +130,11 @@ public:
         const std::optional<ComplianceLevel>& compliance_status, const InternalEmployeePtr& changer
     );
 
-    bool addContact(const ExternalEmployeePtr& contact, const InternalEmployeePtr& changer);
+    bool addContact(const WeakExternalEmployee& contact, const InternalEmployeePtr& changer);
     bool delContact(size_t index, const InternalEmployeePtr& changer);
 
     bool addAssociatedClient(
-        const ClientPtr& associated_client, const InternalEmployeePtr& changer
+        const WeakClientPtr& associated_client, const InternalEmployeePtr& changer
     );
     bool delAssociatedClient(size_t index, const InternalEmployeePtr& changer);
 
@@ -143,28 +143,28 @@ public:
     /// @}
 
 private:
-    CompanyType         type;
-    OptionalStr         other_type;
-    CompanySize         size;
-    Rating              rating;
-    RiskLevel           risk_level;
-    InternalEmployeePtr account_manager;
-    OptionalStr         VAT_number;
-    DatePtr             last_interaction_date;
-    OptionalStr         preferred_contact_method;
-    OptionalStr         payment_terms;
-    Currencies          preferred_currency;
-    OptionalStr         service_level_agreement;
-    OptionalStr         preferred_integration_tool;
+    CompanyType          type;
+    OptionalStr          other_type;
+    CompanySize          size;
+    Rating               rating;
+    RiskLevel            risk_level;
+    WeakInternalEmployee account_manager;
+    OptionalStr          VAT_number;
+    DatePtr              last_interaction_date;
+    OptionalStr          preferred_contact_method;
+    OptionalStr          payment_terms;
+    Currencies           preferred_currency;
+    OptionalStr          service_level_agreement;
+    OptionalStr          preferred_integration_tool;
     //
-    std::optional<IntegrationStatus> integration_status;
-    std::optional<double>            win_rate;
-    std::vector<ExternalEmployeePtr> contacts;
-    std::optional<ComplianceLevel>   compliance_status;
-    std::vector<ClientPtr>           associated_clients;
-    MoneyPtr                         credit_limit;
-    MoneyPtr                         total_revenue_generated;
-    MoneyPtr                         outstanding_balance;
-    std::vector<FilePtr>             documents;
-    std::optional<double>            churn_probability;
+    std::optional<IntegrationStatus>  integration_status;
+    std::optional<double>             win_rate;
+    std::vector<WeakExternalEmployee> contacts;
+    std::optional<ComplianceLevel>    compliance_status;
+    std::vector<WeakClientPtr>        associated_clients;
+    MoneyPtr                          credit_limit;
+    MoneyPtr                          total_revenue_generated;
+    MoneyPtr                          outstanding_balance;
+    std::vector<FilePtr>              documents;
+    std::optional<double>             churn_probability;
 };

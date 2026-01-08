@@ -33,7 +33,7 @@ ExternalCompany::ExternalCompany(
     const CompanySize&                    size,
     const Rating&                         rating,
     const RiskLevel&                      risk_level,
-    const InternalEmployeePtr&            account_manager,
+    const WeakInternalEmployee&           account_manager,
     const OptionalStr&                    VAT_number,
     const DatePtr&                        last_interaction_date,
     const OptionalStr&                    preferred_contact_method,
@@ -45,8 +45,8 @@ ExternalCompany::ExternalCompany(
     const MoneyPtr&                       total_revenue_generated,
     const MoneyPtr&                       outstanding_balance,
     const std::optional<double>&          churn_probability,
-    std::vector<ExternalEmployeePtr>      contacts,
-    std::vector<ClientPtr>                associated_clients,
+    std::vector<WeakExternalEmployee>     contacts,
+    std::vector<WeakClientPtr>            associated_clients,
     std::vector<FilePtr>                  documents,
     std::vector<Note>                     notes,
     std::vector<TaxInfo>                  tax_rates,
@@ -106,7 +106,7 @@ auto ExternalCompany::getOtherType() const -> const OptionalStr& { return this->
 auto ExternalCompany::getSize() const -> CompanySize { return this->size; }
 auto ExternalCompany::getRating() const -> Rating { return this->rating; }
 auto ExternalCompany::getRiskLevel() const -> RiskLevel { return this->risk_level; }
-auto ExternalCompany::getAccountManager() const -> const InternalEmployeePtr&
+auto ExternalCompany::getAccountManager() const -> const WeakInternalEmployee&
 {
     return this->account_manager;
 }
@@ -139,7 +139,7 @@ auto ExternalCompany::getIntegrationStatus() const -> const std::optional<Integr
 }
 
 auto ExternalCompany::getWinRate() const -> const std::optional<double>& { return this->win_rate; }
-auto ExternalCompany::getContacts() const -> const std::vector<ExternalEmployeePtr>&
+auto ExternalCompany::getContacts() const -> const std::vector<WeakExternalEmployee>&
 {
     return this->contacts;
 }
@@ -147,7 +147,7 @@ auto ExternalCompany::getComplianceStatus() const -> const std::optional<Complia
 {
     return this->compliance_status;
 }
-auto ExternalCompany::getAssociatedClients() const -> const std::vector<ClientPtr>&
+auto ExternalCompany::getAssociatedClients() const -> const std::vector<WeakClientPtr>&
 {
     return this->associated_clients;
 }
@@ -256,18 +256,20 @@ bool ExternalCompany::setRiskLevel(const RiskLevel risk_level, const InternalEmp
 }
 
 bool ExternalCompany::setAccountManager(
-    const InternalEmployeePtr& account_manager, const InternalEmployeePtr& changer
+    const WeakInternalEmployee& account_manager, const InternalEmployeePtr& changer
 )
 {
-    if (this->account_manager != account_manager) {
+    if (this->account_manager.owner_before(account_manager) ||
+        account_manager.owner_before(this->account_manager)) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
-            PTR_TO_OPTIONAL(this->account_manager),
-            PTR_TO_OPTIONAL(account_manager),
+            WEAK_PTR_TO_OPTIONAL(this->account_manager),
+            WEAK_PTR_TO_OPTIONAL(account_manager),
             ExternalCompanyFields::AccountManager,
-            this->account_manager ? ChangeLog::FieldType::InternalEmployee
-                                  : ChangeLog::FieldType::null,
-            account_manager ? ChangeLog::FieldType::InternalEmployee : ChangeLog::FieldType::null,
+            !this->account_manager.expired() ? ChangeLog::FieldType::WeakInternalEmployee
+                                             : ChangeLog::FieldType::null,
+            !account_manager.expired() ? ChangeLog::FieldType::WeakInternalEmployee
+                                       : ChangeLog::FieldType::null,
             ChangeLog::Action::Change
         ));
         this->account_manager = account_manager;
@@ -398,17 +400,25 @@ bool ExternalCompany::setChurnProbability(
 }
 
 bool ExternalCompany::addContact(
-    const ExternalEmployeePtr& contact, const InternalEmployeePtr& changer
+    const WeakExternalEmployee& contact, const InternalEmployeePtr& changer
 )
 {
-    if (std::find(this->contacts.begin(), this->contacts.end(), contact) == this->contacts.end()) {
+    if (std::find_if(
+            this->contacts.begin(),
+            this->contacts.end(),
+            [&contact](const WeakExternalEmployee& other_contact) {
+                return !(
+                    contact.owner_before(other_contact) || other_contact.owner_before(contact)
+                );
+            }
+        ) != this->contacts.end()) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
             std::nullopt,
             std::make_optional(contact),
             ExternalCompanyFields::Contacts,
             ChangeLog::FieldType::null,
-            ChangeLog::FieldType::ExternalEmployee,
+            ChangeLog::FieldType::WeakExternalEmployee,
             ChangeLog::Action::Add
         ));
         this->contacts.push_back(contact);
@@ -425,7 +435,7 @@ bool ExternalCompany::delContact(size_t index, const InternalEmployeePtr& change
             std::make_optional(this->contacts[index]),
             std::nullopt,
             ExternalCompanyFields::Contacts,
-            ChangeLog::FieldType::ExternalEmployee,
+            ChangeLog::FieldType::WeakExternalEmployee,
             ChangeLog::FieldType::null,
             ChangeLog::Action::Remove
         ));
@@ -436,11 +446,18 @@ bool ExternalCompany::delContact(size_t index, const InternalEmployeePtr& change
 }
 
 bool ExternalCompany::addAssociatedClient(
-    const ClientPtr& associated_client, const InternalEmployeePtr& changer
+    const WeakClientPtr& associated_client, const InternalEmployeePtr& changer
 )
 {
-    if (std::find(
-            this->associated_clients.begin(), this->associated_clients.end(), associated_client
+    if (std::find_if(
+            this->associated_clients.begin(),
+            this->associated_clients.end(),
+            [&associated_client](const WeakClientPtr& other_client) {
+                return !(
+                    associated_client.owner_before(other_client) ||
+                    other_client.owner_before(associated_client)
+                );
+            }
         ) == this->associated_clients.end()) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
@@ -448,7 +465,7 @@ bool ExternalCompany::addAssociatedClient(
             std::make_optional(associated_client),
             ExternalCompanyFields::AssociatedClients,
             ChangeLog::FieldType::null,
-            ChangeLog::FieldType::Client,
+            ChangeLog::FieldType::WeakClient,
             ChangeLog::Action::Add
         ));
         this->associated_clients.push_back(associated_client);
@@ -465,7 +482,7 @@ bool ExternalCompany::delAssociatedClient(size_t index, const InternalEmployeePt
             std::make_optional(this->associated_clients[index]),
             std::nullopt,
             ExternalCompanyFields::AssociatedClients,
-            ChangeLog::FieldType::Client,
+            ChangeLog::FieldType::WeakClient,
             ChangeLog::FieldType::null,
             ChangeLog::Action::Remove
         ));
