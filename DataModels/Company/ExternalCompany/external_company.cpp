@@ -547,7 +547,7 @@ void ExternalCompany::clearAssociatedClients()
         std::remove_if(
             this->associated_clients.begin(),
             this->associated_clients.end(),
-            [](const WeakExternalEmployee& contact) { return contact.expired(); }
+            [](const WeakClientPtr& client) { return client.expired(); }
         ),
         this->associated_clients.end()
     );
