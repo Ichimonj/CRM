@@ -46,16 +46,12 @@ public:
         String,
         PhoneNumber,
         Date,
-        Person,  // DEL
         WeakPerson,
         CallType,
         Meeting,
         WeakClient,
-        Client,  // DEL
         WeakInternalEmployee,
-        InternalEmployee,  // DEL
         WeakExternalEmployee,
-        ExternalEmployee,  // DEL
         Bool,
         MeetingStatus,
         MeetingType,
@@ -150,14 +146,10 @@ public:
         std::shared_ptr<PhoneNumber>,
         std::shared_ptr<Date>,
         WeakPersonPtr,
-        std::shared_ptr<Person>,  // DEL
         WeakClientPtr,
-        std::shared_ptr<Client>,  // DEL
         std::shared_ptr<Meeting>,
         WeakInternalEmployee,
-        std::shared_ptr<InternalEmployee>,  // DEL
         WeakExternalEmployee,
-        std::shared_ptr<ExternalEmployee>,  // DEL
         std::shared_ptr<Address>,
         std::shared_ptr<Document>,
         std::shared_ptr<Deal>,

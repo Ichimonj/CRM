@@ -68,11 +68,6 @@ StringPtr ChangeLog::valueToStr(FieldType type, ValueVariant value, StringPtr& s
                 std::make_shared<std::string>(std::get<std::shared_ptr<Date>>(value)->getDateStr());
             return str;
         }
-        case FieldType::Person: {
-            auto& person = std::get<std::shared_ptr<Person>>(value);
-            str = std::make_shared<std::string>(person->getName() + ' ' + person->getSurname());
-            return str;
-        }
         case FieldType::WeakPerson: {
             auto& person_weak = std::get<std::weak_ptr<Person>>(value);
             if (!person_weak.expired()) {
@@ -94,11 +89,6 @@ StringPtr ChangeLog::valueToStr(FieldType type, ValueVariant value, StringPtr& s
             ));
             return str;
         }
-        case FieldType::Client: {
-            auto& client = std::get<std::shared_ptr<Client>>(value);
-            str = std::make_shared<std::string>(client->getName() + ' ' + client->getSurname());
-            return str;
-        }
         case FieldType::WeakClient: {
             auto& client_weak = std::get<std::weak_ptr<Client>>(value);
             if (!client_weak.expired()) {
@@ -107,11 +97,6 @@ StringPtr ChangeLog::valueToStr(FieldType type, ValueVariant value, StringPtr& s
             } else {
                 str = std::make_shared<std::string>(warning::client_removed);
             }
-            return str;
-        }
-        case FieldType::InternalEmployee: {
-            auto& employee = std::get<std::shared_ptr<InternalEmployee>>(value);
-            str = std::make_shared<std::string>(employee->getName() + ' ' + employee->getSurname());
             return str;
         }
         case FieldType::WeakInternalEmployee: {
@@ -125,11 +110,6 @@ StringPtr ChangeLog::valueToStr(FieldType type, ValueVariant value, StringPtr& s
                 str = std::make_shared<std::string>(warning::internal_employee_removed);
             }
 
-            return str;
-        }
-        case FieldType::ExternalEmployee: {
-            auto& employee = std::get<std::shared_ptr<ExternalEmployee>>(value);
-            str = std::make_shared<std::string>(employee->getName() + ' ' + employee->getSurname());
             return str;
         }
         case FieldType::WeakExternalEmployee: {
