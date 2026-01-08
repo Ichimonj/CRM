@@ -25,16 +25,16 @@ struct EmailThread : public BaseInteraction {
         std::vector<FilePtr>               attachment_files,
         std::vector<WeakPersonPtr>         participants,
         std::vector<EmailLetterPtr>        letters,
-        std::vector<ClientPtr>             clients,
-        std::vector<InternalEmployeePtr>   employees
+        std::vector<WeakClientPtr>         clients,
+        std::vector<WeakInternalEmployee>  employees
     );
 
 public:
     /// @name Getters
     /// @{
     auto getLetters() const -> const std::vector<EmailLetterPtr>&;
-    auto getClients() const -> const std::vector<ClientPtr>&;
-    auto getEmployees() const -> const std::vector<InternalEmployeePtr>&;
+    auto getClients() const -> const std::vector<WeakClientPtr>&;
+    auto getEmployees() const -> const std::vector<WeakInternalEmployee>&;
     /// @}
 
     /// @name Change functions
@@ -42,15 +42,21 @@ public:
     bool addLetter(const EmailLetterPtr& letter, const InternalEmployeePtr& changer);
     bool delLetter(const size_t id, const InternalEmployeePtr& changer);
 
-    bool addClient(const ClientPtr& client, const InternalEmployeePtr& changer);
+    bool addClient(const WeakClientPtr& client, const InternalEmployeePtr& changer);
     bool delClient(const size_t id, const InternalEmployeePtr& changer);
 
-    bool addEmployee(const InternalEmployeePtr& employee, const InternalEmployeePtr& changer);
+    bool addEmployee(const WeakInternalEmployee& employee, const InternalEmployeePtr& changer);
     bool delEmployee(const size_t id, const InternalEmployeePtr& changer);
+    /// @}
+
+    /// @name Auxiliary functions
+    /// @{
+    void clearClients();
+    void clearEmployees();
     /// @}
 
 private:
     std::vector<EmailLetterPtr> letters;  ///< Collection of email letters in the thread or folder
-    std::vector<ClientPtr>      clients;  ///< Clients associated with this entity
-    std::vector<InternalEmployeePtr> employees;  ///< Employees involved or responsible
+    std::vector<WeakClientPtr>  clients;  ///< Clients associated with this entity
+    std::vector<WeakInternalEmployee> employees;  ///< Employees involved or responsible
 };

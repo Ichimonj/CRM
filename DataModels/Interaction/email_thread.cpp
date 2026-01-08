@@ -25,8 +25,8 @@ EmailThread::EmailThread(
     std::vector<FilePtr>               attachment_files,
     std::vector<WeakPersonPtr>         participants,
     std::vector<EmailLetterPtr>        letters,
-    std::vector<ClientPtr>             clients,
-    std::vector<InternalEmployeePtr>   employees
+    std::vector<WeakClientPtr>         clients,
+    std::vector<WeakInternalEmployee>  employees
 )
     : BaseInteraction(
           id,
@@ -56,8 +56,8 @@ EmailThread::EmailThread(
 }
 
 auto EmailThread::getLetters() const -> const std::vector<EmailLetterPtr>& { return this->letters; }
-auto EmailThread::getClients() const -> const std::vector<ClientPtr>& { return this->clients; }
-auto EmailThread::getEmployees() const -> const std::vector<InternalEmployeePtr>&
+auto EmailThread::getClients() const -> const std::vector<WeakClientPtr>& { return this->clients; }
+auto EmailThread::getEmployees() const -> const std::vector<WeakInternalEmployee>&
 {
     return this->employees;
 }
@@ -97,16 +97,22 @@ bool EmailThread::delLetter(const size_t id, const InternalEmployeePtr& changer)
     return false;
 }
 
-bool EmailThread::addClient(const ClientPtr& client, const InternalEmployeePtr& changer)
+bool EmailThread::addClient(const WeakClientPtr& client, const InternalEmployeePtr& changer)
 {
-    if (std::find(this->clients.begin(), this->clients.end(), client) == this->clients.end()) {
+    if (std::find_if(
+            this->clients.begin(),
+            this->clients.end(),
+            [&client](const WeakClientPtr& other_client) {
+                return !(client.owner_before(other_client) || other_client.owner_before(client));
+            }
+        ) == this->clients.end()) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
             std::nullopt,
             std::make_optional<ChangeLog::ValueVariant>(client),
             EmailThreadFields::Clients,
             ChangeLog::FieldType::null,
-            ChangeLog::FieldType::Client,
+            ChangeLog::FieldType::WeakClient,
             ChangeLog::Action::Add
         ));
         this->clients.push_back(client);
@@ -123,7 +129,7 @@ bool EmailThread::delClient(const size_t id, const InternalEmployeePtr& changer)
             std::make_optional<ChangeLog::ValueVariant>(this->clients[id]),
             std::nullopt,
             EmailThreadFields::Clients,
-            ChangeLog::FieldType::Client,
+            ChangeLog::FieldType::WeakClient,
             ChangeLog::FieldType::null,
             ChangeLog::Action::Remove
         ));
@@ -134,18 +140,25 @@ bool EmailThread::delClient(const size_t id, const InternalEmployeePtr& changer)
 }
 
 bool EmailThread::addEmployee(
-    const InternalEmployeePtr& employee, const InternalEmployeePtr& changer
+    const WeakInternalEmployee& employee, const InternalEmployeePtr& changer
 )
 {
-    if (std::find(this->employees.begin(), this->employees.end(), employee) ==
-        this->employees.end()) {
+    if (std::find_if(
+            this->employees.begin(),
+            this->employees.end(),
+            [&employee](const WeakInternalEmployee& other_employee) {
+                return !(
+                    employee.owner_before(other_employee) || other_employee.owner_before(employee)
+                );
+            }
+        ) == this->employees.end()) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
             std::nullopt,
             std::make_optional<ChangeLog::ValueVariant>(employee),
             EmailThreadFields::Employees,
             ChangeLog::FieldType::null,
-            ChangeLog::FieldType::InternalEmployee,
+            ChangeLog::FieldType::WeakInternalEmployee,
             ChangeLog::Action::Add
         ));
         this->employees.push_back(employee);
@@ -162,7 +175,7 @@ bool EmailThread::delEmployee(const size_t id, const InternalEmployeePtr& change
             std::make_optional<ChangeLog::ValueVariant>(this->employees[id]),
             std::nullopt,
             EmailThreadFields::Employees,
-            ChangeLog::FieldType::InternalEmployee,
+            ChangeLog::FieldType::WeakInternalEmployee,
             ChangeLog::FieldType::null,
             ChangeLog::Action::Remove
         ));
@@ -170,4 +183,28 @@ bool EmailThread::delEmployee(const size_t id, const InternalEmployeePtr& change
         return true;
     }
     return false;
+}
+
+void EmailThread::clearClients()
+{
+    this->clients.erase(
+        std::remove_if(
+            this->clients.begin(),
+            this->clients.end(),
+            [](const WeakClientPtr& client) { return client.expired(); }
+        ),
+        this->clients.end()
+    );
+}
+
+void EmailThread::clearEmployees()
+{
+    this->employees.erase(
+        std::remove_if(
+            this->employees.begin(),
+            this->employees.end(),
+            [](const WeakClientPtr& client) { return client.expired(); }
+        ),
+        this->employees.end()
+    );
 }
