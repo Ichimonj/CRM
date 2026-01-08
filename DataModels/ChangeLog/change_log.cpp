@@ -195,7 +195,12 @@ StringPtr ChangeLog::valueToStr(FieldType type, ValueVariant value, StringPtr& s
         }
         case FieldType::CampaignLead: {
             auto lead = std::get<std::shared_ptr<CampaignLead>>(value)->getLead();
-            str       = std::make_shared<std::string>(lead->getName() + ' ' + lead->getSurname());
+            if (lead.expired()) {
+                str = std::make_shared<std::string>(warning::client_removed);
+            } else {
+                auto client = lead.lock();
+                str = std::make_shared<std::string>(client->getName() + ' ' + client->getSurname());
+            }
             return str;
         }
         case FieldType::StringPair: {
