@@ -205,11 +205,20 @@ StringPtr ChangeLog::valueToStr(FieldType type, ValueVariant value, StringPtr& s
             return str;
         }
         case FieldType::PersonMoneyPair: {
-            auto& pair =
-                std::get<std::shared_ptr<std::pair<std::shared_ptr<Person>, Money>>>(value);
-            str = std::make_shared<std::string>(
-                pair->first->getName() + ' ' + pair->first->getSurname() + " - " + pair->second.num
-            );
+            auto& pair = std::get<std::shared_ptr<WeakBuyerShare>>(value);
+            if (pair->first.expired()) {
+                str = std::make_shared<std::string>(
+                    warning::person_removed + " " + pair->second.num + ' ' +
+                    currencyToString(pair->second.currency)
+                );
+            } else {
+                auto buyer = pair->first.lock();
+                str        = std::make_shared<std::string>(
+                    buyer->getName() + ' ' + buyer->getSurname() + " - " + pair->second.num + ' ' +
+                    currencyToString(pair->second.currency)
+                );
+            }
+
             return str;
         }
         case FieldType::ResultStatus: {

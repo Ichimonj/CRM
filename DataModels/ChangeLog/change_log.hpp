@@ -170,7 +170,7 @@ public:
         std::shared_ptr<TimeDuration>,
         std::shared_ptr<InteractionResult>,
         std::shared_ptr<Note>,
-        std::shared_ptr<std::pair<std::shared_ptr<Person>, Money>>,
+        std::shared_ptr<std::pair<std::weak_ptr<Person>, Money>>,
         std::shared_ptr<Payment>,
         std::shared_ptr<Offer>,
         std::shared_ptr<OfferDeal>,
