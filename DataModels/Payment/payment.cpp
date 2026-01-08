@@ -6,26 +6,26 @@
 Payment::Payment(const BigUint& id) : id(id), status(PaymentStatus::pending) {}
 
 Payment::Payment(
-    const BigUint&             id,
-    const MoneyPtr&            requested_amount,
-    const MoneyPtr&            sending_amount,
-    const MoneyPtr&            received_amount,
-    const MoneyPtr&            tax_amount,
-    const Currencies&          currency,
-    const DatePtr&             sending_date,
-    const DatePtr&             received_date,
-    const DatePtr&             creation_date,
-    const PaymentStatus&       status,
-    const OptionalStr&         payment_method,
-    const WeakDealPtr&            deal,
-    const PersonPtr&           payer,
-    const CompanyPtr&          payer_company,
-    const OptionalStr&         invoice_number,
-    const OptionalStr&         transaction_id,
-    const OptionalStr&         payment_purpose,
-    const InternalEmployeePtr& created_by,
-    std::vector<DocumentPtr>   documents,
-    std::vector<std::string>   comments
+    const BigUint&              id,
+    const MoneyPtr&             requested_amount,
+    const MoneyPtr&             sending_amount,
+    const MoneyPtr&             received_amount,
+    const MoneyPtr&             tax_amount,
+    const Currencies&           currency,
+    const DatePtr&              sending_date,
+    const DatePtr&              received_date,
+    const DatePtr&              creation_date,
+    const PaymentStatus&        status,
+    const OptionalStr&          payment_method,
+    const WeakDealPtr&          deal,
+    const WeakPersonPtr&        payer,
+    const CompanyPtr&           payer_company,
+    const OptionalStr&          invoice_number,
+    const OptionalStr&          transaction_id,
+    const OptionalStr&          payment_purpose,
+    const WeakInternalEmployee& created_by,
+    std::vector<DocumentPtr>    documents,
+    std::vector<std::string>    comments
 )
     : id(id)
     , requested_amount(requested_amount)
@@ -63,14 +63,14 @@ auto Payment::getCreationDate() const -> const DatePtr& { return this->creation_
 auto Payment::getPaymentStatus() const -> PaymentStatus { return this->status; }
 auto Payment::getPaymentMethod() const -> const OptionalStr& { return this->payment_method; }
 auto Payment::getDeal() const -> const WeakDealPtr& { return this->deal; }
-auto Payment::getPayer() const -> const PersonPtr& { return this->payer; }
+auto Payment::getPayer() const -> const WeakPersonPtr& { return this->payer; }
 auto Payment::getPayerCompany() const -> const CompanyPtr& { return this->payer_company; }
 auto Payment::getInvoiceNumber() const -> const OptionalStr& { return this->invoice_number; }
 auto Payment::getTransactionId() const -> const OptionalStr& { return this->transaction_id; }
 auto Payment::getDocuments() const -> const std::vector<DocumentPtr>& { return this->documents; }
 auto Payment::getComments() const -> const std::vector<std::string>& { return this->comments; }
 auto Payment::getPaymentPurpose() const -> const OptionalStr& { return this->payment_purpose; }
-auto Payment::getCreatedBy() const -> const InternalEmployeePtr& { return this->created_by; }
+auto Payment::getCreatedBy() const -> const WeakInternalEmployee& { return this->created_by; }
 auto Payment::getChangeLogs() const -> const std::vector<ChangeLogPtr>&
 {
     return this->change_logs;
@@ -315,16 +315,16 @@ bool Payment::setDeal(const WeakDealPtr& deal, const InternalEmployeePtr& change
     return false;
 }
 
-bool Payment::setPayer(const PersonPtr& payer, const InternalEmployeePtr& changer)
+bool Payment::setPayer(const WeakPersonPtr& payer, const InternalEmployeePtr& changer)
 {
-    if (this->payer != payer) {
+    if (this->payer.owner_before(payer) || payer.owner_before(this->payer)) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
-            PTR_TO_OPTIONAL(this->payer),
-            PTR_TO_OPTIONAL(payer),
+            WEAK_PTR_TO_OPTIONAL(this->payer),
+            WEAK_PTR_TO_OPTIONAL(payer),
             PaymentFields::Payer,
-            this->payer ? ChangeLog::FieldType::Person : ChangeLog::FieldType::null,
-            payer ? ChangeLog::FieldType::Person : ChangeLog::FieldType::null,
+            !this->payer.expired() ? ChangeLog::FieldType::WeakPerson : ChangeLog::FieldType::null,
+            !payer.expired() ? ChangeLog::FieldType::WeakPerson : ChangeLog::FieldType::null,
             ChangeLog::Action::Change
         ));
         this->payer = payer;
@@ -487,17 +487,19 @@ bool Payment::setPaymentPurpose(
 }
 
 bool Payment::setCreatedBy(
-    const InternalEmployeePtr& created_by, const InternalEmployeePtr& changer
+    const WeakInternalEmployee& created_by, const InternalEmployeePtr& changer
 )
 {
-    if (this->created_by != created_by) {
+    if (this->created_by.owner_before(created_by) || created_by.owner_before(this->created_by)) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
-            PTR_TO_OPTIONAL(this->created_by),
-            PTR_TO_OPTIONAL(created_by),
+            WEAK_PTR_TO_OPTIONAL(this->created_by),
+            WEAK_PTR_TO_OPTIONAL(created_by),
             PaymentFields::CreatedBy,
-            this->created_by ? ChangeLog::FieldType::InternalEmployee : ChangeLog::FieldType::null,
-            created_by ? ChangeLog::FieldType::InternalEmployee : ChangeLog::FieldType::null,
+            !this->created_by.expired() ? ChangeLog::FieldType::WeakInternalEmployee
+                                        : ChangeLog::FieldType::null,
+            !created_by.expired() ? ChangeLog::FieldType::WeakInternalEmployee
+                                  : ChangeLog::FieldType::null,
             ChangeLog::Action::Change
         ));
         this->created_by = created_by;

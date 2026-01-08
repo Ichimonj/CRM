@@ -21,26 +21,26 @@ enum class PaymentStatus {
 struct Payment {
     Payment(const BigUint& id);
     Payment(
-        const BigUint&             id,
-        const MoneyPtr&            requested_amount,
-        const MoneyPtr&            sending_amount,
-        const MoneyPtr&            received_amount,
-        const MoneyPtr&            tax_amount,
-        const Currencies&          currency,
-        const DatePtr&             sending_date,
-        const DatePtr&             received_date,
-        const DatePtr&             creation_date,
-        const PaymentStatus&       status,
-        const OptionalStr&         payment_method,
-        const WeakDealPtr&         deal,
-        const PersonPtr&           payer,
-        const CompanyPtr&          payer_company,
-        const OptionalStr&         invoice_number,
-        const OptionalStr&         transaction_id,
-        const OptionalStr&         payment_purpose,
-        const InternalEmployeePtr& created_by,
-        std::vector<DocumentPtr>   documents,
-        std::vector<std::string>   comments
+        const BigUint&              id,
+        const MoneyPtr&             requested_amount,
+        const MoneyPtr&             sending_amount,
+        const MoneyPtr&             received_amount,
+        const MoneyPtr&             tax_amount,
+        const Currencies&           currency,
+        const DatePtr&              sending_date,
+        const DatePtr&              received_date,
+        const DatePtr&              creation_date,
+        const PaymentStatus&        status,
+        const OptionalStr&          payment_method,
+        const WeakDealPtr&          deal,
+        const WeakPersonPtr&        payer,
+        const CompanyPtr&           payer_company,
+        const OptionalStr&          invoice_number,
+        const OptionalStr&          transaction_id,
+        const OptionalStr&          payment_purpose,
+        const WeakInternalEmployee& created_by,
+        std::vector<DocumentPtr>    documents,
+        std::vector<std::string>    comments
     );
 
     /// @name Getters
@@ -57,14 +57,14 @@ struct Payment {
     auto getPaymentStatus() const -> PaymentStatus;
     auto getPaymentMethod() const -> const OptionalStr&;
     auto getDeal() const -> const WeakDealPtr&;
-    auto getPayer() const -> const PersonPtr&;
+    auto getPayer() const -> const WeakPersonPtr&;
     auto getPayerCompany() const -> const CompanyPtr&;
     auto getInvoiceNumber() const -> const OptionalStr&;
     auto getTransactionId() const -> const OptionalStr&;
     auto getDocuments() const -> const std::vector<DocumentPtr>&;
     auto getComments() const -> const std::vector<std::string>&;
     auto getPaymentPurpose() const -> const OptionalStr&;
-    auto getCreatedBy() const -> const InternalEmployeePtr&;
+    auto getCreatedBy() const -> const WeakInternalEmployee&;
     auto getChangeLogs() const -> const std::vector<ChangeLogPtr>&;
     /// @}
 
@@ -81,7 +81,7 @@ struct Payment {
     bool setPaymentStatus(const PaymentStatus status, const InternalEmployeePtr& changer);
     bool setPaymentMethod(const OptionalStr& payment_method, const InternalEmployeePtr& changer);
     bool setDeal(const WeakDealPtr& deal, const InternalEmployeePtr& changer);
-    bool setPayer(const PersonPtr& payer, const InternalEmployeePtr& changer);
+    bool setPayer(const WeakPersonPtr& payer, const InternalEmployeePtr& changer);
     bool setPayerCompany(const CompanyPtr& payer_company, const InternalEmployeePtr& changer);
     bool setInvoiceNumber(const OptionalStr& invoice_number, const InternalEmployeePtr& changer);
     bool setTransactionId(const OptionalStr& transaction_id, const InternalEmployeePtr& changer);
@@ -90,7 +90,7 @@ struct Payment {
     bool addComment(const std::string& comment, const InternalEmployeePtr& changer);
     bool delComment(size_t index, const InternalEmployeePtr& changer);
     bool setPaymentPurpose(const OptionalStr& payment_purpose, const InternalEmployeePtr& changer);
-    bool setCreatedBy(const InternalEmployeePtr& created_by, const InternalEmployeePtr& changer);
+    bool setCreatedBy(const WeakInternalEmployee& created_by, const InternalEmployeePtr& changer);
     /// @}
 
 private:
@@ -112,7 +112,7 @@ private:
 
     WeakDealPtr   deal;
 
-    PersonPtr     payer;
+    WeakPersonPtr payer;
 
     CompanyPtr    payer_company;
 
@@ -122,6 +122,6 @@ private:
     //
     std::vector<DocumentPtr>  documents;
     std::vector<std::string>  comments;
-    InternalEmployeePtr       created_by;
+    WeakInternalEmployee      created_by;
     std::vector<ChangeLogPtr> change_logs;
 };
