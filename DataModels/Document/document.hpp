@@ -11,18 +11,18 @@ public:
 
     Document(const BigUint& id);
     Document(
-        const BigUint&             id,
-        const std::string&         externalId,
-        const std::string&         documentTitle,
-        const std::string&         documentName,
-        const std::string&         documentNumber,
-        const std::string&         path,
-        const DatePtr&             enteredForce,
-        const DatePtr&             stoppedWorking,
-        const DocumentStatus&      status,
-        const InternalEmployeePtr& createdBy,
-        std::vector<PersonPtr>     partners,
-        std::vector<FilePtr>       attachmentFiles
+        const BigUint&              id,
+        const std::string&          externalId,
+        const std::string&          documentTitle,
+        const std::string&          documentName,
+        const std::string&          documentNumber,
+        const std::string&          path,
+        const DatePtr&              enteredForce,
+        const DatePtr&              stoppedWorking,
+        const DocumentStatus&       status,
+        const WeakInternalEmployee& createdBy,
+        std::vector<WeakPersonPtr>  partners,
+        std::vector<FilePtr>        attachmentFiles
     );
 
 public:
@@ -36,8 +36,8 @@ public:
     auto getEnteredForce() const -> const DatePtr&;
     auto getStoppedWorking() const -> const DatePtr&;
     auto getStatus() const -> DocumentStatus;
-    auto getCreatedBy() const -> const InternalEmployeePtr&;
-    auto getPartners() const -> const std::vector<PersonPtr>&;
+    auto getCreatedBy() const -> const WeakInternalEmployee&;
+    auto getPartners() const -> const std::vector<WeakPersonPtr>&;
     auto getFiles() const -> const std::vector<FilePtr>&;
     auto getChangeLogs() const -> const std::vector<ChangeLogPtr>&;
     ///@}
@@ -51,32 +51,37 @@ public:
     bool setEnteredForce(const DatePtr& date, const InternalEmployeePtr& changer);
     bool setStoppedWorking(const DatePtr& date, const InternalEmployeePtr& changer);
     bool setStatus(const DocumentStatus& status, const InternalEmployeePtr& changer);
-    bool setCreatedBy(const InternalEmployeePtr& creator, const InternalEmployeePtr& changer);
+    bool setCreatedBy(const WeakInternalEmployee& creator, const InternalEmployeePtr& changer);
 
-    bool addPartner(const PersonPtr& partner, const InternalEmployeePtr& changer);
+    bool addPartner(const WeakPersonPtr& partner, const InternalEmployeePtr& changer);
     bool delPartner(const size_t id, const InternalEmployeePtr& changer);
 
     bool addFile(const FilePtr& file, const InternalEmployeePtr& changer);
     bool delFile(const size_t id, const InternalEmployeePtr& changer);
     /// @}
 
+    /// @name Auxiliary functions
+    /// @{
+    void clearPartners();
+    /// @}
+
 public:
     bool operator<(const Document& other) const;
 
 private:
-    BigUint             id;
-    std::string         external_id;
-    std::string         title;
-    std::string         name;
-    std::string         number;
-    std::string         path;
-    DatePtr             entered_force;
-    DatePtr             stopped_working;
-    DocumentStatus      status;
-    InternalEmployeePtr created_by;
+    BigUint              id;
+    std::string          external_id;
+    std::string          title;
+    std::string          name;
+    std::string          number;
+    std::string          path;
+    DatePtr              entered_force;
+    DatePtr              stopped_working;
+    DocumentStatus       status;
+    WeakInternalEmployee created_by;
 
     //
-    std::vector<PersonPtr>    partners;
-    std::vector<FilePtr>      attachment_files;
-    std::vector<ChangeLogPtr> change_logs;
+    std::vector<WeakPersonPtr> partners;
+    std::vector<FilePtr>       attachment_files;
+    std::vector<ChangeLogPtr>  change_logs;
 };

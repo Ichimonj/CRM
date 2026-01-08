@@ -7,18 +7,18 @@
 Document::Document(const BigUint& id) : id(id), status(DocumentStatus::Draft) {}
 
 Document::Document(
-    const BigUint&             id,
-    const std::string&         externalId,
-    const std::string&         documentTitle,
-    const std::string&         documentName,
-    const std::string&         documentNumber,
-    const std::string&         path,
-    const DatePtr&             enteredForce,
-    const DatePtr&             stoppedWorking,
-    const DocumentStatus&      status,
-    const InternalEmployeePtr& createdBy,
-    std::vector<PersonPtr>     partners,
-    std::vector<FilePtr>       attachmentFiles
+    const BigUint&              id,
+    const std::string&          externalId,
+    const std::string&          documentTitle,
+    const std::string&          documentName,
+    const std::string&          documentNumber,
+    const std::string&          path,
+    const DatePtr&              enteredForce,
+    const DatePtr&              stoppedWorking,
+    const DocumentStatus&       status,
+    const WeakInternalEmployee& createdBy,
+    std::vector<WeakPersonPtr>  partners,
+    std::vector<FilePtr>        attachmentFiles
 )
     : id(id)
     , external_id(externalId)
@@ -43,8 +43,8 @@ auto Document::getPath() const -> const std::string& { return this->path; }
 auto Document::getEnteredForce() const -> const DatePtr& { return this->entered_force; }
 auto Document::getStoppedWorking() const -> const DatePtr& { return this->stopped_working; }
 auto Document::getStatus() const -> DocumentStatus { return this->status; }
-auto Document::getCreatedBy() const -> const InternalEmployeePtr& { return this->created_by; }
-auto Document::getPartners() const -> const std::vector<PersonPtr>& { return this->partners; }
+auto Document::getCreatedBy() const -> const WeakInternalEmployee& { return this->created_by; }
+auto Document::getPartners() const -> const std::vector<WeakPersonPtr>& { return this->partners; }
 auto Document::getFiles() const -> const std::vector<FilePtr>& { return this->attachment_files; }
 auto Document::getChangeLogs() const -> const std::vector<ChangeLogPtr>&
 {
@@ -188,16 +188,18 @@ bool Document::setStatus(const DocumentStatus& status, const InternalEmployeePtr
     return false;
 }
 
-bool Document::setCreatedBy(const InternalEmployeePtr& creator, const InternalEmployeePtr& changer)
+bool Document::setCreatedBy(const WeakInternalEmployee& creator, const InternalEmployeePtr& changer)
 {
-    if (this->created_by != creator) {
+    if (this->created_by.owner_before(creator) || creator.owner_before(this->created_by)) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
-            PTR_TO_OPTIONAL(this->created_by),
-            PTR_TO_OPTIONAL(creator),
+            WEAK_PTR_TO_OPTIONAL(this->created_by),
+            WEAK_PTR_TO_OPTIONAL(creator),
             DocumentFields::Creator,
-            this->created_by ? ChangeLog::FieldType::InternalEmployee : ChangeLog::FieldType::null,
-            creator ? ChangeLog::FieldType::InternalEmployee : ChangeLog::FieldType::null,
+            !this->created_by.expired() ? ChangeLog::FieldType::WeakInternalEmployee
+                                        : ChangeLog::FieldType::null,
+            !creator.expired() ? ChangeLog::FieldType::WeakInternalEmployee
+                               : ChangeLog::FieldType::null,
             ChangeLog::Action::Change
         ));
         this->created_by = creator;
@@ -206,16 +208,24 @@ bool Document::setCreatedBy(const InternalEmployeePtr& creator, const InternalEm
     return false;
 }
 
-bool Document::addPartner(const PersonPtr& partner, const InternalEmployeePtr& changer)
+bool Document::addPartner(const WeakPersonPtr& partner, const InternalEmployeePtr& changer)
 {
-    if (std::find(this->partners.begin(), this->partners.end(), partner) == this->partners.end()) {
+    if (std::find_if(
+            this->partners.begin(),
+            this->partners.end(),
+            [&partner](const WeakPersonPtr& other_partner) {
+                return !(
+                    partner.owner_before(other_partner) || other_partner.owner_before(partner)
+                );
+            }
+        ) == this->partners.end()) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
             std::nullopt,
             std::make_optional<ChangeLog::ValueVariant>(partner),
             DocumentFields::Partners,
             ChangeLog::FieldType::null,
-            ChangeLog::FieldType::Person,
+            ChangeLog::FieldType::WeakPerson,
             ChangeLog::Action::Add
         ));
         this->partners.push_back(partner);
@@ -232,7 +242,7 @@ bool Document::delPartner(const size_t id, const InternalEmployeePtr& changer)
             std::make_optional<ChangeLog::ValueVariant>(this->partners[id]),
             std::nullopt,
             DocumentFields::Partners,
-            ChangeLog::FieldType::Person,
+            ChangeLog::FieldType::WeakPerson,
             ChangeLog::FieldType::null,
             ChangeLog::Action::Remove
         ));
@@ -277,6 +287,18 @@ bool Document::delFile(const size_t id, const InternalEmployeePtr& changer)
         return true;
     }
     return false;
+}
+
+void Document::clearPartners()
+{
+    this->partners.erase(
+        std::remove_if(
+            this->partners.begin(),
+            this->partners.end(),
+            [](const WeakPersonPtr& person) { return person.expired(); }
+        ),
+        this->partners.end()
+    );
 }
 
 bool Document::operator<(const Document& other) const
