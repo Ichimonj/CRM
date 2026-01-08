@@ -30,7 +30,7 @@ struct PhoneCallData : public BaseInteraction {
         const PhoneNumberPtr&              to_number,
         const DatePtr&                     start_call,
         const DatePtr&                     end_call,
-        const PersonPtr&                   call_creator,
+        const WeakPersonPtr&               call_creator,
         const std::string&                 call_provider,
         const std::optional<CallType>&     call_type
     );
@@ -41,7 +41,7 @@ struct PhoneCallData : public BaseInteraction {
     auto getStartCall() const -> const DatePtr;
     auto getEndCall() const -> const DatePtr;
     auto getCallType() const -> const std::optional<CallType>;
-    auto getCallCreator() const -> const PersonPtr;
+    auto getCallCreator() const -> const WeakPersonPtr&;
     auto getCallProvider() const -> const std::string&;
     /// @}
 
@@ -52,7 +52,7 @@ struct PhoneCallData : public BaseInteraction {
     bool setStartCall(const DatePtr& start, const InternalEmployeePtr& changer);
     bool setEndCall(const DatePtr& end, const InternalEmployeePtr& changer);
     bool setCallType(const std::optional<CallType>& type, const InternalEmployeePtr& changer);
-    bool setCallCreator(const PersonPtr& creator, const InternalEmployeePtr& changer);
+    bool setCallCreator(const WeakPersonPtr& creator, const InternalEmployeePtr& changer);
     bool setCallProvider(const std::string& provider, const InternalEmployeePtr& changer);
     /// @}
 
@@ -63,7 +63,7 @@ private:
     DatePtr                 start_call;  ///< Date and time when the call started
     DatePtr                 end_call;    ///< Date and time when the call ended
 
-    PersonPtr               call_creator;  ///< Person who created or initiated the call
+    WeakPersonPtr           call_creator;  ///< Person who created or initiated the call
 
     std::string             call_provider;  ///< Telecommunications provider used for the call
 

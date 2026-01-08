@@ -28,7 +28,7 @@ PhoneCallData::PhoneCallData(
     const PhoneNumberPtr&              to_number,
     const DatePtr&                     start_call,
     const DatePtr&                     end_call,
-    const PersonPtr&                   call_creator,
+    const WeakPersonPtr&               call_creator,
     const std::string&                 call_provider,
     const std::optional<CallType>&     call_type
 )
@@ -68,7 +68,7 @@ auto PhoneCallData::getToNumber() const -> const PhoneNumberPtr { return this->t
 auto PhoneCallData::getStartCall() const -> const DatePtr { return this->start_call; }
 auto PhoneCallData::getEndCall() const -> const DatePtr { return this->end_call; }
 auto PhoneCallData::getCallType() const -> const std::optional<CallType> { return this->call_type; }
-auto PhoneCallData::getCallCreator() const -> const PersonPtr { return this->call_creator; }
+auto PhoneCallData::getCallCreator() const -> const WeakPersonPtr& { return this->call_creator; }
 auto PhoneCallData::getCallProvider() const -> const std::string& { return this->call_provider; }
 
 bool PhoneCallData::setFromNumber(const PhoneNumberPtr& number, const InternalEmployeePtr& changer)
@@ -174,16 +174,17 @@ bool PhoneCallData::setCallType(
     return false;
 }
 
-bool PhoneCallData::setCallCreator(const PersonPtr& creator, const InternalEmployeePtr& changer)
+bool PhoneCallData::setCallCreator(const WeakPersonPtr& creator, const InternalEmployeePtr& changer)
 {
-    if (this->call_creator != creator) {
+    if (this->call_creator.owner_before(creator) || creator.owner_before(this->call_creator)) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
-            PTR_TO_OPTIONAL(this->call_creator),
-            PTR_TO_OPTIONAL(creator),
+            WEAK_PTR_TO_OPTIONAL(this->call_creator),
+            WEAK_PTR_TO_OPTIONAL(creator),
             PhoneCallFields::CallCreator,
-            this->call_creator ? ChangeLog::FieldType::Person : ChangeLog::FieldType::null,
-            creator ? ChangeLog::FieldType::Person : ChangeLog::FieldType::null,
+            !this->call_creator.expired() ? ChangeLog::FieldType::WeakPerson
+                                          : ChangeLog::FieldType::null,
+            !creator.expired() ? ChangeLog::FieldType::WeakPerson : ChangeLog::FieldType::null,
             ChangeLog::Action::Change
         ));
         this->call_creator = creator;
