@@ -312,9 +312,7 @@ auto DealDataBase::findByTitleSubstr(const std::string& substr) const -> std::ve
 }
 
 auto DealDataBase::changeManager(
-    const BigUint&                         id,
-    const std::weak_ptr<InternalEmployee>& manager,
-    const InternalEmployeePtr&             changer
+    const BigUint& id, const WeakInternalEmployee& manager, const InternalEmployeePtr& changer
 )
 {
     auto deal_it = this->by_id.find(id);
@@ -337,7 +335,7 @@ auto DealDataBase::changeManager(
 }
 
 auto DealDataBase::changeOwner(
-    const BigUint& id, const std::weak_ptr<Person>& owner, const InternalEmployeePtr& changer
+    const BigUint& id, const WeakPersonPtr& owner, const InternalEmployeePtr& changer
 )
 {
     auto deal_it = this->by_id.find(id);
@@ -552,6 +550,12 @@ auto DealDataBase::changeTitle(
             this->by_title_substr_search.emplace(new_key, deal);
         }
     }
+}
+
+void DealDataBase::removeInternalEmployee(const BigUint& id)
+{
+    this->by_owner.erase(id);
+    this->by_manager.erase(id);
 }
 
 void DealDataBase::safeRemoveFromMap(

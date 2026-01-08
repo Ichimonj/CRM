@@ -11,6 +11,9 @@ class DealDataBase {
 public:
     void add(const DealPtr& deal);
     void remove(const BigUint& id);
+
+    /// @name Get functions
+    /// @{
     auto getAll() const -> const std::unordered_map<BigUint, DealPtr>&;
     auto getByManager() const -> const std::unordered_map<BigUint, std::vector<DealPtr>>&;
     auto getByOwner() const -> const std::unordered_map<BigUint, std::vector<DealPtr>>&;
@@ -23,7 +26,10 @@ public:
     auto getByApprovalDate() const -> const std::multimap<Date, DealPtr>&;
     auto getByContractNumber() const -> const std::unordered_map<std::string, DealPtr>&;
     auto getByTitleSubstr() const -> const std::multimap<std::string, DealPtr>&;
+    /// @}
 
+    /// @name Find functions
+    /// @{
     auto findById(const BigUint& id) const -> const DealPtr;
     auto findByManager(const BigUint& manager_id) const -> const std::vector<DealPtr>&;
     auto findByOwner(const BigUint& owner_id) const -> const std::vector<DealPtr>&;
@@ -40,14 +46,15 @@ public:
 
     auto findByContractNumber(const std::string& contract_number) const -> const DealPtr;
     auto findByTitleSubstr(const std::string& substr) const -> std::vector<DealPtr>;
+    /// @}
 
+    /// @name Change functions
+    /// @{
     auto changeManager(
-        const BigUint&                         id,
-        const std::weak_ptr<InternalEmployee>& manager,
-        const InternalEmployeePtr&             changer
+        const BigUint& id, const WeakInternalEmployee& manager, const InternalEmployeePtr& changer
     );
     auto changeOwner(
-        const BigUint& id, const std::weak_ptr<Person>& owner, const InternalEmployeePtr& changer
+        const BigUint& id, const WeakPersonPtr& owner, const InternalEmployeePtr& changer
     );
     auto changeTotalAmount(
         const BigUint& id, const Money& total_amount, const InternalEmployeePtr& changer
@@ -67,9 +74,22 @@ public:
     auto changeDrawingDate(
         const BigUint& id, const DatePtr& date, const InternalEmployeePtr& changer
     );
-    auto changeApprovalDate(const BigUint& id, const DatePtr& date, const InternalEmployeePtr& changer);
-    auto changeContractNumber(const BigUint& id, const std::string& number, const InternalEmployeePtr& changer);
-    auto changeTitle(const BigUint&id, const std::string& title, const InternalEmployeePtr& changer);
+    auto changeApprovalDate(
+        const BigUint& id, const DatePtr& date, const InternalEmployeePtr& changer
+    );
+    auto changeContractNumber(
+        const BigUint& id, const std::string& number, const InternalEmployeePtr& changer
+    );
+    auto changeTitle(
+        const BigUint& id, const std::string& title, const InternalEmployeePtr& changer
+    );
+    /// @}
+
+    /// @name Auxiliary functions
+    /// @{
+    void removeInternalEmployee(const BigUint& id);
+    /// @}
+
 private:
     static const std::vector<DealPtr>                 empty_vector;
 

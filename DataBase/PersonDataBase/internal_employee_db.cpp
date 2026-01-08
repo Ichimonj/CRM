@@ -194,6 +194,7 @@ void InternalEmployeeDataBase::hard_remove(const size_t index, TenantContext& co
         const auto& employee = removed[index].second;
         auto employee_id = employee->getId();
         context.client_data_base.removeOwner(employee_id);
+        context.deal_data_base.removeInternalEmployee(employee_id);
 
         this->removed.erase(this->removed.begin() + index);
     }
