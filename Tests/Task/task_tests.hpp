@@ -841,7 +841,7 @@ namespace unit {
 
     TEST(TaskTest, addNote)
     {
-        Note note(nullptr, nullptr, "Title", "Text");
+        Note note({}, nullptr, "Title", "Text");
         EXPECT_TRUE(task.addNote(note, changer));
 
         SCOPED_TRACE("Check value");
