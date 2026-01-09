@@ -473,6 +473,23 @@ auto DealDataBase::changePriority(
     }
 }
 
+auto DealDataBase::changeCreationDate(
+    const BigUint& id, const Date& date, const InternalEmployeePtr& changer
+)
+{
+    auto deal_it = this->by_id.find(id);
+    if (deal_it == this->by_id.end()) return;
+
+    DealPtr deal = deal_it->second;
+
+    auto    old_date = deal->getCreationDate();
+
+    if (deal->setCreationDate(date, changer)) {
+        safeRemoveFromMap(this->by_creation_date, old_date, deal, __LINE__, "by_creation_date");
+        this->by_creation_date.emplace(date, deal);
+    }
+}
+
 auto DealDataBase::changeDrawingDate(
     const BigUint& id, const DatePtr& date, const InternalEmployeePtr& changer
 )

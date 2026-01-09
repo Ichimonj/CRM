@@ -71,6 +71,9 @@ public:
     auto changePriority(
         const BigUint& id, const Priority priority, const InternalEmployeePtr& changer
     );
+    auto changeCreationDate(
+        const BigUint& id, const Date& date, const InternalEmployeePtr& changer
+    );
     auto changeDrawingDate(
         const BigUint& id, const DatePtr& date, const InternalEmployeePtr& changer
     );
