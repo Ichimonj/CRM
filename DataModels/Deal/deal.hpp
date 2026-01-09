@@ -89,20 +89,25 @@ struct Deal {
 
     /// @name Change functions
     /// @{
-    bool changeContractNumber(const std::string& number, const InternalEmployeePtr& changer);
-    bool changeTitle(const std::string& title, const InternalEmployeePtr& changer);
-    bool changeDescription(const OptionalStr& description, const InternalEmployeePtr& changer);
-    bool changeSource(const OptionalStr& source, const InternalEmployeePtr& changer);
+    // functions called only from the database
+private:
+    bool setManager(const WeakInternalEmployee& manager, const InternalEmployeePtr& changer);
+    bool setOwner(const WeakPersonPtr& owner, const InternalEmployeePtr& changer);
     bool changeTotalAmount(const Money& amount, const InternalEmployeePtr& changer);
     bool changePaidAmount(const Money& amount, const InternalEmployeePtr& changer);
     bool changeStatus(const Status status, const InternalEmployeePtr& changer);
     bool changeOtherStatus(const OptionalStr& status, const InternalEmployeePtr& changer);
     bool changeDealPriority(const Priority priority, const InternalEmployeePtr& changer);
+    bool setCreationDate(const Date& date, const InternalEmployeePtr& changer);
     bool setDrawingDate(const DatePtr& date, const InternalEmployeePtr& changer);
     bool setDateApproval(const DatePtr& date, const InternalEmployeePtr& changer);
-    bool setCreationDate(const Date& date, const InternalEmployeePtr& changer);
-    bool setOwner(const WeakPersonPtr& owner, const InternalEmployeePtr& changer);
-    bool setManager(const WeakInternalEmployee& manager, const InternalEmployeePtr& changer);
+    bool changeContractNumber(const std::string& number, const InternalEmployeePtr& changer);
+    bool changeTitle(const std::string& title, const InternalEmployeePtr& changer);
+
+    // public functions
+public:
+    bool changeDescription(const OptionalStr& description, const InternalEmployeePtr& changer);
+    bool changeSource(const OptionalStr& source, const InternalEmployeePtr& changer);
 
     bool addTag(const std::string& tag, const InternalEmployeePtr& changer);
     bool delTag(const size_t index, const InternalEmployeePtr& changer);
@@ -141,6 +146,8 @@ struct Deal {
     void clearAssignedEmployees();
     /// @}
 
+    friend class DealDataBase;
+
 private:
     BigUint              id;
     std::string          contract_number;
@@ -170,4 +177,44 @@ private:
     std::vector<OfferDealPtr>         offerings;  // Internal offers in this deal
 
     std::vector<ChangeLogPtr>         change_logs;
+
+#ifdef _TESTING
+public:
+    bool _setManager(const WeakInternalEmployee& manager, const InternalEmployeePtr& changer) {
+        return this->setManager(manager, changer);
+    }
+    bool _setOwner(const WeakPersonPtr& owner, const InternalEmployeePtr& changer) {
+        return this->setOwner(owner, changer);
+    }
+    bool _changeTotalAmount(const Money& amount, const InternalEmployeePtr& changer) {
+        return this->changeTotalAmount(amount, changer);
+    }
+    bool _changePaidAmount(const Money& amount, const InternalEmployeePtr& changer) {
+        return this->changePaidAmount(amount, changer);
+    }
+    bool _changeStatus(const Status status, const InternalEmployeePtr& changer) {
+        return this->changeStatus(status, changer);
+    }
+    bool _changeOtherStatus(const OptionalStr& status, const InternalEmployeePtr& changer) {
+        return this->changeOtherStatus(status, changer);
+    }
+    bool _changeDealPriority(const Priority priority, const InternalEmployeePtr& changer) {
+        return this->changeDealPriority(priority, changer);
+    }
+    bool _setCreationDate(const Date& date, const InternalEmployeePtr& changer) {
+        return this->setCreationDate(date, changer);
+    }
+    bool _setDrawingDate(const DatePtr& date, const InternalEmployeePtr& changer) {
+        return this->setDrawingDate(date, changer);
+    }
+    bool _setDateApproval(const DatePtr& date, const InternalEmployeePtr& changer) {
+        return this->setDateApproval(date, changer);
+    }
+    bool _changeContractNumber(const std::string& number, const InternalEmployeePtr& changer) {
+        return this->changeContractNumber(number, changer);
+    }
+    bool _changeTitle(const std::string& title, const InternalEmployeePtr& changer) {
+        return this->changeTitle(title, changer);
+    }
+#endif  //_TESTING
 };
