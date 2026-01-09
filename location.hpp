@@ -26,6 +26,7 @@ namespace warning {
         "External employee has been removed from the database";
     inline std::string client_removed = "Client has been removed from the database";
     inline std::string person_removed = "Person has been removed from the database";
+    inline std::string deal_removed = "Deal has been removed from the database";
 }  // namespace warning
 namespace names_str {
     inline std::string addDock     = "New document";
