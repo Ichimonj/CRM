@@ -2,10 +2,10 @@
 #include <vector>
 
 #include "Address/address.hpp"
-#include "Interaction/base_interaction.hpp"
 #include "DateTime/date.hpp"
 #include "Document/document.hpp"
 #include "FileMetadata/file_metadata.hpp"
+#include "Interaction/base_interaction.hpp"
 #include "Note/note.hpp"
 #include "PhoneNumber/phone_number.hpp"
 #include "SocialNetwork/social_network.hpp"
@@ -64,7 +64,7 @@ public:
     auto getEmail() const -> const OptionalStr&;
     auto getGender() const -> Gender;
 
-    auto getRelatedDeals() const -> const std::vector<DealPtr>&;
+    auto getRelatedDeals() const -> const std::vector<WeakDealPtr>&;
     auto getSocialNetworks() const -> const std::vector<SocialNetwork>&;
     auto getMorePhoneNumbers() const -> const std::vector<PhoneNumber>&;
     auto getMoreAddresses() const -> const std::vector<Address>&;
@@ -102,10 +102,10 @@ public:
     bool setGender(const Gender gender, const InternalEmployeePtr& changer);
 
     bool addRelatedDeals(
-        const DealPtr& deal, const InternalEmployeePtr& changer, const Date& change_date = Date()
+        const WeakDealPtr& weak_deal, const InternalEmployeePtr& changer, const Date& change_date = Date()
     );
     bool delRelatedDeals(
-        const DealPtr& deal, const InternalEmployeePtr& changer, const Date& change_date = Date()
+        const WeakDealPtr& weak_deal, const InternalEmployeePtr& changer, const Date& change_date = Date()
     );
 
     bool addMoreAddress(const Address& address, const InternalEmployeePtr& changer);
@@ -146,7 +146,7 @@ private:
 
     Gender         gender;
     //
-    std::vector<DealPtr>         related_deals;
+    std::vector<WeakDealPtr>     related_deals;
     std::vector<SocialNetwork>   social_networks;
     std::vector<PhoneNumber>     more_phone_numbers;
     std::vector<Address>         more_addresses;

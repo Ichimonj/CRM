@@ -71,7 +71,10 @@ auto Person::getAddress() const -> const AddressPtr { return this->address; }
 auto Person::getEmail() const -> const OptionalStr& { return this->email; }
 auto Person::getGender() const -> Gender { return this->gender; }
 
-auto Person::getRelatedDeals() const -> const std::vector<DealPtr>& { return this->related_deals; }
+auto Person::getRelatedDeals() const -> const std::vector<WeakDealPtr>&
+{
+    return this->related_deals;
+}
 
 auto Person::getSocialNetworks() const -> const std::vector<SocialNetwork>&
 {
@@ -321,42 +324,56 @@ bool Person::setGender(const Gender gender, const InternalEmployeePtr& changer)
 }
 
 bool Person::addRelatedDeals(
-    const DealPtr& deal, const InternalEmployeePtr& changer, const Date& change_date
+    const WeakDealPtr& weak_deal, const InternalEmployeePtr& changer, const Date& change_date
 )
 {
-    if (std::find(this->related_deals.begin(), this->related_deals.end(), deal) ==
-        this->related_deals.end()) {
+    if (std::find_if(
+            this->related_deals.begin(),
+            this->related_deals.end(),
+            [&weak_deal](const WeakDealPtr& other_deal) {
+                return !(weak_deal.owner_before(other_deal) || other_deal.owner_before(weak_deal));
+            }
+        ) == this->related_deals.end()) {
         this->update_at = change_date;
 
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
             std::nullopt,
-            std::make_optional(deal),
+            std::make_optional(weak_deal),
             PersonFields::RelatedDeals,
             ChangeLog::FieldType::null,
             ChangeLog::FieldType::Deal,
             ChangeLog::Action::Add,
             change_date
         ));
-        this->related_deals.push_back(deal);
+        this->related_deals.push_back(weak_deal);
         return true;
     }
     return false;
 }
 
 bool Person::delRelatedDeals(
-    const DealPtr& deal, const InternalEmployeePtr& changer, const Date& change_date
+    const WeakDealPtr& weak_deal, const InternalEmployeePtr& changer, const Date& change_date
 )
 {
-    auto del_deal = std::find(this->related_deals.begin(), this->related_deals.end(), deal);
+    if (weak_deal.expired()) {
+        return false;
+    }
 
+    auto del_deal = std::find_if(
+        this->related_deals.begin(),
+        this->related_deals.end(),
+        [&weak_deal](const WeakDealPtr& other_deal) {
+            return !(weak_deal.owner_before(other_deal) || other_deal.owner_before(weak_deal));
+        }
+    );
     if (del_deal != this->related_deals.end()) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
             std::make_optional(del_deal[0]),
             std::nullopt,
             PersonFields::RelatedDeals,
-            ChangeLog::FieldType::Deal,
+            ChangeLog::FieldType::WeakDeal,
             ChangeLog::FieldType::null,
             ChangeLog::Action::Remove,
             change_date
