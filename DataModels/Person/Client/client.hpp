@@ -93,7 +93,7 @@ public:
     auto getLeadScore() const -> const std::optional<double>&;
     auto getAnnualRevenue() const -> const std::optional<Money>&;
     auto getLifetimeValue() const -> const std::optional<Money>&;
-    auto getOwnedDeals() const -> const std::vector<DealPtr>&;
+    auto getOwnedDeals() const -> const std::vector<WeakDealPtr>&;
     auto getInterestedOffers() const -> const std::vector<OfferPtr>&;
     /// @}
 
@@ -128,7 +128,7 @@ public:
         const std::optional<Money>& lifetime_value, const InternalEmployeePtr& changer
     );
 
-    bool addOwnedDeal(const DealPtr& deal, const InternalEmployeePtr& changer);
+    bool addOwnedDeal(const WeakDealPtr& deal, const InternalEmployeePtr& changer);
     bool delOwnedDeal(size_t index, const InternalEmployeePtr& changer);
 
     bool addInterestedOffer(const OfferPtr& interested_offer, const InternalEmployeePtr& changer);
@@ -151,7 +151,7 @@ private:
     std::optional<double>     lead_score;
     std::optional<Money>      annual_revenue;
     std::optional<Money>      lifetime_value;
-    std::vector<DealPtr>      owned_deals;
+    std::vector<WeakDealPtr>  owned_deals;
     std::vector<OfferPtr>     interested_offers;
 
     friend class ClientDataBase;

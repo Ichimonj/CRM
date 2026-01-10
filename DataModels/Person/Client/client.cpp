@@ -115,7 +115,7 @@ auto Client::getLifetimeValue() const -> const std::optional<Money>&
     return this->lifetime_value;
 }
 
-auto Client::getOwnedDeals() const -> const std::vector<DealPtr>& { return this->owned_deals; }
+auto Client::getOwnedDeals() const -> const std::vector<WeakDealPtr>& { return this->owned_deals; }
 
 bool Client::setOwner(const WeakInternalEmployee& owner, const InternalEmployeePtr& changer)
 {
@@ -482,10 +482,15 @@ bool Client::setLifetimeValue(
     return false;
 }
 
-bool Client::addOwnedDeal(const DealPtr& deal, const InternalEmployeePtr& changer)
+bool Client::addOwnedDeal(const WeakDealPtr& deal, const InternalEmployeePtr& changer)
 {
-    if (std::find(this->owned_deals.begin(), this->owned_deals.end(), deal) ==
-        this->owned_deals.end()) {
+    if (std::find_if(
+            this->owned_deals.begin(),
+            this->owned_deals.end(),
+            [&deal](const WeakDealPtr& other_deal) {
+                return !(deal.owner_before(other_deal) || other_deal.owner_before(deal));
+            }
+        ) == this->owned_deals.end()) {
         Date update = Date();
 
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -494,7 +499,7 @@ bool Client::addOwnedDeal(const DealPtr& deal, const InternalEmployeePtr& change
             std::make_optional<ChangeLog::ValueVariant>(deal),
             ClientFields::OwnedDeals,
             ChangeLog::FieldType::null,
-            ChangeLog::FieldType::Deal,
+            ChangeLog::FieldType::WeakDeal,
             ChangeLog::Action::Add,
             update
         ));
@@ -517,7 +522,7 @@ bool Client::delOwnedDeal(size_t index, const InternalEmployeePtr& changer)
             std::make_optional<ChangeLog::ValueVariant>(this->owned_deals[index]),
             std::nullopt,
             ClientFields::OwnedDeals,
-            ChangeLog::FieldType::Deal,
+            ChangeLog::FieldType::WeakDeal,
             ChangeLog::FieldType::null,
             ChangeLog::Action::Remove,
             update
