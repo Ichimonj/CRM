@@ -1,5 +1,5 @@
 project(DataModels
-    VERSION 0.1.1
+    VERSION 0.1.2
     DESCRIPTION "Data models library for CRM"
     LANGUAGES CXX
 )
