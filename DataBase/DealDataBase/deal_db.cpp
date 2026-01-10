@@ -125,6 +125,16 @@ void DealDataBase::hard_remove(const size_t index)
     }
 }
 
+auto DealDataBase::size() const -> size_t
+{
+    return this->by_id.size();
+}
+
+bool DealDataBase::empty() const
+{
+    return this->by_id.empty();
+}
+
 auto DealDataBase::getAll() const -> const std::unordered_map<BigUint, DealPtr>&
 {
     return this->by_id;
