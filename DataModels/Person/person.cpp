@@ -342,7 +342,7 @@ bool Person::addRelatedDeals(
             std::make_optional(weak_deal),
             PersonFields::RelatedDeals,
             ChangeLog::FieldType::null,
-            ChangeLog::FieldType::Deal,
+            ChangeLog::FieldType::WeakDeal,
             ChangeLog::Action::Add,
             change_date
         ));
