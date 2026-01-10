@@ -1,6 +1,7 @@
-#include "Person/Employee/internal_employee.hpp"
 #include "ChangeLog/change_log.hpp"
+#include "Deal/deal.hpp"
 #include "Person/Client/client.hpp"
+#include "Person/Employee/internal_employee.hpp"
 #include "gtest/gtest.h"
 
 namespace unit {
@@ -1008,16 +1009,17 @@ namespace unit {
         EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
+    DealPtr deal1 = std::make_shared<Deal>(BigUint("5001"));
+
     TEST(ClientTest, AddOwnedDeal_FirstDeal)
     {
-        DealPtr deal1 = std::make_shared<Deal>(BigUint("5001"));
-        deal1->changeTitle("Deal1 title", nullptr);
+        deal1->_changeTitle("Deal1 title", nullptr);
 
         client2.addOwnedDeal(deal1, changer);
 
         SCOPED_TRACE("Value check");
         EXPECT_EQ(client2.getOwnedDeals().size(), 1);
-        EXPECT_EQ(client2.getOwnedDeals()[0], deal1);
+        EXPECT_EQ(client2.getOwnedDeals()[0].lock(), deal1);
 
         SCOPED_TRACE("Change logs size");
         EXPECT_EQ(client2.getChangeLogs().size(), 29);
@@ -1031,9 +1033,9 @@ namespace unit {
 
         SCOPED_TRACE("New value");
         EXPECT_TRUE(log->getNewValue().has_value());
-        EXPECT_EQ(log->getNewValueFieldType(), ChangeLog::FieldType::Deal);
-        auto new_value = std::get<DealPtr>(log->getNewValue().value());
-        EXPECT_EQ(new_value, deal1);
+        EXPECT_EQ(log->getNewValueFieldType(), ChangeLog::FieldType::WeakDeal);
+        auto new_value = std::get<WeakDealPtr>(log->getNewValue().value());
+        EXPECT_EQ(new_value.lock(), deal1);
         EXPECT_EQ(*log->getNewValueStr(), std::string("Deal1 title"));
 
         SCOPED_TRACE("Field");
@@ -1055,9 +1057,9 @@ namespace unit {
 
         SCOPED_TRACE("New value");
         EXPECT_TRUE(log->getNewValue().has_value());
-        EXPECT_EQ(log->getNewValueFieldType(), ChangeLog::FieldType::Deal);
-        auto new_value2 = std::get<DealPtr>(log->getNewValue().value());
-        EXPECT_EQ(new_value2, deal1);
+        EXPECT_EQ(log->getNewValueFieldType(), ChangeLog::FieldType::WeakDeal);
+        auto new_value2 = std::get<WeakDealPtr>(log->getNewValue().value());
+        EXPECT_EQ(new_value2.lock(), deal1);
         EXPECT_EQ(*log->getNewValueStr(), std::string("Deal1 title"));
 
         SCOPED_TRACE("Field");
@@ -1070,10 +1072,11 @@ namespace unit {
         SCOPED_TRACE("Changer");
         EXPECT_EQ(log->getChanger().lock(), changer);
     }
+
+    DealPtr deal2 = std::make_shared<Deal>(BigUint("5002"));
     TEST(ClientTest, AddOwnedDeal_SecondDeal)
     {
-        DealPtr deal2 = std::make_shared<Deal>(BigUint("5002"));
-        deal2->changeTitle("Deal2 title", nullptr);
+        deal2->_changeTitle("Deal2 title", nullptr);
 
         client2.addOwnedDeal(deal2, changer);
 
@@ -1092,9 +1095,9 @@ namespace unit {
 
         SCOPED_TRACE("New value");
         EXPECT_TRUE(log->getNewValue().has_value());
-        EXPECT_EQ(log->getNewValueFieldType(), ChangeLog::FieldType::Deal);
-        auto new_value = std::get<DealPtr>(log->getNewValue().value());
-        EXPECT_EQ(new_value, deal2);
+        EXPECT_EQ(log->getNewValueFieldType(), ChangeLog::FieldType::WeakDeal);
+        auto new_value = std::get<WeakDealPtr>(log->getNewValue().value());
+        EXPECT_EQ(new_value.lock(), deal2);
         EXPECT_EQ(*log->getNewValueStr(), std::string("Deal2 title"));
 
         SCOPED_TRACE("Field");
@@ -1116,9 +1119,9 @@ namespace unit {
 
         SCOPED_TRACE("New value");
         EXPECT_TRUE(log->getNewValue().has_value());
-        EXPECT_EQ(log->getNewValueFieldType(), ChangeLog::FieldType::Deal);
-        auto new_value2 = std::get<DealPtr>(log->getNewValue().value());
-        EXPECT_EQ(new_value2, deal2);
+        EXPECT_EQ(log->getNewValueFieldType(), ChangeLog::FieldType::WeakDeal);
+        auto new_value2 = std::get<WeakDealPtr>(log->getNewValue().value());
+        EXPECT_EQ(new_value2.lock(), deal2);
         EXPECT_EQ(*log->getNewValueStr(), std::string("Deal2 title"));
 
         SCOPED_TRACE("Field");
@@ -1138,7 +1141,7 @@ namespace unit {
 
         SCOPED_TRACE("Value check");
         EXPECT_EQ(client2.getOwnedDeals().size(), 1);
-        EXPECT_EQ(client2.getOwnedDeals().back()->getTitle(), std::string("Deal2 title"));
+        EXPECT_EQ(client2.getOwnedDeals().back().lock()->getTitle(), std::string("Deal2 title"));
 
         SCOPED_TRACE("Change logs size");
         EXPECT_EQ(client2.getChangeLogs().size(), 33);
@@ -1147,7 +1150,7 @@ namespace unit {
 
         SCOPED_TRACE("Old value");
         EXPECT_TRUE(log->getOldValue().has_value());
-        EXPECT_EQ(log->getOldValueFieldType(), ChangeLog::FieldType::Deal);
+        EXPECT_EQ(log->getOldValueFieldType(), ChangeLog::FieldType::WeakDeal);
         EXPECT_EQ(*log->getOldValueStr(), std::string("Deal1 title"));
 
         SCOPED_TRACE("New value");

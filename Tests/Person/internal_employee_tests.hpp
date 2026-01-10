@@ -1506,17 +1506,17 @@ namespace unit {
         EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
+    auto deal = std::make_shared<Deal>(BigUint("14001"));
     TEST(InternalEmployeeTest, AddManagerDeal)
     {
-        auto deal = std::make_shared<Deal>(BigUint("14001"));
-        deal->changeTitle("Strategic Deal — Bank of Tomorrow", nullptr);
+        deal->_changeTitle("Strategic Deal — Bank of Tomorrow", nullptr);
 
         ie.addManagerDeal(deal, changer);
 
         SCOPED_TRACE("Value check");
         ASSERT_FALSE(ie.getManagedDeals().empty());
         EXPECT_EQ(ie.getManagedDeals().size(), 1);
-        EXPECT_EQ(ie.getManagedDeals()[0], deal);
+        EXPECT_EQ(ie.getManagedDeals()[0].lock(), deal);
 
         SCOPED_TRACE("Change logs size");
         EXPECT_EQ(ie.getChangeLogs().size(), 43);
@@ -1528,9 +1528,9 @@ namespace unit {
         EXPECT_EQ(log_person->getOldValueFieldType(), ChangeLog::FieldType::null);
 
         EXPECT_TRUE(log_person->getNewValue().has_value());
-        EXPECT_EQ(log_person->getNewValueFieldType(), ChangeLog::FieldType::Deal);
-        auto stored_deal_person = std::get<DealPtr>(log_person->getNewValue().value());
-        EXPECT_EQ(stored_deal_person, deal);
+        EXPECT_EQ(log_person->getNewValueFieldType(), ChangeLog::FieldType::WeakDeal);
+        auto stored_deal_person = std::get<WeakDealPtr>(log_person->getNewValue().value());
+        EXPECT_EQ(stored_deal_person.lock(), deal);
         EXPECT_EQ(*log_person->getNewValueStr(), std::string("Strategic Deal — Bank of Tomorrow"));
 
         EXPECT_EQ(log_person->getField(), ChangeLog::FieldVariant(PersonFields::RelatedDeals));
@@ -1544,9 +1544,9 @@ namespace unit {
         EXPECT_EQ(log_manager->getOldValueFieldType(), ChangeLog::FieldType::null);
 
         EXPECT_TRUE(log_manager->getNewValue().has_value());
-        EXPECT_EQ(log_manager->getNewValueFieldType(), ChangeLog::FieldType::Deal);
-        auto stored_deal_manager = std::get<DealPtr>(log_manager->getNewValue().value());
-        EXPECT_EQ(stored_deal_manager, deal);
+        EXPECT_EQ(log_manager->getNewValueFieldType(), ChangeLog::FieldType::WeakDeal);
+        auto stored_deal_manager = std::get<WeakDealPtr>(log_manager->getNewValue().value());
+        EXPECT_EQ(stored_deal_manager.lock(), deal);
         EXPECT_EQ(*log_manager->getNewValueStr(), std::string("Strategic Deal — Bank of Tomorrow"));
 
         EXPECT_EQ(
@@ -1556,16 +1556,16 @@ namespace unit {
         EXPECT_EQ(log_manager->getChanger().lock(), changer);
     }
 
+    auto new_deal = std::make_shared<Deal>(BigUint("14002"));
     TEST(InternalEmployeeTest, SwapManagerDeal)
     {
-        auto new_deal = std::make_shared<Deal>(BigUint("14002"));
-        new_deal->changeTitle("Mega Deal — Government Contract", nullptr);
+        new_deal->_changeTitle("Mega Deal — Government Contract", nullptr);
 
         ie.addManagerDeal(new_deal, changer);
 
         SCOPED_TRACE("Value check");
         EXPECT_EQ(ie.getManagedDeals().size(), 2);
-        EXPECT_EQ(ie.getManagedDeals()[1], new_deal);
+        EXPECT_EQ(ie.getManagedDeals()[1].lock(), new_deal);
 
         SCOPED_TRACE("Change logs size");
         EXPECT_EQ(ie.getChangeLogs().size(), 45);
@@ -1578,9 +1578,9 @@ namespace unit {
 
         SCOPED_TRACE("New value");
         EXPECT_TRUE(log_person->getNewValue().has_value());
-        EXPECT_EQ(log_person->getNewValueFieldType(), ChangeLog::FieldType::Deal);
-        auto stored_person = std::get<DealPtr>(log_person->getNewValue().value());
-        EXPECT_EQ(stored_person, new_deal);
+        EXPECT_EQ(log_person->getNewValueFieldType(), ChangeLog::FieldType::WeakDeal);
+        auto stored_person = std::get<WeakDealPtr>(log_person->getNewValue().value());
+        EXPECT_EQ(stored_person.lock(), new_deal);
         EXPECT_EQ(*log_person->getNewValueStr(), std::string("Mega Deal — Government Contract"));
 
         SCOPED_TRACE("Field & Action");
@@ -1596,9 +1596,9 @@ namespace unit {
 
         SCOPED_TRACE("New value");
         EXPECT_TRUE(log_manager->getNewValue().has_value());
-        EXPECT_EQ(log_manager->getNewValueFieldType(), ChangeLog::FieldType::Deal);
-        auto stored_manager = std::get<DealPtr>(log_manager->getNewValue().value());
-        EXPECT_EQ(stored_manager, new_deal);
+        EXPECT_EQ(log_manager->getNewValueFieldType(), ChangeLog::FieldType::WeakDeal);
+        auto stored_manager = std::get<WeakDealPtr>(log_manager->getNewValue().value());
+        EXPECT_EQ(stored_manager.lock(), new_deal);
         EXPECT_EQ(*log_manager->getNewValueStr(), std::string("Mega Deal — Government Contract"));
 
         SCOPED_TRACE("Field & Action");
@@ -1615,7 +1615,7 @@ namespace unit {
 
         SCOPED_TRACE("Value check");
         EXPECT_EQ(ie.getManagedDeals().size(), 1);
-        EXPECT_EQ(ie.getManagedDeals()[0]->getId(), BigUint("14002"));
+        EXPECT_EQ(ie.getManagedDeals()[0].lock()->getId(), BigUint("14002"));
 
         SCOPED_TRACE("Change logs size");
         EXPECT_EQ(ie.getChangeLogs().size(), 47);
@@ -1624,9 +1624,9 @@ namespace unit {
 
         SCOPED_TRACE("Old value");
         EXPECT_TRUE(log_person->getOldValue().has_value());
-        EXPECT_EQ(log_person->getOldValueFieldType(), ChangeLog::FieldType::Deal);
-        auto old_deal_person = std::get<DealPtr>(log_person->getOldValue().value());
-        EXPECT_EQ(old_deal_person->getId(), BigUint("14001"));
+        EXPECT_EQ(log_person->getOldValueFieldType(), ChangeLog::FieldType::WeakDeal);
+        auto old_deal_person = std::get<WeakDealPtr>(log_person->getOldValue().value());
+        EXPECT_EQ(old_deal_person.lock()->getId(), BigUint("14001"));
         EXPECT_EQ(*log_person->getOldValueStr(), std::string("Strategic Deal — Bank of Tomorrow"));
 
         SCOPED_TRACE("New value");
@@ -1642,9 +1642,9 @@ namespace unit {
 
         SCOPED_TRACE("Old value");
         EXPECT_TRUE(log_manager->getOldValue().has_value());
-        EXPECT_EQ(log_manager->getOldValueFieldType(), ChangeLog::FieldType::Deal);
-        auto old_deal_manager = std::get<DealPtr>(log_manager->getOldValue().value());
-        EXPECT_EQ(old_deal_manager->getId(), BigUint("14001"));
+        EXPECT_EQ(log_manager->getOldValueFieldType(), ChangeLog::FieldType::WeakDeal);
+        auto old_deal_manager = std::get<WeakDealPtr>(log_manager->getOldValue().value());
+        EXPECT_EQ(old_deal_manager.lock()->getId(), BigUint("14001"));
         EXPECT_EQ(*log_manager->getOldValueStr(), std::string("Strategic Deal — Bank of Tomorrow"));
 
         SCOPED_TRACE("New value");

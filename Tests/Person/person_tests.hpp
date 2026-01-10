@@ -1,6 +1,6 @@
 #include "gtest/gtest.h"
 #include "Person/person.hpp"
-
+#include "ChangeLog/change_log.hpp"
 InternalEmployeePtr changer = nullptr;
 
 namespace unit {
@@ -566,12 +566,12 @@ namespace unit {
     TEST(PersonTest, AddDelRelatedDeals)
     {
         auto deal_ptr = std::make_shared<Deal>(BigUint("1"));
-        deal_ptr->changeTitle("Сделка #100500", nullptr);
+        deal_ptr->_changeTitle("Сделка #100500", nullptr);
 
         person.addRelatedDeals(deal_ptr, changer);
 
         SCOPED_TRACE("Value check");
-        EXPECT_EQ(person.getRelatedDeals().back()->getId(), BigUint("1"));
+        EXPECT_EQ(person.getRelatedDeals().back().lock()->getId(), BigUint("1"));
 
         SCOPED_TRACE("Change logs size");
         EXPECT_EQ(person.getChangeLogs().size(), 16);
@@ -585,9 +585,9 @@ namespace unit {
 
         SCOPED_TRACE("New value");
         EXPECT_TRUE(log->getNewValue().has_value());
-        EXPECT_EQ(log->getNewValueFieldType(), ChangeLog::FieldType::Deal);
-        auto new_value = std::get<DealPtr>(log->getNewValue().value());
-        EXPECT_EQ(new_value, deal_ptr);
+        EXPECT_EQ(log->getNewValueFieldType(), ChangeLog::FieldType::WeakDeal);
+        auto new_value = std::get<WeakDealPtr>(log->getNewValue().value());
+        EXPECT_EQ(new_value.lock(), deal_ptr);
         EXPECT_EQ(*log->getNewValueStr(), "Сделка #100500");
 
         SCOPED_TRACE("Field");
@@ -609,9 +609,9 @@ namespace unit {
 
         SCOPED_TRACE("Old value");
         EXPECT_TRUE(log->getOldValue().has_value());
-        EXPECT_EQ(log->getOldValueFieldType(), ChangeLog::FieldType::Deal);
-        auto old_value = std::get<DealPtr>(log->getOldValue().value());
-        EXPECT_EQ(old_value, deal_ptr);
+        EXPECT_EQ(log->getOldValueFieldType(), ChangeLog::FieldType::WeakDeal);
+        auto old_value = std::get<WeakDealPtr>(log->getOldValue().value());
+        EXPECT_EQ(old_value.lock(), deal_ptr);
         EXPECT_EQ(*log->getOldValueStr(), "Сделка #100500");
 
         SCOPED_TRACE("New value");

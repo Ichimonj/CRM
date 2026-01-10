@@ -1540,18 +1540,18 @@ namespace unit {
         EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
+    DealPtr deal3 = std::make_shared<Deal>(BigUint("12001"));
     TEST(ExternalEmployeeTest, AddAssignedDeal_FirstDeal)
     {
-        DealPtr deal1 = std::make_shared<Deal>(BigUint("12001"));
-        deal1->changeTitle("Title1", nullptr);
+        deal3->_changeTitle("Title1", nullptr);
 
-        ee.addAssignedDeal(deal1, changer);
+        ee.addAssignedDeal(deal3, changer);
 
         SCOPED_TRACE("Value check");
         ASSERT_FALSE(ee.getAssignedDeals().empty());
         EXPECT_EQ(ee.getAssignedDeals().size(), 1);
-        EXPECT_EQ(ee.getAssignedDeals()[0], deal1);
-        EXPECT_EQ(ee.getAssignedDeals()[0]->getId(), BigUint("12001"));
+        EXPECT_EQ(ee.getAssignedDeals()[0].lock(), deal3);
+        EXPECT_EQ(ee.getAssignedDeals()[0].lock()->getId(), BigUint("12001"));
 
         SCOPED_TRACE("Change logs size");
         EXPECT_EQ(ee.getChangeLogs().size(), 42);
@@ -1565,9 +1565,9 @@ namespace unit {
 
         SCOPED_TRACE("New value");
         EXPECT_TRUE(log->getNewValue().has_value());
-        EXPECT_EQ(log->getNewValueFieldType(), ChangeLog::FieldType::Deal);
-        auto new_value = std::get<DealPtr>(log->getNewValue().value());
-        EXPECT_EQ(new_value, deal1);
+        EXPECT_EQ(log->getNewValueFieldType(), ChangeLog::FieldType::WeakDeal);
+        auto new_value = std::get<WeakDealPtr>(log->getNewValue().value());
+        EXPECT_EQ(new_value.lock(), deal3);
         EXPECT_EQ(*log->getNewValueStr(), std::string("Title1"));
 
         SCOPED_TRACE("Field");
@@ -1589,9 +1589,9 @@ namespace unit {
 
         SCOPED_TRACE("New value");
         EXPECT_TRUE(log->getNewValue().has_value());
-        EXPECT_EQ(log->getNewValueFieldType(), ChangeLog::FieldType::Deal);
-        auto new_value2 = std::get<DealPtr>(log->getNewValue().value());
-        EXPECT_EQ(new_value2, deal1);
+        EXPECT_EQ(log->getNewValueFieldType(), ChangeLog::FieldType::WeakDeal);
+        auto new_value2 = std::get<WeakDealPtr>(log->getNewValue().value());
+        EXPECT_EQ(new_value2.lock(), deal3);
         EXPECT_EQ(*log->getNewValueStr(), std::string("Title1"));
 
         SCOPED_TRACE("Field");
@@ -1605,16 +1605,16 @@ namespace unit {
         EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
+    DealPtr deal4 = std::make_shared<Deal>(BigUint("12005"));
     TEST(ExternalEmployeeTest, AddAssignedDeal_SecondDeal)
     {
-        DealPtr deal2 = std::make_shared<Deal>(BigUint("12005"));
-        deal2->changeTitle("Title2", nullptr);
+        deal4->_changeTitle("Title2", nullptr);
 
-        ee.addAssignedDeal(deal2, changer);
+        ee.addAssignedDeal(deal4, changer);
 
         SCOPED_TRACE("Value check");
         EXPECT_EQ(ee.getAssignedDeals().size(), 2);
-        EXPECT_EQ(ee.getAssignedDeals()[1]->getId(), BigUint("12005"));
+        EXPECT_EQ(ee.getAssignedDeals()[1].lock()->getId(), BigUint("12005"));
 
         SCOPED_TRACE("Change logs size");
         EXPECT_EQ(ee.getChangeLogs().size(), 44);
@@ -1628,9 +1628,9 @@ namespace unit {
 
         SCOPED_TRACE("New value");
         EXPECT_TRUE(log->getNewValue().has_value());
-        EXPECT_EQ(log->getNewValueFieldType(), ChangeLog::FieldType::Deal);
-        auto new_value = std::get<DealPtr>(log->getNewValue().value());
-        EXPECT_EQ(new_value, deal2);
+        EXPECT_EQ(log->getNewValueFieldType(), ChangeLog::FieldType::WeakDeal);
+        auto new_value = std::get<WeakDealPtr>(log->getNewValue().value());
+        EXPECT_EQ(new_value.lock(), deal4);
         EXPECT_EQ(*log->getNewValueStr(), std::string("Title2"));
 
         SCOPED_TRACE("Field");
@@ -1652,9 +1652,9 @@ namespace unit {
 
         SCOPED_TRACE("New value");
         EXPECT_TRUE(log->getNewValue().has_value());
-        EXPECT_EQ(log->getNewValueFieldType(), ChangeLog::FieldType::Deal);
-        auto new_value2 = std::get<DealPtr>(log->getNewValue().value());
-        EXPECT_EQ(new_value2, deal2);
+        EXPECT_EQ(log->getNewValueFieldType(), ChangeLog::FieldType::WeakDeal);
+        auto new_value2 = std::get<WeakDealPtr>(log->getNewValue().value());
+        EXPECT_EQ(new_value2.lock(), deal4);
         EXPECT_EQ(*log->getNewValueStr(), std::string("Title2"));
 
         SCOPED_TRACE("Field");
@@ -1674,7 +1674,7 @@ namespace unit {
 
         SCOPED_TRACE("Value check");
         EXPECT_EQ(ee.getAssignedDeals().size(), 1);
-        EXPECT_EQ(ee.getAssignedDeals()[0]->getId(), BigUint("12005"));
+        EXPECT_EQ(ee.getAssignedDeals()[0].lock()->getId(), BigUint("12005"));
 
         SCOPED_TRACE("Change logs size");
         EXPECT_EQ(ee.getChangeLogs().size(), 46);
@@ -1683,9 +1683,9 @@ namespace unit {
 
         SCOPED_TRACE("Old value");
         EXPECT_TRUE(log->getOldValue().has_value());
-        EXPECT_EQ(log->getOldValueFieldType(), ChangeLog::FieldType::Deal);
-        auto old_value = std::get<DealPtr>(log->getOldValue().value());
-        EXPECT_EQ(old_value->getTitle(), "Title1");
+        EXPECT_EQ(log->getOldValueFieldType(), ChangeLog::FieldType::WeakDeal);
+        auto old_value = std::get<WeakDealPtr>(log->getOldValue().value());
+        EXPECT_EQ(old_value.lock()->getTitle(), "Title1");
         EXPECT_EQ(*log->getOldValueStr(), std::string("Title1"));
 
         SCOPED_TRACE("New value");
@@ -1707,9 +1707,9 @@ namespace unit {
 
         SCOPED_TRACE("Old value");
         EXPECT_TRUE(log->getOldValue().has_value());
-        EXPECT_EQ(log->getOldValueFieldType(), ChangeLog::FieldType::Deal);
-        auto old_value2 = std::get<DealPtr>(log->getOldValue().value());
-        EXPECT_EQ(old_value2->getTitle(), "Title1");
+        EXPECT_EQ(log->getOldValueFieldType(), ChangeLog::FieldType::WeakDeal);
+        auto old_value2 = std::get<WeakDealPtr>(log->getOldValue().value());
+        EXPECT_EQ(old_value2.lock()->getTitle(), "Title1");
         EXPECT_EQ(*log->getOldValueStr(), std::string("Title1"));
 
         SCOPED_TRACE("New value");
@@ -1728,18 +1728,18 @@ namespace unit {
         EXPECT_EQ(log->getChanger().lock(), changer);
     }
 
+    DealPtr deal5 = std::make_shared<Deal>(BigUint("13001"));
     TEST(ExternalEmployeeTest, AddCompletedDeal_FirstDeal)
     {
-        DealPtr deal3 = std::make_shared<Deal>(BigUint("13001"));
-        deal3->changeTitle("Closed-Won: Enterprise License 2025", nullptr);
+        deal5->_changeTitle("Closed-Won: Enterprise License 2025", nullptr);
 
-        ee.addCompletedDeal(deal3, changer);
+        ee.addCompletedDeal(deal5, changer);
 
         SCOPED_TRACE("Value check");
         ASSERT_FALSE(ee.getCompletedDeals().empty());
         EXPECT_EQ(ee.getCompletedDeals().size(), 1);
-        EXPECT_EQ(ee.getCompletedDeals()[0], deal3);
-        EXPECT_EQ(ee.getCompletedDeals()[0]->getId(), BigUint("13001"));
+        EXPECT_EQ(ee.getCompletedDeals()[0].lock(), deal5);
+        EXPECT_EQ(ee.getCompletedDeals()[0].lock()->getId(), BigUint("13001"));
 
         SCOPED_TRACE("Change logs size");
         EXPECT_EQ(ee.getChangeLogs().size(), 48);
@@ -1753,9 +1753,9 @@ namespace unit {
 
         SCOPED_TRACE("RelatedDeals log - New value");
         EXPECT_TRUE(log->getNewValue().has_value());
-        EXPECT_EQ(log->getNewValueFieldType(), ChangeLog::FieldType::Deal);
-        auto new_value = std::get<DealPtr>(log->getNewValue().value());
-        EXPECT_EQ(new_value, deal3);
+        EXPECT_EQ(log->getNewValueFieldType(), ChangeLog::FieldType::WeakDeal);
+        auto new_value = std::get<WeakDealPtr>(log->getNewValue().value());
+        EXPECT_EQ(new_value.lock(), deal5);
         EXPECT_EQ(*log->getNewValueStr(), std::string("Closed-Won: Enterprise License 2025"));
 
         SCOPED_TRACE("RelatedDeals log - Field");
@@ -1777,9 +1777,9 @@ namespace unit {
 
         SCOPED_TRACE("CompletedDeals log - New value");
         EXPECT_TRUE(log->getNewValue().has_value());
-        EXPECT_EQ(log->getNewValueFieldType(), ChangeLog::FieldType::Deal);
-        auto new_value2 = std::get<DealPtr>(log->getNewValue().value());
-        EXPECT_EQ(new_value2, deal3);
+        EXPECT_EQ(log->getNewValueFieldType(), ChangeLog::FieldType::WeakDeal);
+        auto new_value2 = std::get<WeakDealPtr>(log->getNewValue().value());
+        EXPECT_EQ(new_value2.lock(), deal5);
         EXPECT_EQ(*log->getNewValueStr(), std::string("Closed-Won: Enterprise License 2025"));
 
         SCOPED_TRACE("CompletedDeals log - Field");
@@ -1807,9 +1807,9 @@ namespace unit {
 
         SCOPED_TRACE("RelatedDeals remove log - Old value");
         EXPECT_TRUE(log->getOldValue().has_value());
-        EXPECT_EQ(log->getOldValueFieldType(), ChangeLog::FieldType::Deal);
-        auto old_value = std::get<DealPtr>(log->getOldValue().value());
-        EXPECT_EQ(old_value->getTitle(), "Closed-Won: Enterprise License 2025");
+        EXPECT_EQ(log->getOldValueFieldType(), ChangeLog::FieldType::WeakDeal);
+        auto old_value = std::get<WeakDealPtr>(log->getOldValue().value());
+        EXPECT_EQ(old_value.lock()->getTitle(), "Closed-Won: Enterprise License 2025");
         EXPECT_EQ(*log->getOldValueStr(), std::string("Closed-Won: Enterprise License 2025"));
 
         SCOPED_TRACE("RelatedDeals remove log - New value");
@@ -1831,9 +1831,9 @@ namespace unit {
 
         SCOPED_TRACE("CompletedDeals remove log - Old value");
         EXPECT_TRUE(log->getOldValue().has_value());
-        EXPECT_EQ(log->getOldValueFieldType(), ChangeLog::FieldType::Deal);
-        auto old_value2 = std::get<DealPtr>(log->getOldValue().value());
-        EXPECT_EQ(old_value2->getTitle(), "Closed-Won: Enterprise License 2025");
+        EXPECT_EQ(log->getOldValueFieldType(), ChangeLog::FieldType::WeakDeal);
+        auto old_value2 = std::get<WeakDealPtr>(log->getOldValue().value());
+        EXPECT_EQ(old_value2.lock()->getTitle(), "Closed-Won: Enterprise License 2025");
         EXPECT_EQ(*log->getOldValueStr(), std::string("Closed-Won: Enterprise License 2025"));
 
         SCOPED_TRACE("CompletedDeals remove log - New value");
