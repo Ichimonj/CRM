@@ -207,7 +207,8 @@ bool Deal::changeStatus(const Status status, const InternalEmployeePtr& changer)
                                : std::make_optional<ChangeLog::ValueVariant>(this->status),
             std::make_optional<ChangeLog::ValueVariant>(status),
             DealFields::Status,
-            this->other_status ? ChangeLog::FieldType::String : ChangeLog::FieldType::DealStatus,
+            this->other_status ? ChangeLog::FieldType::String
+                               : ChangeLog::FieldType::DealStatus,
             ChangeLog::FieldType::DealStatus,
             ChangeLog::Action::Change
         ));
@@ -232,7 +233,8 @@ bool Deal::changeOtherStatus(const OptionalStr& status, const InternalEmployeePt
                      )
                    : std::nullopt,
             DealFields::Status,
-            this->other_status ? ChangeLog::FieldType::String : ChangeLog::FieldType::DealStatus,
+            this->other_status ? ChangeLog::FieldType::String
+                               : ChangeLog::FieldType::DealStatus,
             status ? ChangeLog::FieldType::String : ChangeLog::FieldType::DealStatus,
             ChangeLog::Action::Change
         ));
