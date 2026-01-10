@@ -21,7 +21,7 @@ Company::Company(
     const MoneyPtr&                     budget,
     std::vector<Note>                   notes,
     std::vector<TaxInfo>                tax_rates,
-    std::vector<DealPtr>                deals,
+    std::vector<WeakDealPtr>            deals,
     std::vector<TaskPtr>                tasks,
     std::vector<PhoneNumber>            more_phone_numbers,
     std::vector<std::string>            more_emails
@@ -80,7 +80,7 @@ auto Company::getFoundedDate() const -> const DatePtr& { return this->founded_da
 auto Company::getTaxRates() const -> const std::vector<TaxInfo>& { return this->tax_rates; }
 auto Company::getTaxId() const -> const OptionalStr& { return this->tax_id; }
 auto Company::getStatus() const -> const std::optional<CompanyStatus>& { return this->status; }
-auto Company::getDeals() const -> const std::vector<DealPtr>& { return this->deals; }
+auto Company::getDeals() const -> const std::vector<WeakDealPtr>& { return this->deals; }
 auto Company::getTasks() const -> const std::vector<TaskPtr>& { return this->tasks; }
 auto Company::getBudget() const -> const MoneyPtr& { return this->budget; }
 
@@ -537,16 +537,22 @@ bool Company::delTaxRate(size_t index, const InternalEmployeePtr& changer)
     return false;
 }
 
-bool Company::addDeal(const DealPtr& deal, const InternalEmployeePtr& changer)
+bool Company::addDeal(const WeakDealPtr& deal, const InternalEmployeePtr& changer)
 {
-    if (std::find(this->deals.begin(), this->deals.end(), deal) == this->deals.end()) {
+    if (std::find_if(
+            this->deals.begin(),
+            this->deals.end(),
+            [&deal](const WeakDealPtr& other_deal) {
+                return !(deal.owner_before(other_deal) || other_deal.owner_before(deal));
+            }
+        ) == this->deals.end()) {
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
             std::nullopt,
             std::make_optional<ChangeLog::ValueVariant>(deal),
             CompanyFields::Deals,
             ChangeLog::FieldType::null,
-            ChangeLog::FieldType::Deal,
+            ChangeLog::FieldType::WeakDeal,
             ChangeLog::Action::Add
         ));
         this->deals.push_back(deal);
@@ -563,7 +569,7 @@ bool Company::delDeal(size_t index, const InternalEmployeePtr& changer)
             std::make_optional<ChangeLog::ValueVariant>(this->deals[index]),
             std::nullopt,
             CompanyFields::Deals,
-            ChangeLog::FieldType::Deal,
+            ChangeLog::FieldType::WeakDeal,
             ChangeLog::FieldType::null,
             ChangeLog::Action::Remove
         ));

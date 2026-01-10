@@ -48,7 +48,7 @@ public:
         const MoneyPtr&                     budget,
         std::vector<Note>                   notes,
         std::vector<TaxInfo>                tax_rates,
-        std::vector<DealPtr>                deals,
+        std::vector<WeakDealPtr>            deals,
         std::vector<TaskPtr>                tasks,
         std::vector<PhoneNumber>            more_phone_numbers,
         std::vector<std::string>            more_emails
@@ -73,7 +73,7 @@ public:
     auto getTaxRates() const -> const std::vector<TaxInfo>&;
     auto getTaxId() const -> const OptionalStr&;
     auto getStatus() const -> const std::optional<CompanyStatus>&;
-    auto getDeals() const -> const std::vector<DealPtr>&;
+    auto getDeals() const -> const std::vector<WeakDealPtr>&;
     auto getTasks() const -> const std::vector<TaskPtr>&;
     auto getMorePhoneNumbers() const -> const std::vector<PhoneNumber>&;
     auto getMoreEmails() const -> const std::vector<std::string>&;
@@ -116,7 +116,7 @@ public:
     bool addMoreEmail(const std::string& email, const InternalEmployeePtr& changer);
     bool delMoreEmail(size_t index, const InternalEmployeePtr& changer);
 
-    bool addDeal(const DealPtr& deal, const InternalEmployeePtr& changer);
+    bool addDeal(const WeakDealPtr& deal, const InternalEmployeePtr& changer);
     bool delDeal(size_t index, const InternalEmployeePtr& changer);
 
     bool addTask(const TaskPtr& task, const InternalEmployeePtr& changer);
@@ -145,7 +145,7 @@ private:
     std::vector<Note>            notes;
     std::vector<TaxInfo>         tax_rates;
     std::optional<CompanyStatus> status;
-    std::vector<DealPtr>         deals;
+    std::vector<WeakDealPtr>     deals;
     std::vector<TaskPtr>         tasks;
     std::vector<PhoneNumber>     more_phone_numbers;
     std::vector<std::string>     more_emails;

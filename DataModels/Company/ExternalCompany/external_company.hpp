@@ -52,7 +52,7 @@ public:
         std::vector<FilePtr>                  documents,
         std::vector<Note>                     notes,
         std::vector<TaxInfo>                  tax_rates,
-        std::vector<DealPtr>                  deals,
+        std::vector<WeakDealPtr>              deals,
         std::vector<TaskPtr>                  tasks,
         std::vector<PhoneNumber>              more_phone_numbers,
         std::vector<std::string>              more_emails
