@@ -52,8 +52,8 @@ public:
         std::vector<std::string>             tags,
         std::vector<Note>                    notes,
         std::vector<std::string>             pain_points,
-        std::vector<DealPtr>                 assigned_deals,
-        std::vector<DealPtr>                 completed_deals,
+        std::vector<WeakDealPtr>             assigned_deals,
+        std::vector<WeakDealPtr>             completed_deals,
         std::vector<TaskPtr>                 assigned_tasks,
         std::vector<TaskPtr>                 completed_tasks
     );
@@ -79,8 +79,8 @@ public:
     auto getSalary() const -> const MoneyPtr&;
 
     auto getPainPoints() const -> const std::vector<std::string>&;
-    auto getAssignedDeals() const -> const std::vector<DealPtr>&;
-    auto getCompletedDeals() const -> const std::vector<DealPtr>&;
+    auto getAssignedDeals() const -> const std::vector<WeakDealPtr>&;
+    auto getCompletedDeals() const -> const std::vector<WeakDealPtr>&;
     auto getAssignedTasks() const -> const std::vector<TaskPtr>&;
     auto getCompletedTasks() const -> const std::vector<TaskPtr>&;
     /// @}
@@ -119,10 +119,10 @@ public:
     bool addPainPoint(const std::string& pain_point, const InternalEmployeePtr& changer);
     bool delPainPoint(size_t index, const InternalEmployeePtr& changer);
 
-    bool addAssignedDeal(const DealPtr& assigned_deal, const InternalEmployeePtr& changer);
+    bool addAssignedDeal(const WeakDealPtr& assigned_deal, const InternalEmployeePtr& changer);
     bool delAssignedDeal(size_t index, const InternalEmployeePtr& changer);
 
-    bool addCompletedDeal(const DealPtr& completed_deal, const InternalEmployeePtr& changer);
+    bool addCompletedDeal(const WeakDealPtr& completed_deal, const InternalEmployeePtr& changer);
     bool delCompletedDeal(size_t index, const InternalEmployeePtr& changer);
 
     bool addAssignedTask(const TaskPtr& assigned_task, const InternalEmployeePtr& changer);
@@ -154,8 +154,8 @@ private:
     std::vector<std::string>      pain_points;
 
     // deals
-    std::vector<DealPtr> assigned_deals;
-    std::vector<DealPtr> completed_deals;
+    std::vector<WeakDealPtr> assigned_deals;
+    std::vector<WeakDealPtr> completed_deals;
     // tasks
     std::vector<TaskPtr> assigned_tasks;
     std::vector<TaskPtr> completed_tasks;

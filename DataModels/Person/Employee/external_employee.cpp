@@ -50,8 +50,8 @@ ExternalEmployee::ExternalEmployee(
     std::vector<std::string>             tags,
     std::vector<Note>                    notes,
     std::vector<std::string>             pain_points,
-    std::vector<DealPtr>                 assigned_deals,
-    std::vector<DealPtr>                 completed_deals,
+    std::vector<WeakDealPtr>             assigned_deals,
+    std::vector<WeakDealPtr>             completed_deals,
     std::vector<TaskPtr>                 assigned_tasks,
     std::vector<TaskPtr>                 completed_tasks
 )
@@ -137,11 +137,11 @@ auto ExternalEmployee::getPainPoints() const -> const std::vector<std::string>&
 {
     return this->pain_points;
 }
-auto ExternalEmployee::getAssignedDeals() const -> const std::vector<DealPtr>&
+auto ExternalEmployee::getAssignedDeals() const -> const std::vector<WeakDealPtr>&
 {
     return this->assigned_deals;
 }
-auto ExternalEmployee::getCompletedDeals() const -> const std::vector<DealPtr>&
+auto ExternalEmployee::getCompletedDeals() const -> const std::vector<WeakDealPtr>&
 {
     return this->completed_deals;
 }
@@ -596,11 +596,16 @@ bool ExternalEmployee::delPainPoint(size_t index, const InternalEmployeePtr& cha
 }
 
 bool ExternalEmployee::addAssignedDeal(
-    const DealPtr& assigned_deal, const InternalEmployeePtr& changer
+    const WeakDealPtr& assigned_deal, const InternalEmployeePtr& changer
 )
 {
-    if (std::find(this->assigned_deals.begin(), this->assigned_deals.end(), assigned_deal) ==
-        this->assigned_deals.end()) {
+    if (std::find_if(
+            this->assigned_deals.begin(),
+            this->assigned_deals.end(),
+            [&assigned_deal](const WeakDealPtr& deal) {
+                return !(assigned_deal.owner_before(deal) || deal.owner_before(assigned_deal));
+            }
+        ) == this->assigned_deals.end()) {
         Date update = Date();
 
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -609,7 +614,7 @@ bool ExternalEmployee::addAssignedDeal(
             std::make_optional<ChangeLog::ValueVariant>(assigned_deal),
             ExternalEmployeeFields::AssignedDeals,
             ChangeLog::FieldType::null,
-            ChangeLog::FieldType::Deal,
+            ChangeLog::FieldType::WeakDeal,
             ChangeLog::Action::Add,
             update
         ));
@@ -631,7 +636,7 @@ bool ExternalEmployee::delAssignedDeal(size_t index, const InternalEmployeePtr& 
             std::make_optional<ChangeLog::ValueVariant>(this->assigned_deals[index]),
             std::nullopt,
             ExternalEmployeeFields::AssignedDeals,
-            ChangeLog::FieldType::Deal,
+            ChangeLog::FieldType::WeakDeal,
             ChangeLog::FieldType::null,
             ChangeLog::Action::Remove,
             update
@@ -645,11 +650,16 @@ bool ExternalEmployee::delAssignedDeal(size_t index, const InternalEmployeePtr& 
 }
 
 bool ExternalEmployee::addCompletedDeal(
-    const DealPtr& completed_deal, const InternalEmployeePtr& changer
+    const WeakDealPtr& completed_deal, const InternalEmployeePtr& changer
 )
 {
-    if (std::find(this->completed_deals.begin(), this->completed_deals.end(), completed_deal) ==
-        this->completed_deals.end()) {
+    if (std::find_if(
+            this->completed_deals.begin(),
+            this->completed_deals.end(),
+            [&completed_deal](const WeakDealPtr& deal) {
+                return !(completed_deal.owner_before(deal) || deal.owner_before(completed_deal));
+            }
+        ) == this->completed_deals.end()) {
         Date update = Date();
 
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
@@ -658,7 +668,7 @@ bool ExternalEmployee::addCompletedDeal(
             std::make_optional<ChangeLog::ValueVariant>(completed_deal),
             ExternalEmployeeFields::CompletedDeals,
             ChangeLog::FieldType::null,
-            ChangeLog::FieldType::Deal,
+            ChangeLog::FieldType::WeakDeal,
             ChangeLog::Action::Add,
             update
         ));
@@ -680,7 +690,7 @@ bool ExternalEmployee::delCompletedDeal(size_t index, const InternalEmployeePtr&
             std::make_optional<ChangeLog::ValueVariant>(this->completed_deals[index]),
             std::nullopt,
             ExternalEmployeeFields::CompletedDeals,
-            ChangeLog::FieldType::Deal,
+            ChangeLog::FieldType::WeakDeal,
             ChangeLog::FieldType::null,
             ChangeLog::Action::Remove,
             update
