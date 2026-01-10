@@ -9,7 +9,7 @@ InteractionResult::InteractionResult(
     const std::string&          other_result_status,
     const std::string&          identified_issue,
     std::vector<DocumentPtr>    documents,
-    std::vector<DealPtr>        deals,
+    std::vector<WeakDealPtr>    deals,
     std::vector<InteractionPtr> planned_interactions,
     std::vector<FilePtr>        files,
     std::vector<StringPair>     more_data,
@@ -38,7 +38,7 @@ auto InteractionResult::getDocuments() const -> const std::vector<DocumentPtr>&
 {
     return this->documents;
 }
-auto InteractionResult::getDeals() const -> const std::vector<DealPtr>& { return this->deals; }
+auto InteractionResult::getDeals() const -> const std::vector<WeakDealPtr>& { return this->deals; }
 auto InteractionResult::getPlannedInteractions() const -> const std::vector<InteractionPtr>&
 {
     return this->planned_interactions;
@@ -148,16 +148,22 @@ bool InteractionResult::delDocument(const size_t id, const InternalEmployeePtr& 
     return false;
 }
 
-bool InteractionResult::addDeal(const DealPtr& deal, const InternalEmployeePtr& changer)
+bool InteractionResult::addDeal(const WeakDealPtr& deal, const InternalEmployeePtr& changer)
 {
-    if (std::find(this->deals.begin(), this->deals.end(), deal) == this->deals.end()) {
+    if (std::find_if(
+            this->deals.begin(),
+            this->deals.end(),
+            [&deal](const WeakDealPtr& other_deal) {
+                return !(deal.owner_before(other_deal) || other_deal.owner_before(deal));
+            }
+        ) == this->deals.end()) {
         auto changeLog = std::make_shared<ChangeLog>(
             changer,
             std::nullopt,
             std::make_optional<ChangeLog::ValueVariant>(deal),
             InteractionResultFields::Deals,
             ChangeLog::FieldType::null,
-            ChangeLog::FieldType::Deal,
+            ChangeLog::FieldType::WeakDeal,
             ChangeLog::Action::Add
         );
         this->change_logs.emplace_back(changeLog);
@@ -175,7 +181,7 @@ bool InteractionResult::delDeal(const size_t id, const InternalEmployeePtr& chan
             std::make_optional<ChangeLog::ValueVariant>(this->deals[id]),
             std::nullopt,
             InteractionResultFields::Deals,
-            ChangeLog::FieldType::Deal,
+            ChangeLog::FieldType::WeakDeal,
             ChangeLog::FieldType::null,
             ChangeLog::Action::Remove
         );

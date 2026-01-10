@@ -27,7 +27,7 @@ struct InteractionResult {
         const std::string&          other_result_status,
         const std::string&          identified_issue,
         std::vector<DocumentPtr>    documents,
-        std::vector<DealPtr>        deals,
+        std::vector<WeakDealPtr>    deals,
         std::vector<InteractionPtr> planned_interactions,
         std::vector<FilePtr>        files,
         std::vector<StringPair>     more_data,
@@ -40,7 +40,7 @@ public:
     auto getTitle() const -> const std::string&;
     auto getDescription() const -> const std::string&;
     auto getDocuments() const -> const std::vector<DocumentPtr>&;
-    auto getDeals() const -> const std::vector<DealPtr>&;
+    auto getDeals() const -> const std::vector<WeakDealPtr>&;
     auto getPlannedInteractions() const -> const std::vector<InteractionPtr>&;
     auto getFiles() const -> const std::vector<FilePtr>&;
     auto getResultStatus() const -> ResultStatus;
@@ -59,7 +59,7 @@ public:
     bool addDocument(const DocumentPtr& document, const InternalEmployeePtr& changer);
     bool delDocument(const size_t id, const InternalEmployeePtr& changer);
 
-    bool addDeal(const DealPtr& deal, const InternalEmployeePtr& changer);
+    bool addDeal(const WeakDealPtr& deal, const InternalEmployeePtr& changer);
     bool delDeal(const size_t id, const InternalEmployeePtr& changer);
 
     bool addPlannedInteraction(
@@ -94,7 +94,7 @@ private:
     std::string                 other_result_status;
 
     std::vector<DocumentPtr>    documents;
-    std::vector<DealPtr>        deals;
+    std::vector<WeakDealPtr>    deals;
     std::vector<InteractionPtr> planned_interactions;
 
     std::vector<FilePtr>        files;
