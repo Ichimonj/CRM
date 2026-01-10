@@ -4,8 +4,7 @@
 #include <unordered_map>
 
 #include "Person/Client/client.hpp"
-
-using ClientPtr = std::shared_ptr<Client>;
+#include "Usings/type_usings.hpp"
 
 class ClientDataBase {
 public:
@@ -92,7 +91,7 @@ public:
         const InternalEmployeePtr&              changer
     );
     /// @}
-    
+
     /// @name Auxiliary functions
     /// @{
     void removeOwner(const BigUint& id);

@@ -4,8 +4,7 @@
 #include <unordered_map>
 
 #include "Deal/deal.hpp"
-
-using DealPtr = std::shared_ptr<Deal>;
+#include "Usings/type_usings.hpp"
 
 class DealDataBase {
 public:
