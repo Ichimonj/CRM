@@ -728,3 +728,15 @@ bool Person::delNote(size_t index, const InternalEmployeePtr& changer)
 }
 
 void Person::updateAt(const Date& date) { this->update_at = date; }
+
+void Person::clearRelatedDeal()
+{
+    this->related_deals.erase(
+        std::remove_if(
+            this->related_deals.begin(),
+            this->related_deals.end(),
+            [](const WeakDealPtr& deal) { return deal.expired(); }
+        ),
+        this->related_deals.end()
+    );
+}

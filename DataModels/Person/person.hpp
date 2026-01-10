@@ -102,10 +102,14 @@ public:
     bool setGender(const Gender gender, const InternalEmployeePtr& changer);
 
     bool addRelatedDeals(
-        const WeakDealPtr& weak_deal, const InternalEmployeePtr& changer, const Date& change_date = Date()
+        const WeakDealPtr&         weak_deal,
+        const InternalEmployeePtr& changer,
+        const Date&                change_date = Date()
     );
     bool delRelatedDeals(
-        const WeakDealPtr& weak_deal, const InternalEmployeePtr& changer, const Date& change_date = Date()
+        const WeakDealPtr&         weak_deal,
+        const InternalEmployeePtr& changer,
+        const Date&                change_date = Date()
     );
 
     bool addMoreAddress(const Address& address, const InternalEmployeePtr& changer);
@@ -127,6 +131,11 @@ public:
     bool delNote(size_t index, const InternalEmployeePtr& changer);
 
     void updateAt(const Date& date);
+    /// @}
+
+    /// @name Auxiliary functions
+    /// @{
+    void clearRelatedDeal();
     /// @}
 
 private:
