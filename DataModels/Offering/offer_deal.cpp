@@ -4,7 +4,7 @@ OfferDeal::OfferDeal(const OfferPtr& offer, const DealPtr& deal) : offer(offer),
 
 OfferDeal::OfferDeal(
     const OfferPtr&              offer,
-    const DealPtr&               deal,
+    const WeakDealPtr&           deal,
     const BigUint&               quantity,
     const Money&                 price_per_unit,
     const std::optional<double>& discount
@@ -18,7 +18,7 @@ OfferDeal::OfferDeal(
 }
 
 auto OfferDeal::getOffer() const -> const OfferPtr& { return this->offer; }
-auto OfferDeal::getDeal() const -> const DealPtr& { return this->deal; }
+auto OfferDeal::getDeal() const -> const WeakDealPtr& { return this->deal; }
 auto OfferDeal::getQuantity() const -> const BigUint& { return this->quantity; }
 auto OfferDeal::getPricePerUnit() const -> const Money& { return this->price_per_unit; }
 auto OfferDeal::getDiscount() const -> const std::optional<double>& { return this->discount; }
