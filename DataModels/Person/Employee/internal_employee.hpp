@@ -83,7 +83,7 @@ public:
     auto getHireDate() const -> const DatePtr&;
     auto getDismissalDate() const -> const DatePtr&;
 
-    auto getManagedDeals() const -> const std::vector<DealPtr>&;
+    auto getManagedDeals() const -> const std::vector<WeakDealPtr>&;
     auto getProposedOffers() const -> const std::vector<OfferPtr>&;
     auto getCommissionRate() const -> const std::optional<double>&;
     auto getBaseSalary() const -> const MoneyPtr&;
@@ -127,7 +127,7 @@ public:
         const std::optional<double>& performance_score, const InternalEmployeePtr& changer
     );
 
-    bool addManagerDeal(const DealPtr& deal, const InternalEmployeePtr& changer);
+    bool addManagerDeal(const WeakDealPtr& deal, const InternalEmployeePtr& changer);
     bool delManagerDeal(size_t index, const InternalEmployeePtr& changer);
 
     bool addProposedOffer(const OfferPtr& offer, const InternalEmployeePtr& changer);
@@ -177,7 +177,7 @@ private:
     MoneyPtr             base_salary;
 
     //
-    std::vector<DealPtr>              managed_deals;
+    std::vector<WeakDealPtr>          managed_deals;
     std::vector<OfferPtr>             proposed_offers;
     std::optional<double>             commission_rate;
     std::optional<double>             performance_score;

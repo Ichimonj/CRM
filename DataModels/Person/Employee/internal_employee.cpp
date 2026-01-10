@@ -137,7 +137,7 @@ auto InternalEmployee::getDismissalDate() const -> const std::shared_ptr<Date>&
 {
     return this->dismissal_date;
 }
-auto InternalEmployee::getManagedDeals() const -> const std::vector<DealPtr>&
+auto InternalEmployee::getManagedDeals() const -> const std::vector<WeakDealPtr>&
 {
     return this->managed_deals;
 }
@@ -631,10 +631,15 @@ bool InternalEmployee::setDismissalDate(
     return true;
 }
 
-bool InternalEmployee::addManagerDeal(const DealPtr& deal, const InternalEmployeePtr& changer)
+bool InternalEmployee::addManagerDeal(const WeakDealPtr& deal, const InternalEmployeePtr& changer)
 {
-    if (std::find(this->managed_deals.begin(), this->managed_deals.end(), deal) ==
-        this->managed_deals.end()) {
+    if (std::find_if(
+            this->managed_deals.begin(),
+            this->managed_deals.end(),
+            [&deal](const WeakDealPtr& other_deal) {
+                return !(deal.owner_before(other_deal) || other_deal.owner_before(deal));
+            }
+        ) == this->managed_deals.end()) {
         Date update = Date();
         this->change_logs.emplace_back(std::make_shared<ChangeLog>(
             changer,
@@ -642,7 +647,7 @@ bool InternalEmployee::addManagerDeal(const DealPtr& deal, const InternalEmploye
             std::make_optional(deal),
             InternalEmployeeFields::ManagerDeals,
             ChangeLog::FieldType::null,
-            ChangeLog::FieldType::Deal,
+            ChangeLog::FieldType::WeakDeal,
             ChangeLog::Action::Add,
             update
         ));
@@ -663,7 +668,7 @@ bool InternalEmployee::delManagerDeal(size_t index, const InternalEmployeePtr& c
             std::make_optional(this->managed_deals[index]),
             std::nullopt,
             InternalEmployeeFields::ManagerDeals,
-            ChangeLog::FieldType::Deal,
+            ChangeLog::FieldType::WeakDeal,
             ChangeLog::FieldType::null,
             ChangeLog::Action::Remove,
             update
