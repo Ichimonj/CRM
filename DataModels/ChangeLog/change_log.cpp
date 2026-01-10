@@ -152,10 +152,6 @@ StringPtr ChangeLog::valueToStr(FieldType type, ValueVariant value, StringPtr& s
                 );
             return str;
         }
-        case FieldType::Deal: {
-            str = std::make_shared<std::string>(std::get<std::shared_ptr<Deal>>(value)->getTitle());
-            return str;
-        }
         case FieldType::WeakDeal: {
             auto& weak_deal = std::get<WeakDealPtr>(value);
             if (!weak_deal.expired()) {
