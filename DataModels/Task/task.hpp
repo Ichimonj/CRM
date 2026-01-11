@@ -60,19 +60,27 @@ public:
 
     /// @name Change functions
     /// @{
+    // functions called only from the database
+private:
     bool setTitle(const std::string& title, const InternalEmployeePtr& changer);
-    bool setDescription(const OptionalStr& description, const InternalEmployeePtr& changer);
-    bool setSubject(const OptionalStr& subject, const InternalEmployeePtr& changer);
     bool setStatus(const Status& status, const InternalEmployeePtr& changer);
     bool setPriority(const Priority& priority, const InternalEmployeePtr& changer);
     bool setDeadline(const DatePtr& deadline, const InternalEmployeePtr& changer);
     bool setStartDate(const DatePtr& start_date, const InternalEmployeePtr& changer);
-    bool setETC(const DurationPtr& ETC, const InternalEmployeePtr& changer);
-    bool setATS(const DurationPtr& ATS, const InternalEmployeePtr& changer);
     bool setManager(const WeakInternalEmployee& weak_manager, const InternalEmployeePtr& changer);
 
     bool addDeal(const WeakDealPtr& deal, const InternalEmployeePtr& changer);
     bool delDeal(size_t index, const InternalEmployeePtr& changer);
+
+    bool addTeemMember(const WeakPersonPtr& member, const InternalEmployeePtr& changer);
+    bool delTeemMember(size_t index, const InternalEmployeePtr& changer);
+
+    // public functions
+public:
+    bool setDescription(const OptionalStr& description, const InternalEmployeePtr& changer);
+    bool setSubject(const OptionalStr& subject, const InternalEmployeePtr& changer);
+    bool setETC(const DurationPtr& ETC, const InternalEmployeePtr& changer);
+    bool setATS(const DurationPtr& ATS, const InternalEmployeePtr& changer);
 
     bool addTask(const TaskPtr& task, const InternalEmployeePtr& changer);
     bool delTask(size_t index, const InternalEmployeePtr& changer);
@@ -87,15 +95,14 @@ public:
         const std::string& title, const std::string& data, const InternalEmployeePtr& changer
     );
     bool delMoreData(size_t index, const InternalEmployeePtr& changer);
-
-    bool addTeemMember(const WeakPersonPtr& member, const InternalEmployeePtr& changer);
-    bool delTeemMember(size_t index, const InternalEmployeePtr& changer);
     /// @}
 
     /// @name Auxiliary functions
     /// @{
     void clearTeem();
     /// @}
+
+    friend class TaskDataBase;
 
 private:
     BigUint              id;
@@ -123,4 +130,50 @@ private:
     std::vector<WeakPersonPtr> teem;
 
     std::vector<ChangeLogPtr>  change_logs;
+
+#ifdef _TESTING
+public:
+    bool _setTitle(const std::string& title, const InternalEmployeePtr& changer)
+    {
+        return this->setTitle(title, changer);
+    }
+    bool _setStatus(const Status& status, const InternalEmployeePtr& changer)
+    {
+        return this->setStatus(status, changer);
+    }
+    bool _setPriority(const Priority& priority, const InternalEmployeePtr& changer)
+    {
+        return this->setPriority(priority, changer);
+    }
+    bool _setDeadline(const DatePtr& deadline, const InternalEmployeePtr& changer)
+    {
+        return this->setDeadline(deadline, changer);
+    }
+    bool _setStartDate(const DatePtr& start_date, const InternalEmployeePtr& changer)
+    {
+        return this->setStartDate(start_date, changer);
+    }
+    bool _setManager(const WeakInternalEmployee& weak_manager, const InternalEmployeePtr& changer)
+    {
+        return this->setManager(weak_manager, changer);
+    }
+
+    bool _addDeal(const WeakDealPtr& deal, const InternalEmployeePtr& changer)
+    {
+        return this->addDeal(deal, changer);
+    }
+    bool _delDeal(size_t index, const InternalEmployeePtr& changer)
+    {
+        return this->delDeal(index, changer);
+    }
+
+    bool _addTeemMember(const WeakPersonPtr& member, const InternalEmployeePtr& changer)
+    {
+        return this->addTeemMember(member, changer);
+    }
+    bool _delTeemMember(size_t index, const InternalEmployeePtr& changer)
+    {
+        return this->delTeemMember(index, changer);
+    }
+#endif  // _TESTING
 };
