@@ -27,6 +27,7 @@ public:
         const DurationPtr&          ATS,
         const WeakInternalEmployee& created_by,
         const WeakInternalEmployee& manager,
+        std::vector<WeakDealPtr>    deals,
         std::vector<Note>           notes,
         std::vector<StringPair>     more_data,
         std::vector<WeakPersonPtr>  teem
@@ -48,6 +49,7 @@ public:
     auto getATS() const -> const DurationPtr&;
     auto getCreatedBy() const -> const WeakInternalEmployee&;
     auto getManager() const -> const WeakInternalEmployee&;
+    auto getDeals() const -> const std::vector<WeakDealPtr>&;
     auto getFiles() const -> const std::vector<FilePtr>&;
     auto getTasks() const -> const std::vector<TaskPtr>&;
     auto getNotes() const -> const std::vector<Note>&;
@@ -68,6 +70,9 @@ public:
     bool setETC(const DurationPtr& ETC, const InternalEmployeePtr& changer);
     bool setATS(const DurationPtr& ATS, const InternalEmployeePtr& changer);
     bool setManager(const WeakInternalEmployee& weak_manager, const InternalEmployeePtr& changer);
+
+    bool addDeal(const WeakDealPtr& deal, const InternalEmployeePtr& changer);
+    bool delDeal(size_t index, const InternalEmployeePtr& changer);
 
     bool addTask(const TaskPtr& task, const InternalEmployeePtr& changer);
     bool delTask(size_t index, const InternalEmployeePtr& changer);
@@ -110,6 +115,7 @@ private:
     WeakInternalEmployee manager;
 
     //
+    std::vector<WeakDealPtr>   deals;
     std::vector<TaskPtr>       attachment_tasks;
     std::vector<FilePtr>       attachment_files;
     std::vector<Note>          notes;

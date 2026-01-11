@@ -16,6 +16,7 @@ Task::Task(
     const DurationPtr&          ATS,
     const WeakInternalEmployee& created_by,
     const WeakInternalEmployee& manager,
+    std::vector<WeakDealPtr>    deals,
     std::vector<Note>           notes,
     std::vector<StringPair>     more_data,
     std::vector<WeakPersonPtr>  teem
@@ -32,6 +33,7 @@ Task::Task(
     , ATS(ATS)
     , created_by(created_by)
     , manager(manager)
+    , deals(std::move(deals))
     , notes(std::move(notes))
     , more_data(std::move(more_data))
     , teem(std::move(teem))
@@ -51,6 +53,7 @@ auto Task::getETC() const -> const DurationPtr& { return ETC; }
 auto Task::getATS() const -> const DurationPtr& { return ATS; }
 auto Task::getCreatedBy() const -> const WeakInternalEmployee& { return created_by; }
 auto Task::getManager() const -> const WeakInternalEmployee& { return manager; }
+auto Task::getDeals() const -> const std::vector<WeakDealPtr>& { return this->deals; }
 auto Task::getFiles() const -> const std::vector<FilePtr>& { return this->attachment_files; }
 auto Task::getTasks() const -> const std::vector<TaskPtr>& { return this->attachment_tasks; }
 auto Task::getNotes() const -> const std::vector<Note>& { return notes; }
@@ -252,13 +255,55 @@ bool Task::setManager(const WeakInternalEmployee& weak_manager, const InternalEm
             WEAK_PTR_TO_OPTIONAL(this->manager),
             WEAK_PTR_TO_OPTIONAL(weak_manager),
             TaskFields::Manager,
-            this->manager.lock() ? ChangeLog::FieldType::WeakInternalEmployee
-                                 : ChangeLog::FieldType::null,
-            weak_manager.lock() ? ChangeLog::FieldType::WeakInternalEmployee
-                                : ChangeLog::FieldType::null,
+            !this->manager.expired() ? ChangeLog::FieldType::WeakInternalEmployee
+                                     : ChangeLog::FieldType::null,
+            !weak_manager.expired() ? ChangeLog::FieldType::WeakInternalEmployee
+                                    : ChangeLog::FieldType::null,
             ChangeLog::Action::Change
         ));
         this->manager = weak_manager;
+        return true;
+    }
+    return false;
+}
+
+bool Task::addDeal(const WeakDealPtr& deal, const InternalEmployeePtr& changer)
+{
+    if (std::find_if(
+            this->deals.begin(),
+            this->deals.end(),
+            [&deal](const WeakDealPtr& other_deal) {
+                return !(deal.owner_before(other_deal) || other_deal.owner_before(deal));
+            }
+        ) == this->deals.end()) {
+        this->change_logs.emplace_back(std::make_shared<ChangeLog>(
+            changer,
+            std::nullopt,
+            WEAK_PTR_TO_OPTIONAL(deal),
+            TaskFields::Deals,
+            ChangeLog::FieldType::null,
+            !deal.expired() ? ChangeLog::FieldType::WeakDeal : ChangeLog::FieldType::null,
+            ChangeLog::Action::Add
+        ));
+        this->deals.push_back(deal);
+        return true;
+    }
+    return false;
+}
+
+bool Task::delDeal(size_t index, const InternalEmployeePtr& changer)
+{
+    if (this->deals.size() > index) {
+        this->change_logs.emplace_back(std::make_shared<ChangeLog>(
+            changer,
+            std::make_optional(this->deals[index]),
+            std::nullopt,
+            TaskFields::Deadline,
+            ChangeLog::FieldType::WeakDeal,
+            ChangeLog::FieldType::null,
+            ChangeLog::Action::Remove
+        ));
+        this->attachment_tasks.erase(this->attachment_tasks.begin() + index);
         return true;
     }
     return false;
