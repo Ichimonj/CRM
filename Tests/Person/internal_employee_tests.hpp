@@ -1969,22 +1969,24 @@ namespace unit {
     TEST(InternalEmployeeTest, AddTask)
     {
         auto task = std::make_shared<Task>(
-            BigUint("90001"),
-            "Implement CRM API v2",
-            "Develop REST API for new features",
-            std::nullopt,
-            Task::Status::InProgress,
-            Priority::High,
-            std::make_shared<Date>(2025, 12, 31),
-            std::make_shared<Date>(2025, 11, 1),
-            nullptr,
-            nullptr,
-            changer,
-            WeakInternalEmployee{},
-            std::vector<Note>{},
-            std::vector<StringPair>{},
-            std::vector<WeakPersonPtr>{}
+            BigUint("90001"),                              
+            "Implement CRM API v2",                        
+            "Develop REST API for new features",          
+            std::nullopt,                                  
+            Task::Status::InProgress,                       
+            Priority::High,                                
+            std::make_shared<Date>(2025, 12, 31),         
+            std::make_shared<Date>(2025, 11, 1),            
+            nullptr,                                      
+            nullptr,                                       
+            changer,                                    
+            WeakInternalEmployee{},                       
+            std::vector<WeakDealPtr>{},                    
+            std::vector<Note>{},                        
+            std::vector<StringPair>{},                      
+            std::vector<WeakPersonPtr>{}                    
         );
+
 
         ie.addTask(task, changer);
 
@@ -2033,6 +2035,7 @@ namespace unit {
             nullptr,
             changer,
             WeakInternalEmployee{},
+            std::vector<WeakDealPtr>{},
             std::vector<Note>{},
             std::vector<StringPair>{},
             std::vector<WeakPersonPtr>{}
