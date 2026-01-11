@@ -5,6 +5,9 @@
 #include "Logger/events_log.hpp"
 #include "Person/Employee/internal_employee.hpp"
 
+const std::vector<TaskPtr> TaskDataBase::empty_vector;
+//
+
 void TaskDataBase::add(const TaskPtr& task)
 {
     if (task == nullptr) return;
@@ -119,15 +122,71 @@ void TaskDataBase::hard_remove(const size_t index)
     }
 }
 
-auto TaskDataBase::size() const -> size_t
+auto TaskDataBase::getAll() const -> const std::unordered_map<BigUint, TaskPtr>&
 {
-    return this->by_id.size();
+    return this->by_id;
 }
 
-bool TaskDataBase::empty()
+auto TaskDataBase::getByTitle() const -> const std::multimap<std::string, TaskPtr>&
 {
-    return this->by_id.empty();
+    return this->by_title_substr_search;
 }
+
+auto TaskDataBase::getByStatus() const
+    -> const std::unordered_map<Task::Status, std::vector<TaskPtr>>&
+{
+    return this->by_status;
+}
+
+auto TaskDataBase::getByPriority() const
+    -> const std::unordered_map<Priority, std::vector<TaskPtr>>&
+{
+    return this->by_priority;
+}
+
+auto TaskDataBase::getByCreatedDate() const -> const std::multimap<Date, TaskPtr>&
+{
+    return this->by_created_date;
+}
+
+auto TaskDataBase::getByDeadline() const -> const std::multimap<Date, TaskPtr>&
+{
+    return this->by_deadline;
+}
+
+auto TaskDataBase::getByStartDate() const -> const std::multimap<Date, TaskPtr>&
+{
+    return this->by_start_date;
+}
+
+auto TaskDataBase::getByCreator() const -> const std::unordered_map<BigUint, std::vector<TaskPtr>>&
+{
+    return this->by_creator;
+}
+
+auto TaskDataBase::getByManager() const -> const std::unordered_map<BigUint, std::vector<TaskPtr>>&
+{
+    return this->by_manager;
+}
+
+auto TaskDataBase::getByDeal() const -> const std::unordered_multimap<BigUint, TaskPtr>&
+{
+    return this->by_deal;
+}
+
+auto TaskDataBase::getByParty() const -> const std::unordered_map<BigUint, std::vector<TaskPtr>>&
+{
+    return this->by_party;
+}
+
+auto TaskDataBase::getRemoved() const -> const std::vector<std::pair<Date, TaskPtr>>&
+{
+    return this->removed;
+}
+
+auto TaskDataBase::size() const -> size_t { return this->by_id.size(); }
+
+bool TaskDataBase::empty() { return this->by_id.empty(); }
 
 auto TaskDataBase::findById(const BigUint& id) const -> const TaskPtr
 {
@@ -410,7 +469,6 @@ void TaskDataBase::addParty(
     if (task->addTeemMember(person, changer)) {
         this->by_party[person.lock()->getId()].push_back(task);
     }
-
 }
 
 void TaskDataBase::delParty(const BigUint& id, size_t index, const InternalEmployeePtr& changer)
@@ -433,6 +491,8 @@ void TaskDataBase::removeCreator(const BigUint& id) { this->by_creator.erase(id)
 void TaskDataBase::removeManager(const BigUint& id) { this->by_manager.erase(id); }
 
 void TaskDataBase::removeParty(const BigUint& id) { this->by_party.erase(id); }
+
+void TaskDataBase::removeDeal(const BigUint& id) { this->by_deal.erase(id); }
 
 void TaskDataBase::safeRemoveFromMap(
     auto&              map,

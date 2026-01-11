@@ -6,6 +6,7 @@
 
 #include "Logger/events_log.hpp"
 #include "Person/Employee/internal_employee.hpp"
+#include "TenantContext/tenant_context.hpp"
 
 const std::vector<ClientPtr> ClientDataBase::empty_vector;
 //
@@ -172,9 +173,14 @@ void ClientDataBase::soft_remove(const BigUint& id, const Date& remove_date)
     by_id.erase(id_it);
 }
 
-void ClientDataBase::hard_remove(const size_t index)
+void ClientDataBase::hard_remove(const size_t index, TenantContext& context)
 {
     if (index < this->removed.size()) {
+        const auto& client    = removed[index].second;
+        auto        client_id = client->getId();
+
+        context.task_data_base.removeParty(client_id);
+
         this->removed.erase(this->removed.begin() + index);
     }
 }
@@ -227,6 +233,12 @@ auto ClientDataBase::getByLeadSource() const
     return this->by_lead_source;
 }
 
+auto ClientDataBase::getByOtherLeadSource() const
+    -> const std::unordered_map<std::string, std::vector<ClientPtr>>&
+{
+    return this->by_other_lead_source;
+}
+
 auto ClientDataBase::getByMarketingConsent() const
     -> const std::unordered_map<bool, std::vector<ClientPtr>>&
 {
@@ -237,6 +249,11 @@ auto ClientDataBase::getByLeadStatus() const
     -> const std::unordered_map<Client::LeadStatus, std::vector<ClientPtr>>&
 {
     return this->by_lead_status;
+}
+
+auto ClientDataBase::getRemoved() const -> const std::vector<std::pair<Date, ClientPtr>>&
+{
+    return this->removed;
 }
 
 auto ClientDataBase::findById(const BigUint& id) const -> const ClientPtr

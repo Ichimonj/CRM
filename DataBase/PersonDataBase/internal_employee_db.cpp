@@ -195,7 +195,8 @@ void InternalEmployeeDataBase::hard_remove(const size_t index, TenantContext& co
         auto        employee_id = employee->getId();
 
         context.client_data_base.removeOwner(employee_id);
-        context.deal_data_base.removeInternalEmployee(employee_id);
+        context.deal_data_base.removeOwner(employee_id);
+        context.deal_data_base.removeManager(employee_id);
         context.task_data_base.removeCreator(employee_id);
         context.task_data_base.removeManager(employee_id);
         context.task_data_base.removeParty(employee_id);
@@ -230,6 +231,72 @@ auto InternalEmployeeDataBase::getByPhone() const
     -> const std::unordered_multimap<std::string, InternalEmployeePtr>&
 {
     return this->by_phone;
+}
+
+auto InternalEmployeeDataBase::getByDepartment() const
+    -> const std::unordered_multimap<std::string, InternalEmployeePtr>&
+{
+    return this->by_department;
+}
+
+auto InternalEmployeeDataBase::getByStatus() const
+    -> const std::unordered_map<EmployeeStatus, std::vector<InternalEmployeePtr>>&
+{
+    return this->by_status;
+}
+
+auto InternalEmployeeDataBase::getByOtherStatus() const
+    -> const std::unordered_map<std::string, std::vector<InternalEmployeePtr>>&
+{
+    return this->by_other_status;
+}
+
+auto InternalEmployeeDataBase::getByAccessRole() const
+    -> const std::unordered_map<AccessRole, std::vector<InternalEmployeePtr>>&
+{
+    return this->by_access_role;
+}
+
+auto InternalEmployeeDataBase::getByOtherAccessRole() const
+    -> const std::unordered_map<std::string, std::vector<InternalEmployeePtr>>&
+{
+    return this->by_other_access_role;
+}
+
+auto InternalEmployeeDataBase::getByTimeZone() const
+    -> const std::unordered_map<int, std::vector<InternalEmployeePtr>>&
+{
+    return this->by_time_zone;
+}
+
+auto InternalEmployeeDataBase::getByManager() const
+    -> const std::unordered_map<BigUint, std::vector<InternalEmployeePtr>>&
+{
+    return this->by_manager;
+}
+
+auto InternalEmployeeDataBase::getByPosition() const
+    -> const std::unordered_multimap<std::string, InternalEmployeePtr>&
+{
+    return this->by_position;
+}
+
+auto InternalEmployeeDataBase::getByIsActive() const
+    -> const std::unordered_map<bool, std::vector<InternalEmployeePtr>>&
+{
+    return this->by_is_active;
+}
+
+auto InternalEmployeeDataBase::getSalesTerritory() const
+    -> const std::unordered_multimap<std::string, InternalEmployeePtr>&
+{
+    return this->by_sales_territory;
+}
+
+auto InternalEmployeeDataBase::getRemoved() const
+    -> const std::vector<std::pair<Date, InternalEmployeePtr>>&
+{
+    return this->removed;
 }
 
 auto InternalEmployeeDataBase::findById(const BigUint& id) const -> const InternalEmployeePtr

@@ -9,7 +9,8 @@ class ClientDataBase {
 public:
     void add(const ClientPtr& client);
     void soft_remove(const BigUint& id, const Date& remove_date);
-    void hard_remove(const size_t index);
+    void hard_remove(const size_t index, TenantContext& context);
+
     /// @name Getters
     /// @{
     auto size() const -> size_t;
@@ -23,9 +24,12 @@ public:
     auto getByOtherType() const -> const std::unordered_map<std::string, std::vector<ClientPtr>>&;
     auto getByLeadSource() const
         -> const std::unordered_map<Client::LeadSource, std::vector<ClientPtr>>&;
+    auto getByOtherLeadSource() const
+        -> const std::unordered_map<std::string, std::vector<ClientPtr>>&;
     auto getByMarketingConsent() const -> const std::unordered_map<bool, std::vector<ClientPtr>>&;
     auto getByLeadStatus() const
         -> const std::unordered_map<Client::LeadStatus, std::vector<ClientPtr>>&;
+    auto getRemoved() const -> const std::vector<std::pair<Date, ClientPtr>>&;
     /// @}
 
     /// @name Find functions

@@ -11,10 +11,26 @@ public:
     void safe_remove(const BigUint& id, const Date& remove_date);
     void hard_remove(const size_t index);
 
-    /// @name Find functions
+    /// @name Getters
     /// @{
     auto size() const -> size_t;
     bool empty();
+    auto getAll() const -> const std::unordered_map<BigUint, TaskPtr>&;
+    auto getByTitle() const -> const std::multimap<std::string, TaskPtr>&;
+    auto getByStatus() const -> const std::unordered_map<Task::Status, std::vector<TaskPtr>>&;
+    auto getByPriority() const -> const std::unordered_map<Priority, std::vector<TaskPtr>>&;
+    auto getByCreatedDate() const -> const std::multimap<Date, TaskPtr>&;
+    auto getByDeadline() const -> const std::multimap<Date, TaskPtr>&;
+    auto getByStartDate() const -> const std::multimap<Date, TaskPtr>&;
+    auto getByCreator() const -> const std::unordered_map<BigUint, std::vector<TaskPtr>>&;
+    auto getByManager() const -> const std::unordered_map<BigUint, std::vector<TaskPtr>>&;
+    auto getByDeal() const -> const std::unordered_multimap<BigUint, TaskPtr>&;
+    auto getByParty() const -> const std::unordered_map<BigUint, std::vector<TaskPtr>>&;
+    auto getRemoved() const -> const std::vector<std::pair<Date, TaskPtr>>&;
+    /// @}
+
+    /// @name Find functions
+    /// @{
     auto findById(const BigUint& id) const -> const TaskPtr;
     auto findByTitleSubstr(const std::string& title) const -> const std::vector<TaskPtr>;
     auto findByStatus(const Task::Status status) const -> const std::vector<TaskPtr>&;
@@ -60,9 +76,10 @@ public:
     void removeCreator(const BigUint& id);
     void removeManager(const BigUint& id);
     void removeParty(const BigUint& id);
+    void removeDeal(const BigUint& id);
     /// @}
 private:
-    std::vector<TaskPtr>                                   empty_vector;
+    static const std::vector<TaskPtr>                      empty_vector;
 
     std::unordered_map<BigUint, TaskPtr>                   by_id;
     std::multimap<std::string, TaskPtr>                    by_title_substr_search;
@@ -78,6 +95,7 @@ private:
 
     std::vector<std::pair<Date, TaskPtr>>                  removed;
 
+    //
     void safeRemoveFromMap(
         auto&              map,
         const auto&        key,

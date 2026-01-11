@@ -4,10 +4,11 @@
 
 #include "Logger/events_log.hpp"
 #include "Person/Employee/internal_employee.hpp"
+#include "TenantContext/tenant_context.hpp"
 
 const std::vector<DealPtr> DealDataBase::empty_vector;
-
-void                       DealDataBase::add(const DealPtr& deal)
+//
+void DealDataBase::add(const DealPtr& deal)
 {
     if (deal == nullptr) return;
 
@@ -118,22 +119,23 @@ void DealDataBase::soft_remove(const BigUint& id)
     this->by_id.erase(deal->getId());
 }
 
-void DealDataBase::hard_remove(const size_t index)
+void DealDataBase::hard_remove(const size_t index, TenantContext& context)
 {
     if (index < this->removed.size()) {
+        this->removed.erase(this->removed.begin() + index);
+
+        const auto& deal    = removed[index].second;
+        auto        deal_id = deal->getId();
+
+        context.task_data_base.removeDeal(deal_id);
+
         this->removed.erase(this->removed.begin() + index);
     }
 }
 
-auto DealDataBase::size() const -> size_t
-{
-    return this->by_id.size();
-}
+auto DealDataBase::size() const -> size_t { return this->by_id.size(); }
 
-bool DealDataBase::empty() const
-{
-    return this->by_id.empty();
-}
+bool DealDataBase::empty() const { return this->by_id.empty(); }
 
 auto DealDataBase::getAll() const -> const std::unordered_map<BigUint, DealPtr>&
 {
@@ -195,6 +197,11 @@ auto DealDataBase::getByContractNumber() const -> const std::unordered_map<std::
 auto DealDataBase::getByTitleSubstr() const -> const std::multimap<std::string, DealPtr>&
 {
     return this->by_title_substr_search;
+}
+
+auto DealDataBase::getRemoved() const -> const std::vector<std::pair<Date, DealPtr>>&
+{
+    return this->removed;
 }
 
 auto DealDataBase::findById(const BigUint& id) const -> const DealPtr
@@ -588,11 +595,9 @@ auto DealDataBase::changeTitle(
     }
 }
 
-void DealDataBase::removeInternalEmployee(const BigUint& id)
-{
-    this->by_owner.erase(id);
-    this->by_manager.erase(id);
-}
+void DealDataBase::removeManager(const BigUint& id) { this->by_manager.erase(id); }
+
+void DealDataBase::removeOwner(const BigUint& id) { this->by_owner.erase(id); }
 
 void DealDataBase::safeRemoveFromMap(
     auto&              map,

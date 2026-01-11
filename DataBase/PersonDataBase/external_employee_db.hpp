@@ -11,7 +11,7 @@ public:
 
     void add(const ExternalEmployeePtr& employee);
     void soft_remove(const BigUint& id, const Date& remove_date);
-    void hard_remove(const size_t index);
+    void hard_remove(const size_t index, TenantContext& context);
 
     /// @name Getters
     /// @{
@@ -23,6 +23,21 @@ public:
     auto getByPhone() const -> const std::unordered_multimap<std::string, ExternalEmployeePtr>&;
     auto getByCompany() const
         -> const std::unordered_map<CompanyId, std::vector<ExternalEmployeePtr>>&;
+    auto getByStatus() const
+        -> const std::unordered_map<EmployeeStatus, std::vector<ExternalEmployeePtr>>&;
+    auto getByOtherStatus() const
+        -> const std::unordered_map<std::string, std::vector<ExternalEmployeePtr>>&;
+    auto getByAccessRole() const
+        -> const std::unordered_map<AccessRole, std::vector<ExternalEmployeePtr>>&;
+    auto getByOtherAccessRole() const
+        -> const std::unordered_map<std::string, std::vector<ExternalEmployeePtr>>&;
+    auto getByInfluenceLevel() const -> const
+        std::unordered_map<ExternalEmployee::InfluenceLevel, std::vector<ExternalEmployeePtr>>&;
+    auto getByTimeZone() const -> const std::unordered_map<int, std::vector<ExternalEmployeePtr>>&;
+    auto getByJobTitle() const -> const std::unordered_multimap<std::string, ExternalEmployeePtr>&;
+    auto getByDepartment() const
+        -> const std::unordered_multimap<std::string, ExternalEmployeePtr>&;
+    auto getRemoved() const -> const std::vector<std::pair<Date, ExternalEmployeePtr>>&;
     /// @}
 
     /// @name Find functions
@@ -101,6 +116,11 @@ public:
     void changeDepartment(
         const BigUint& id, const OptionalStr& department, const InternalEmployeePtr& changer
     );
+    /// @}
+
+    /// @name Auxiliary functions
+    /// @{
+    void removeCompany(const BigUint& id);
     /// @}
 
 private:

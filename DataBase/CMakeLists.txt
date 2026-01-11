@@ -1,5 +1,5 @@
 project(DataBase
-    VERSION 0.0.4
+    VERSION 0.0.5
     DESCRIPTION "Data base library for CRM"
     LANGUAGES CXX
 )

@@ -6,6 +6,7 @@
 #include "Company/ExternalCompany/external_company.hpp"
 #include "Logger/events_log.hpp"
 #include "Person/Employee/external_employee.hpp"
+#include "TenantContext/tenant_context.hpp"
 
 const std::vector<ExternalEmployeePtr> ExternalEmployeeDataBase::empty_vector;
 
@@ -180,9 +181,14 @@ void ExternalEmployeeDataBase::soft_remove(const BigUint& id, const Date& remove
     by_id.erase(employee_it);
 }
 
-void ExternalEmployeeDataBase::hard_remove(const size_t index)
+void ExternalEmployeeDataBase::hard_remove(const size_t index, TenantContext& context)
 {
     if (index < this->removed.size()) {
+        const auto& employee    = removed[index].second;
+        auto        employee_id = employee->getId();
+
+        context.task_data_base.removeParty(employee_id);
+
         this->removed.erase(this->removed.begin() + index);
     }
 }
@@ -219,6 +225,60 @@ auto ExternalEmployeeDataBase::getByCompany() const
     -> const std::unordered_map<CompanyId, std::vector<ExternalEmployeePtr>>&
 {
     return this->by_company;
+}
+
+auto ExternalEmployeeDataBase::getByStatus() const
+    -> const std::unordered_map<EmployeeStatus, std::vector<ExternalEmployeePtr>>&
+{
+    return this->by_status;
+}
+
+auto ExternalEmployeeDataBase::getByOtherStatus() const
+    -> const std::unordered_map<std::string, std::vector<ExternalEmployeePtr>>&
+{
+    return this->by_other_status;
+}
+
+auto ExternalEmployeeDataBase::getByAccessRole() const
+    -> const std::unordered_map<AccessRole, std::vector<ExternalEmployeePtr>>&
+{
+    return this->by_access_role;
+}
+
+auto ExternalEmployeeDataBase::getByOtherAccessRole() const
+    -> const std::unordered_map<std::string, std::vector<ExternalEmployeePtr>>&
+{
+    return this->by_other_access_role;
+}
+
+auto ExternalEmployeeDataBase::getByInfluenceLevel() const
+    -> const std::unordered_map<ExternalEmployee::InfluenceLevel, std::vector<ExternalEmployeePtr>>&
+{
+    return this->by_influence_level;
+}
+
+auto ExternalEmployeeDataBase::getByTimeZone() const
+    -> const std::unordered_map<int, std::vector<ExternalEmployeePtr>>&
+{
+    return this->by_time_zone;
+}
+
+auto ExternalEmployeeDataBase::getByJobTitle() const
+    -> const std::unordered_multimap<std::string, ExternalEmployeePtr>&
+{
+    return this->by_job_title;
+}
+
+auto ExternalEmployeeDataBase::getByDepartment() const
+    -> const std::unordered_multimap<std::string, ExternalEmployeePtr>&
+{
+    return this->by_department;
+}
+
+auto ExternalEmployeeDataBase::getRemoved() const
+    -> const std::vector<std::pair<Date, ExternalEmployeePtr>>&
+{
+    return this->removed;
 }
 
 auto ExternalEmployeeDataBase::findById(const BigUint& id) const -> const ExternalEmployeePtr
@@ -796,6 +856,8 @@ void ExternalEmployeeDataBase::changeDepartment(
         }
     }
 }
+
+void ExternalEmployeeDataBase::removeCompany(const BigUint& id) { this->by_company.erase(id); }
 
 void ExternalEmployeeDataBase::safeRemoveFromMap(
     auto&                      map,

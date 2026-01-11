@@ -10,8 +10,9 @@ class DealDataBase {
 public:
     void add(const DealPtr& deal);
     void soft_remove(const BigUint& id);
-    void hard_remove(const size_t index);
-    /// @name Get functions
+    void hard_remove(const size_t index, TenantContext& context);
+
+    /// @name Getters
     /// @{
     auto size() const -> size_t;
     bool empty() const;
@@ -27,6 +28,7 @@ public:
     auto getByApprovalDate() const -> const std::multimap<Date, DealPtr>&;
     auto getByContractNumber() const -> const std::unordered_map<std::string, DealPtr>&;
     auto getByTitleSubstr() const -> const std::multimap<std::string, DealPtr>&;
+    auto getRemoved() const -> const std::vector<std::pair<Date, DealPtr>>&;
     /// @}
 
     /// @name Find functions
@@ -91,7 +93,8 @@ public:
 
     /// @name Auxiliary functions
     /// @{
-    void removeInternalEmployee(const BigUint& id);
+    void removeManager(const BigUint& id);
+    void removeOwner(const BigUint& id);
     /// @}
 
 private:

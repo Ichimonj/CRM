@@ -21,6 +21,24 @@ public:
     auto getByName() const -> const std::unordered_multimap<std::string, InternalEmployeePtr>&;
     auto getByEmail() const -> const std::unordered_multimap<std::string, InternalEmployeePtr>&;
     auto getByPhone() const -> const std::unordered_multimap<std::string, InternalEmployeePtr>&;
+    auto getByDepartment() const
+        -> const std::unordered_multimap<std::string, InternalEmployeePtr>&;
+    auto getByStatus() const
+        -> const std::unordered_map<EmployeeStatus, std::vector<InternalEmployeePtr>>&;
+    auto getByOtherStatus() const
+        -> const std::unordered_map<std::string, std::vector<InternalEmployeePtr>>&;
+    auto getByAccessRole() const
+        -> const std::unordered_map<AccessRole, std::vector<InternalEmployeePtr>>&;
+    auto getByOtherAccessRole() const
+        -> const std::unordered_map<std::string, std::vector<InternalEmployeePtr>>&;
+    auto getByTimeZone() const -> const std::unordered_map<int, std::vector<InternalEmployeePtr>>&;
+    auto getByManager() const
+        -> const std::unordered_map<BigUint, std::vector<InternalEmployeePtr>>&;
+    auto getByPosition() const -> const std::unordered_multimap<std::string, InternalEmployeePtr>&;
+    auto getByIsActive() const -> const std::unordered_map<bool, std::vector<InternalEmployeePtr>>&;
+    auto getSalesTerritory() const
+        -> const std::unordered_multimap<std::string, InternalEmployeePtr>&;
+    auto getRemoved() const -> const std::vector<std::pair<Date, InternalEmployeePtr>>&;
     /// @}
 
     /// @name Find functions
