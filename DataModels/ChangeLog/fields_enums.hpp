@@ -196,6 +196,7 @@ enum class TaskFields : uint8_t {
     ATS,
     CreatedBy,
     Manager,
+    Deals,
     Task,
     File,
     Notes,
