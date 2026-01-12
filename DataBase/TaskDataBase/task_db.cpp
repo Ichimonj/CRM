@@ -41,18 +41,15 @@ void TaskDataBase::add(const TaskPtr& task)
         this->by_manager[task->getManager().lock()->getId()].push_back(task);
     }
 
-    if (!task->getDeals().empty()) {
-        for (auto& weak_deal : task->getDeals()) {
-            if (!weak_deal.expired()) {
-                this->by_deal.emplace(weak_deal.lock()->getId(), task);
-            }
+    for (auto& weak_deal : task->getDeals()) {
+        if (!weak_deal.expired()) {
+            this->by_deal.emplace(weak_deal.lock()->getId(), task);
         }
     }
-    if (!task->getTeem().empty()) {
-        for (auto& week_teem : task->getTeem()) {
-            if (!week_teem.expired()) {
-                this->by_party[week_teem.lock()->getId()].push_back(task);
-            }
+
+    for (auto& week_teem : task->getTeem()) {
+        if (!week_teem.expired()) {
+            this->by_party[week_teem.lock()->getId()].push_back(task);
         }
     }
 }
