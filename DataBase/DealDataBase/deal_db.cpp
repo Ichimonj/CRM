@@ -18,13 +18,13 @@ void DealDataBase::add(const DealPtr& deal)
 
     this->by_id[deal->getId()] = deal;
 
-    auto deal_manager = deal->getManager().lock();
-    if (deal_manager) {
+    if (!deal->getManager().expired()) {
+        auto deal_manager = deal->getManager().lock();
         this->by_manager[deal_manager->getId()].push_back(deal);
     }
 
-    auto owner = deal->getOwner().lock();
-    if (owner) {
+    if (!deal->getOwner().expired()) {
+        auto owner = deal->getOwner().lock();
         this->by_owner[owner->getId()].push_back(deal);
     }
 
