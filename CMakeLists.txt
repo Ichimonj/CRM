@@ -12,7 +12,7 @@ add_subdirectory(DataModels)
 add_subdirectory(DataBase)
 
 add_executable(${PROJECT_NAME} main.cpp)
-target_link_libraries(${PROJECT_NAME} PRIVATE DataModels)
+target_link_libraries(${PROJECT_NAME} PRIVATE DataModels DataBase)
 
 if(BUILD_TESTING)
     add_subdirectory(external/gtest EXCLUDE_FROM_ALL)

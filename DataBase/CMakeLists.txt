@@ -8,6 +8,8 @@ file(GLOB DATABASE_SOURCES CONFIGURE_DEPENDS
     "PersonDataBase/*.cpp"
 )
 add_library(DataBase STATIC
+    ../Logger/events_log.cpp
+    TaskDataBase/task_db.cpp
     DealDataBase/deal_db.cpp
     ${DATABASE_SOURCES}
 )
