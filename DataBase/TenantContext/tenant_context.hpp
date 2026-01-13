@@ -1,4 +1,5 @@
 #include "DataBase/DealDataBase/deal_db.hpp"
+#include "DataBase/InteractionDataBase/interaction_data_base.hpp"
 #include "DataBase/PersonDataBase/client_db.hpp"
 #include "DataBase/PersonDataBase/external_employee_db.hpp"
 #include "DataBase/PersonDataBase/internal_employee_db.hpp"
@@ -9,4 +10,5 @@ struct TenantContext {
     InternalEmployeeDataBase& internal_employee_data_base;
     DealDataBase&             deal_data_base;
     TaskDataBase&             task_data_base;
+    InteractionDataBase&      interaction_data_base;
 };

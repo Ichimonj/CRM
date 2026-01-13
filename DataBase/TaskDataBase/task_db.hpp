@@ -114,7 +114,7 @@ private:
     void logEmptyContainer(
         const std::string& file,
         const size_t       line,
-        const std::string& client_id,
+        const std::string& task_id,
         const std::string& index_name
     );
 };

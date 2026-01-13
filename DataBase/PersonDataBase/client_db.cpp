@@ -180,6 +180,7 @@ void ClientDataBase::hard_remove(const size_t index, TenantContext& context)
         auto        client_id = client->getId();
 
         context.task_data_base.removeParty(client_id);
+        context.interaction_data_base.removeParticipant(client_id);
 
         this->removed.erase(this->removed.begin() + index);
     }
@@ -351,7 +352,8 @@ auto ClientDataBase::findByPhoneSubstr(const std::string& substr) const
 
     std::string key = substr;
 
-    auto        first = this->by_phone_substr_search.lower_bound(key);
+    //
+    auto first = this->by_phone_substr_search.lower_bound(key);
     key.back()++;
     auto second = this->by_phone_substr_search.lower_bound(key);
 

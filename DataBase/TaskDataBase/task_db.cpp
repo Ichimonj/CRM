@@ -532,7 +532,7 @@ void TaskDataBase::safeRemoveFromVector(
 void TaskDataBase::logEmptyContainer(
     const std::string& file,
     const size_t       line,
-    const std::string& employee_id,
+    const std::string& task_id,
     const std::string& index_name
 )
 {
@@ -540,7 +540,7 @@ void TaskDataBase::logEmptyContainer(
         LOG_LEVEL::ERROR,
         file,
         line,
-        "Data inconsistency in " + index_name + "\nTask: " + employee_id +
+        "Data inconsistency in " + index_name + "\nTask: " + task_id +
             "\nExpected entry is missing."
     );
 }

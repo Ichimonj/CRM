@@ -188,7 +188,7 @@ void ExternalEmployeeDataBase::hard_remove(const size_t index, TenantContext& co
         auto        employee_id = employee->getId();
 
         context.task_data_base.removeParty(employee_id);
-
+        context.interaction_data_base.removeParticipant(employee_id);
         this->removed.erase(this->removed.begin() + index);
     }
 }

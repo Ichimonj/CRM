@@ -640,7 +640,7 @@ void DealDataBase::safeRemoveFromVector(
 void DealDataBase::logEmptyContainer(
     const std::string& file,
     const size_t       line,
-    const std::string& employee_id,
+    const std::string& deal_id,
     const std::string& index_name
 )
 {
@@ -648,7 +648,7 @@ void DealDataBase::logEmptyContainer(
         LOG_LEVEL::ERROR,
         file,
         line,
-        "Data inconsistency in " + index_name + "\nDeal: " + employee_id +
+        "Data inconsistency in " + index_name + "\nDeal: " + deal_id +
             "\nExpected entry is missing."
     );
 }

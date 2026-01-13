@@ -141,7 +141,7 @@ private:
     void logEmptyContainer(
         const std::string& file,
         const size_t       line,
-        const std::string& employee_id,
+        const std::string& deal_id,
         const std::string& index_name
     );
 };

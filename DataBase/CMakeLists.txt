@@ -1,5 +1,5 @@
 project(DataBase
-    VERSION 0.0.5
+    VERSION 0.6.0
     DESCRIPTION "Data base library for CRM"
     LANGUAGES CXX
 )
@@ -9,6 +9,7 @@ file(GLOB DATABASE_SOURCES CONFIGURE_DEPENDS
 )
 add_library(DataBase STATIC
     ../Logger/events_log.cpp
+    InteractionDataBase/interaction_data_base.cpp
     TaskDataBase/task_db.cpp
     DealDataBase/deal_db.cpp
     ${DATABASE_SOURCES}

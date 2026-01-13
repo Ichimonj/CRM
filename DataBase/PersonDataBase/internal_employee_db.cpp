@@ -200,7 +200,9 @@ void InternalEmployeeDataBase::hard_remove(const size_t index, TenantContext& co
         context.task_data_base.removeCreator(employee_id);
         context.task_data_base.removeManager(employee_id);
         context.task_data_base.removeParty(employee_id);
-
+        context.interaction_data_base.removeManager(employee_id);
+        context.interaction_data_base.removeParticipant(employee_id);
+        
         this->removed.erase(this->removed.begin() + index);
     }
 }
