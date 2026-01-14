@@ -76,17 +76,17 @@ public:
 
     /// @name Change functions
     /// @{
-    // functions called only from the 
+    // functions called only from the
 private:
     bool setTitle(const std::string& title, const InternalEmployeePtr& changer);
     bool setExternalId(const OptionalStr& id, const InternalEmployeePtr& changer);
     bool setPriority(const Priority& priority, const InternalEmployeePtr& changer);
-    
+
     bool addTag(const std::string& tag, const InternalEmployeePtr& changer);
     bool delTag(const size_t index, const InternalEmployeePtr& changer);
 
     bool setManager(const WeakInternalEmployee& manager, const InternalEmployeePtr& changer);
-   
+
     bool setStartDate(const DatePtr& date, const InternalEmployeePtr& changer);
     bool setEndDate(const DatePtr& date, const InternalEmployeePtr& changer);
 
@@ -120,8 +120,6 @@ public:
 
     bool setSubject(const OptionalStr& subject, const InternalEmployeePtr& changer);
     bool setChecker(const WeakInternalEmployee& checker, const InternalEmployeePtr& changer);
-
-
 
     bool addCampaign(const WeakCampaignPtr& campaign, const InternalEmployeePtr& changer);
     bool delCampaign(size_t index, const InternalEmployeePtr& changer);
@@ -167,4 +165,42 @@ protected:
     std::vector<ChangeLogPtr> change_logs;
 
     friend class InteractionDataBase;
+
+#ifdef _TESTING
+public:
+    bool _setTitle(const std::string& title, const InternalEmployeePtr& changer) {
+        return this->setTitle(title, changer);
+    }
+    bool _setExternalId(const OptionalStr& id, const InternalEmployeePtr& changer) {
+        return this->setExternalId(id, changer);
+    }
+    bool _setPriority(const Priority& priority, const InternalEmployeePtr& changer) {
+        return this->setPriority(priority, changer);
+    }
+
+    bool _addTag(const std::string& tag, const InternalEmployeePtr& changer) {
+        return this->addTag(tag, changer);
+    }
+    bool _delTag(const size_t index, const InternalEmployeePtr& changer) {
+        return this->delTag(index, changer);
+    }
+
+    bool _setManager(const WeakInternalEmployee& manager, const InternalEmployeePtr& changer) {
+        return this->setManager(manager, changer);
+    }
+
+    bool _setStartDate(const DatePtr& date, const InternalEmployeePtr& changer) {
+        return this->setStartDate(date, changer);
+    }
+    bool _setEndDate(const DatePtr& date, const InternalEmployeePtr& changer) {
+        return this->setEndDate(date, changer);
+    }
+
+    bool _addParticipants(const WeakPersonPtr& participant, const InternalEmployeePtr& changer) {
+        return this->addParticipants(participant, changer);
+    }
+    bool _delParticipants(const size_t index, const InternalEmployeePtr& changer) {
+        return this->delParticipants(index, changer);
+    }
+#endif
 };
