@@ -76,21 +76,31 @@ public:
 
     /// @name Change functions
     /// @{
+    // functions called only from the 
+private:
     bool setTitle(const std::string& title, const InternalEmployeePtr& changer);
     bool setExternalId(const OptionalStr& id, const InternalEmployeePtr& changer);
-    bool setDescription(const OptionalStr& description, const InternalEmployeePtr& changer);
-    bool setDuration(
-        const std::optional<TimeDuration>& duration, const InternalEmployeePtr& changer
-    );
     bool setPriority(const Priority& priority, const InternalEmployeePtr& changer);
-
+    
     bool addTag(const std::string& tag, const InternalEmployeePtr& changer);
     bool delTag(const size_t index, const InternalEmployeePtr& changer);
 
+    bool setManager(const WeakInternalEmployee& manager, const InternalEmployeePtr& changer);
+   
+    bool setStartDate(const DatePtr& date, const InternalEmployeePtr& changer);
+    bool setEndDate(const DatePtr& date, const InternalEmployeePtr& changer);
+
+    bool addParticipants(const WeakPersonPtr& participant, const InternalEmployeePtr& changer);
+    bool delParticipants(const size_t index, const InternalEmployeePtr& changer);
+
+    // public functions
+public:
+    bool setDuration(
+        const std::optional<TimeDuration>& duration, const InternalEmployeePtr& changer
+    );
+    bool setDescription(const OptionalStr& description, const InternalEmployeePtr& changer);
     bool addResult(const InteractionResult& result, const InternalEmployeePtr& changer);
     bool delResult(const size_t index, const InternalEmployeePtr& changer);
-
-    bool setManager(const WeakInternalEmployee& manager, const InternalEmployeePtr& changer);
 
     bool addNote(const Note& note, const InternalEmployeePtr& changer);
     bool delNote(const size_t index, const InternalEmployeePtr& changer);
@@ -109,17 +119,12 @@ public:
     bool delAttachmentFiles(const size_t index, const InternalEmployeePtr& changer);
 
     bool setSubject(const OptionalStr& subject, const InternalEmployeePtr& changer);
-    bool setStartDate(const DatePtr& date, const InternalEmployeePtr& changer);
-    bool setEndDate(const DatePtr& date, const InternalEmployeePtr& changer);
     bool setChecker(const WeakInternalEmployee& checker, const InternalEmployeePtr& changer);
 
-    bool addParticipants(const WeakPersonPtr& participant, const InternalEmployeePtr& changer);
-    bool delParticipants(const size_t index, const InternalEmployeePtr& changer);
+
 
     bool addCampaign(const WeakCampaignPtr& campaign, const InternalEmployeePtr& changer);
     bool delCampaign(size_t index, const InternalEmployeePtr& changer);
-
-    bool setType(const InteractionType& type, const InternalEmployeePtr& changer);
     /// @}
 
     void addChangeLog(const ChangeLogPtr& changeLog);
@@ -160,4 +165,6 @@ private:
 
 protected:
     std::vector<ChangeLogPtr> change_logs;
+
+    friend class InteractionDataBase;
 };

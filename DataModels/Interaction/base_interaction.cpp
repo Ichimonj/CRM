@@ -626,24 +626,6 @@ bool BaseInteraction::delCampaign(size_t index, const InternalEmployeePtr& chang
     return false;
 }
 
-bool BaseInteraction::setType(const InteractionType& type, const InternalEmployeePtr& changer)
-{
-    if (this->type != type) {
-        this->change_logs.emplace_back(std::make_shared<ChangeLog>(
-            changer,
-            std::make_optional<ChangeLog::ValueVariant>(this->type),
-            std::make_optional<ChangeLog::ValueVariant>(type),
-            BaseInteractionFields::Type,
-            ChangeLog::FieldType::InteractionType,
-            ChangeLog::FieldType::InteractionType,
-            ChangeLog::Action::Change
-        ));
-        this->type = type;
-        return true;
-    }
-    return false;
-}
-
 void BaseInteraction::addChangeLog(const ChangeLogPtr& changeLog)
 {
     if (std::find(this->change_logs.begin(), this->change_logs.end(), changeLog) ==
