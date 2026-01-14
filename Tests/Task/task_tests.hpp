@@ -41,7 +41,7 @@ namespace unit {
     Task task(BigUint("1"));
     TEST(TaskTest, setTitle)
     {
-        EXPECT_TRUE(task.setTitle("Title", changer));
+        EXPECT_TRUE(task._setTitle("Title", changer));
 
         SCOPED_TRACE("Check value");
         EXPECT_EQ(task.getTitle(), "Title");
@@ -67,7 +67,7 @@ namespace unit {
 
         SCOPED_TRACE("Check action");
         EXPECT_EQ(change->getAction(), ChangeLog::Action::Change);
-        EXPECT_FALSE(task.setTitle("Title", changer));
+        EXPECT_FALSE(task._setTitle("Title", changer));
     }
 
     TEST(TaskTest, setDescription)
@@ -188,7 +188,7 @@ namespace unit {
 
     TEST(TaskTest, setStatus)
     {
-        EXPECT_TRUE(task.setStatus(Task::Status::InProgress, changer));
+        EXPECT_TRUE(task._setStatus(Task::Status::InProgress, changer));
 
         SCOPED_TRACE("Check value");
         EXPECT_EQ(task.getStatus(), Task::Status::InProgress);
@@ -214,12 +214,12 @@ namespace unit {
 
         SCOPED_TRACE("Check action");
         EXPECT_EQ(change->getAction(), ChangeLog::Action::Change);
-        EXPECT_FALSE(task.setStatus(Task::Status::InProgress, changer));
+        EXPECT_FALSE(task._setStatus(Task::Status::InProgress, changer));
     }
 
     TEST(TaskTest, setPriority)
     {
-        EXPECT_TRUE(task.setPriority(Priority::High, changer));
+        EXPECT_TRUE(task._setPriority(Priority::High, changer));
 
         SCOPED_TRACE("Check value");
         EXPECT_EQ(task.getPriority(), Priority::High);
@@ -245,13 +245,13 @@ namespace unit {
 
         SCOPED_TRACE("Check action");
         EXPECT_EQ(change->getAction(), ChangeLog::Action::Change);
-        EXPECT_FALSE(task.setPriority(Priority::High, changer));
+        EXPECT_FALSE(task._setPriority(Priority::High, changer));
     }
 
     TEST(TaskTest, setDeadline)
     {
         auto date_ptr = std::make_shared<Date>(2030, 11, 11);
-        EXPECT_TRUE(task.setDeadline(date_ptr, changer));
+        EXPECT_TRUE(task._setDeadline(date_ptr, changer));
 
         SCOPED_TRACE("Check value");
         EXPECT_EQ(task.getDeadline(), date_ptr);
@@ -275,7 +275,7 @@ namespace unit {
 
         SCOPED_TRACE("Check action");
         EXPECT_EQ(change->getAction(), ChangeLog::Action::Change);
-        EXPECT_FALSE(task.setDeadline(date_ptr, changer));
+        EXPECT_FALSE(task._setDeadline(date_ptr, changer));
     }
 
     TEST(TaskTest, changeDeadline)
@@ -283,7 +283,7 @@ namespace unit {
         auto old_date_ptr = std::make_shared<Date>(2030, 11, 11);
 
         auto new_date_ptr = std::make_shared<Date>(2032, 5, 15);
-        EXPECT_TRUE(task.setDeadline(new_date_ptr, changer));
+        EXPECT_TRUE(task._setDeadline(new_date_ptr, changer));
 
         SCOPED_TRACE("Check value");
         EXPECT_EQ(task.getDeadline(), new_date_ptr);
@@ -309,13 +309,13 @@ namespace unit {
 
         SCOPED_TRACE("Check action");
         EXPECT_EQ(change->getAction(), ChangeLog::Action::Change);
-        EXPECT_FALSE(task.setDeadline(new_date_ptr, changer));
+        EXPECT_FALSE(task._setDeadline(new_date_ptr, changer));
     }
 
     TEST(TaskTest, clearDeadline)
     {
         auto date_ptr = std::make_shared<Date>(2032, 5, 15);
-        EXPECT_TRUE(task.setDeadline(nullptr, changer));
+        EXPECT_TRUE(task._setDeadline(nullptr, changer));
 
         SCOPED_TRACE("Check value");
         EXPECT_EQ(task.getDeadline(), nullptr);
@@ -339,12 +339,12 @@ namespace unit {
 
         SCOPED_TRACE("Check action");
         EXPECT_EQ(change->getAction(), ChangeLog::Action::Change);
-        EXPECT_FALSE(task.setDeadline(nullptr, changer));
+        EXPECT_FALSE(task._setDeadline(nullptr, changer));
     }
     TEST(TaskTest, setStartDate)
     {
         auto date_ptr = std::make_shared<Date>(2020, 11, 11);
-        EXPECT_TRUE(task.setStartDate(date_ptr, changer));
+        EXPECT_TRUE(task._setStartDate(date_ptr, changer));
 
         SCOPED_TRACE("Check value");
         EXPECT_EQ(task.getStartDate(), date_ptr);
@@ -368,14 +368,14 @@ namespace unit {
 
         SCOPED_TRACE("Check action");
         EXPECT_EQ(change->getAction(), ChangeLog::Action::Change);
-        EXPECT_FALSE(task.setStartDate(date_ptr, changer));
+        EXPECT_FALSE(task._setStartDate(date_ptr, changer));
     }
     TEST(TaskTest, changeStartDate)
     {
         auto old_date_ptr = std::make_shared<Date>(2020, 11, 11);
 
         auto new_date_ptr = std::make_shared<Date>(2021, 12, 25);
-        EXPECT_TRUE(task.setStartDate(new_date_ptr, changer));
+        EXPECT_TRUE(task._setStartDate(new_date_ptr, changer));
 
         SCOPED_TRACE("Check value");
         EXPECT_EQ(task.getStartDate(), new_date_ptr);
@@ -401,13 +401,13 @@ namespace unit {
 
         SCOPED_TRACE("Check action");
         EXPECT_EQ(change->getAction(), ChangeLog::Action::Change);
-        EXPECT_FALSE(task.setStartDate(new_date_ptr, changer));
+        EXPECT_FALSE(task._setStartDate(new_date_ptr, changer));
     }
 
     TEST(TaskTest, clearStartDate)
     {
         auto date_ptr = std::make_shared<Date>(2021, 12, 25);
-        EXPECT_TRUE(task.setStartDate(nullptr, changer));
+        EXPECT_TRUE(task._setStartDate(nullptr, changer));
 
         SCOPED_TRACE("Check value");
         EXPECT_EQ(task.getStartDate(), nullptr);
@@ -431,7 +431,7 @@ namespace unit {
 
         SCOPED_TRACE("Check action");
         EXPECT_EQ(change->getAction(), ChangeLog::Action::Change);
-        EXPECT_FALSE(task.setStartDate(nullptr, changer));
+        EXPECT_FALSE(task._setStartDate(nullptr, changer));
     }
 
     TEST(TaskTest, setETC)
@@ -624,7 +624,7 @@ namespace unit {
         std::make_shared<InternalEmployee>(BigUint("1"), "Name", "Surname", std::nullopt);
     TEST(TaskTest, setManager)
     {
-        EXPECT_TRUE(task.setManager(manager1, changer));
+        EXPECT_TRUE(task._setManager(manager1, changer));
 
         SCOPED_TRACE("Check value");
         EXPECT_EQ(task.getManager().lock(), manager1);
@@ -648,13 +648,13 @@ namespace unit {
 
         SCOPED_TRACE("Check action");
         EXPECT_EQ(change->getAction(), ChangeLog::Action::Change);
-        EXPECT_FALSE(task.setManager(manager1, changer));
+        EXPECT_FALSE(task._setManager(manager1, changer));
     }
     auto new_manager =
         std::make_shared<InternalEmployee>(BigUint("2"), "NewName", "NewSurname", "Patronymic");
     TEST(TaskTest, changeManager)
     {
-        EXPECT_TRUE(task.setManager(new_manager, changer));
+        EXPECT_TRUE(task._setManager(new_manager, changer));
 
         SCOPED_TRACE("Check value");
         EXPECT_EQ(task.getManager().lock(), new_manager);
@@ -679,14 +679,14 @@ namespace unit {
 
         SCOPED_TRACE("Check action");
         EXPECT_EQ(change->getAction(), ChangeLog::Action::Change);
-        EXPECT_FALSE(task.setManager(new_manager, changer));
+        EXPECT_FALSE(task._setManager(new_manager, changer));
     }
 
     TEST(TaskTest, clearManager)
     {
         auto last_manager =
             std::make_shared<InternalEmployee>(BigUint("2"), "NewName", "NewSurname", "Patronymic");
-        EXPECT_TRUE(task.setManager({}, changer));
+        EXPECT_TRUE(task._setManager({}, changer));
 
         SCOPED_TRACE("Check value");
         EXPECT_TRUE(task.getManager().expired());
@@ -710,13 +710,13 @@ namespace unit {
 
         SCOPED_TRACE("Check action");
         EXPECT_EQ(change->getAction(), ChangeLog::Action::Change);
-        EXPECT_FALSE(task.setManager({}, changer));
+        EXPECT_FALSE(task._setManager({}, changer));
     }
 
     TEST(TaskTest, addTask)
     {
         auto task_ptr = std::make_shared<Task>(BigUint("1"));
-        task_ptr->setTitle("Title", nullptr);
+        task_ptr->_setTitle("Title", nullptr);
 
         EXPECT_TRUE(task.addTask(task_ptr, changer));
 
@@ -773,7 +773,7 @@ namespace unit {
         SCOPED_TRACE("Check action");
         EXPECT_EQ(change->getAction(), ChangeLog::Action::Remove);
 
-        EXPECT_FALSE(task.setManager({}, changer));
+        EXPECT_FALSE(task._setManager({}, changer));
     }
 
     TEST(TaskTest, addFile)
@@ -972,7 +972,7 @@ namespace unit {
     auto person1 = std::make_shared<Client>(BigUint("1"), "Name", "Surname", std::nullopt);
     TEST(TaskTest, addTeemMember)
     {
-        EXPECT_TRUE(task.addTeemMember(person1, changer));
+        EXPECT_TRUE(task._addTeemMember(person1, changer));
 
         SCOPED_TRACE("Check value");
         EXPECT_EQ(task.getTeem().back().lock(), person1);
@@ -997,12 +997,12 @@ namespace unit {
         SCOPED_TRACE("Check action");
         EXPECT_EQ(change->getAction(), ChangeLog::Action::Add);
 
-        EXPECT_FALSE(task.addTeemMember(person1, changer));
+        EXPECT_FALSE(task._addTeemMember(person1, changer));
     }
 
     TEST(TaskTest, delTeemMember)
     {
-        EXPECT_TRUE(task.delTeemMember(0, changer));
+        EXPECT_TRUE(task._delTeemMember(0, changer));
 
         SCOPED_TRACE("Check value");
         EXPECT_TRUE(task.getTasks().empty());
@@ -1027,6 +1027,6 @@ namespace unit {
         SCOPED_TRACE("Check action");
         EXPECT_EQ(change->getAction(), ChangeLog::Action::Remove);
 
-        EXPECT_FALSE(task.delTeemMember(0, changer));
+        EXPECT_FALSE(task._delTeemMember(0, changer));
     }
 }  // namespace unit

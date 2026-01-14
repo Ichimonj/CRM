@@ -498,7 +498,7 @@ namespace unit {
     TEST(ExternalEmployeeTest, SetCurrentInteraction_SetFirstInteraction)
     {
         InteractionPtr interaction = std::make_shared<EmailLetter>(BigUint("90001"));
-        interaction->setTitle("Title", nullptr);
+        interaction->_setTitle("Title", nullptr);
 
         ee.setCurrentInteraction(interaction, changer);
 
@@ -537,7 +537,7 @@ namespace unit {
     TEST(ExternalEmployeeTest, SetCurrentInteraction_ChangeInteraction)
     {
         InteractionPtr newInteraction = std::make_shared<EmailLetter>(BigUint("90002"));
-        newInteraction->setTitle("New Title", nullptr);
+        newInteraction->_setTitle("New Title", nullptr);
 
         ee.setCurrentInteraction(newInteraction, changer);
 
@@ -1855,7 +1855,7 @@ namespace unit {
     TEST(ExternalEmployeeTest, AddCompletedTask_FirstTask)
     {
         TaskPtr task1 = std::make_shared<Task>(BigUint("50001"));
-        task1->setTitle("Onboarding completed: NDA signed", nullptr);
+        task1->_setTitle("Onboarding completed: NDA signed", nullptr);
 
         ee.addCompletedTask(task1, changer);
 
@@ -1896,7 +1896,7 @@ namespace unit {
     TEST(ExternalEmployeeTest, AddCompletedTask_SecondTask)
     {
         TaskPtr task2 = std::make_shared<Task>(BigUint("50005"));
-        task2->setTitle("Demo session held (Q4 goals)", nullptr);
+        task2->_setTitle("Demo session held (Q4 goals)", nullptr);
 
         ee.addCompletedTask(task2, changer);
 

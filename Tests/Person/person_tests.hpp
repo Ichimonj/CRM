@@ -979,7 +979,7 @@ namespace unit {
     TEST(PersonTest, AddDelInteraction)
     {
         std::shared_ptr<BaseInteraction> interaction_ptr = std::make_shared<Meeting>(BigUint("1"));
-        interaction_ptr->setTitle("Title", nullptr);
+        interaction_ptr->_setTitle("Title", nullptr);
 
         person.addInteraction(interaction_ptr, changer);
 
