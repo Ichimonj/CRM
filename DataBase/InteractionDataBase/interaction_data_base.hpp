@@ -65,9 +65,13 @@ public:
     void changeTitle(
         const BigUint& id, const std::string& title, const InternalEmployeePtr& changer
     );
-    void changeStartDate(const BigUint& id, const DatePtr& date, const InternalEmployeePtr& changer);
+    void changeStartDate(
+        const BigUint& id, const DatePtr& date, const InternalEmployeePtr& changer
+    );
     void changeEndDate(const BigUint& id, const DatePtr& date, const InternalEmployeePtr& changer);
-    void changePriority(const BigUint& id, const Priority priority, const InternalEmployeePtr& changer);
+    void changePriority(
+        const BigUint& id, const Priority priority, const InternalEmployeePtr& changer
+    );
 
     void addTag(const BigUint& id, const std::string& tag, const InternalEmployeePtr& changer);
     void delTag(const BigUint& id, const size_t index, const InternalEmployeePtr& changer);
